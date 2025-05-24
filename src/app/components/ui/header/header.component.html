@@ -1,0 +1,57 @@
+<nav class="header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a routerLink="/">
+          <h1>ZdrowaDieta</h1>
+        </a>
+      </div>
+
+      <nav class="main-nav">
+        <ul class="nav-items">
+          <li>
+            <a
+              routerLink="/"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              >Strona główna</a
+            >
+          </li>
+          <li>
+            <a routerLink="/conditions" routerLinkActive="active">Schorzenia</a>
+          </li>
+          <li>
+            <a routerLink="/recipes" routerLinkActive="active">Przepisy</a>
+          </li>
+          <li>
+            <a routerLink="/diet-plans" routerLinkActive="active"
+              >Plany diety</a
+            >
+          </li>
+        </ul>
+      </nav>
+
+      <div class="auth-nav">
+        <ng-container *ngIf="user$ | async as user; else loginButtons">
+          <div class="user-menu">
+            <span class="user-greeting">Witaj,</span>
+            <div class="user-bubble">
+              {{ user.displayName?.slice(0, 1) || "Użytkowniku" }}
+            </div>
+            <button class="btn btn-profile" routerLink="/profile">
+              Profil
+            </button>
+            <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
+          </div>
+        </ng-container>
+
+        <ng-template #loginButtons>
+          <button class="btn btn-login" routerLink="/login">Zaloguj</button>
+          <button class="btn btn-register" routerLink="/register">
+            Zarejestruj
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</nav>

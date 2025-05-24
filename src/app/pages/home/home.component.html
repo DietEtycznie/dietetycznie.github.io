@@ -1,0 +1,154 @@
+<app-header></app-header>
+
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Find the right diet for your health condition</h1>
+        <p>
+          Personalized nutrition plans and recipes tailored to your specific
+          health needs
+        </p>
+        <div class="hero-buttons">
+          <a routerLink="/conditions" class="btn-primary">Find Your Diet</a>
+          <a routerLink="/recipes" class="btn-secondary">Browse Recipes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Medical Conditions Section -->
+  <section class="section conditions-section">
+    <div class="container">
+      <h2 class="section-title">Browse by Medical Condition</h2>
+      <p class="section-subtitle">
+        Find diets and recipes suitable for your specific health condition
+      </p>
+
+      <div class="conditions-grid">
+        <div *ngIf="medicalConditions.length === 0" class="loading">
+          <p>Loading medical conditions...</p>
+        </div>
+
+        <a
+          *ngFor="let condition of medicalConditions"
+          [routerLink]="['/conditions', condition.id]"
+          class="condition-card"
+        >
+          <div class="condition-icon">
+            <!-- Placeholder for condition icon -->
+            <span class="icon-placeholder"></span>
+          </div>
+          <h3>{{ condition.name }}</h3>
+          <p>
+            {{ condition.description | slice: 0 : 100
+            }}{{ condition.description.length > 100 ? "..." : "" }}
+          </p>
+        </a>
+      </div>
+
+      <div class="view-all">
+        <a routerLink="/conditions" class="btn-text"
+          >View All Medical Conditions <span class="arrow">→</span></a
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Recipes Section -->
+  <section class="section recipes-section">
+    <div class="container">
+      <h2 class="section-title">Featured Recipes</h2>
+      <p class="section-subtitle">
+        Healthy and delicious recipes for various health conditions
+      </p>
+
+      <div class="recipes-grid">
+        <div *ngIf="featuredRecipes.length === 0" class="loading">
+          <p>Loading recipes...</p>
+        </div>
+
+        <a
+          *ngFor="let recipe of featuredRecipes"
+          [routerLink]="['/recipes', recipe.id]"
+          class="recipe-card"
+        >
+          <div
+            class="recipe-image"
+            [ngStyle]="{
+              'background-image':
+                'url(' +
+                (recipe.imageUrl ||
+                  'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') +
+                ')',
+            }"
+          ></div>
+          <div class="recipe-content">
+            <h3>{{ recipe.name }}</h3>
+            <p>
+              {{ recipe.description | slice: 0 : 100
+              }}{{ recipe.description.length > 100 ? "..." : "" }}
+            </p>
+            <div class="recipe-meta">
+              <span class="calories">{{ recipe.calories }} calories</span>
+              <span class="time"
+                >{{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span
+              >
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="view-all">
+        <a routerLink="/recipes" class="btn-text"
+          >View All Recipes <span class="arrow">→</span></a
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="section how-it-works-section">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">
+        Simple steps to find your personalized diet plan
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Select Your Condition</h3>
+          <p>Choose your medical condition from our comprehensive list</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>View Dietary Recommendations</h3>
+          <p>
+            Get personalized dietary guidelines for your specific health needs
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Browse Compatible Recipes</h3>
+          <p>Explore recipes that are safe and beneficial for your condition</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <h3>Create Your Meal Plan</h3>
+          <p>Save your favorite recipes and create a customized meal plan</p>
+        </div>
+      </div>
+
+      <div class="cta-container">
+        <a routerLink="/register" class="btn-primary">Get Started Now</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>
