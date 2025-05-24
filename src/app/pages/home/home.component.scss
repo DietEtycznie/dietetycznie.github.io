@@ -1,8 +1,10 @@
 .hero {
-  background: linear-gradient(135deg, #20b2aa, #87ceeb);
+  background-image: url("../../assets/home_banner.png");
   color: white;
   padding: 5rem 0;
   text-align: center;
+  background-size: cover;
+  background-position: center;
 }
 
 .container {

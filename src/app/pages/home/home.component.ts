@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
 import { RouterLink } from "@angular/router";
 import { RecipeService } from "../../../services/recipe.service";
 import { MedicalConditionService } from "../../../services/medical-condition.service";
@@ -11,7 +11,13 @@ import { FooterComponent } from "../../components/ui/footer/footer.component";
 @Component({
   selector: "app-home",
   standalone: true,
-  imports: [CommonModule, RouterLink, HeaderComponent, FooterComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    HeaderComponent,
+    FooterComponent,
+    NgOptimizedImage,
+  ],
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
 })
