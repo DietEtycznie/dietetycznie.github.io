@@ -1,0 +1,80 @@
+<div
+  [ngClass]="{
+    card: cardStyle === 'normal',
+    'card-wide': cardStyle === 'wide',
+  }"
+>
+  <div
+    [ngClass]="{
+      'card-photo': cardStyle === 'normal',
+      'card-photo-wide': cardStyle === 'wide',
+      'card-photo-wide-stars': starsVisible && cardStyle === 'wide',
+    }"
+  >
+    <div class="card-img"></div>
+    <div class="card-stars" *ngIf="starsVisible">
+      <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+        <i
+          class="bi"
+          [ngClass]="
+            recipe.stars && i < recipe.stars ? 'bi-star-fill' : 'bi-star'
+          "
+        ></i>
+      </ng-container>
+    </div>
+  </div>
+  <div class="card-title" *ngIf="cardStyle === 'normal'">
+    {{ recipe.name }}
+  </div>
+  <div class="card-time">
+    {{ recipe.prepTimeMinutes }}
+    <span>min</span>
+  </div>
+  <div
+    [ngClass]="{
+      'card-hover': cardStyle === 'normal',
+      'card-hover-wide': cardStyle === 'wide',
+    }"
+  >
+    <div class="card-title" *ngIf="cardStyle === 'wide'">
+      {{ recipe.name }}
+    </div>
+    <span class="card-values">Wartości odżywcze:</span>
+    <div class="flex-centered" cardStyle="margin-top: -20px">
+      <div class="card-values-box">
+        {{ recipe.calories }}
+        <span>Kcal</span>
+      </div>
+      <div class="card-values-box">
+        {{ recipe.protein }}
+        <span>Białka</span>
+      </div>
+      <div class="card-values-box">
+        {{ recipe.fat }}
+        <span>Tłuszczu</span>
+      </div>
+    </div>
+    <div
+      class="flex-centered"
+      cardStyle="margin-top: -20px"
+      *ngIf="cardStyle === 'wide'"
+    >
+      <div class="card-values-box">
+        {{ recipe.carbs }}
+        <span>Węg</span>
+      </div>
+      <div class="card-values-box">
+        {{ recipe.carbs }}
+        <span>Sodu</span>
+      </div>
+      <div class="card-values-box">
+        {{ recipe.carbs }}
+        <span>Błonnika</span>
+      </div>
+    </div>
+    <div class="card-like" (click)="toggleLike()">
+      <i class="bi bi-suit-heart" *ngIf="!like"></i>
+      <i class="bi bi-suit-heart-fill red" *ngIf="like"></i>
+    </div>
+  </div>
+</div>

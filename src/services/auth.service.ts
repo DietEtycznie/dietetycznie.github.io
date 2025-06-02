@@ -1,39 +1,39 @@
-import { Injectable } from '@angular/core';
-import { 
-  Auth, 
+import { Injectable } from "@angular/core";
+import {
+  Auth,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
   User as FirebaseUser,
   UserCredential,
   GoogleAuthProvider,
-  signInWithPopup
-} from '@angular/fire/auth';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
-import { User } from '../models/user.model';
+  signInWithPopup,
+} from "@angular/fire/auth";
+import { distinctUntilChanged, Observable, of } from "rxjs";
+import { map, switchMap } from "rxjs/operators";
+import { Firestore, doc, setDoc, getDoc } from "@angular/fire/firestore";
+import { User } from "../models/user.model";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
   user$: Observable<User | null>;
 
   constructor(
     private auth: Auth,
-    private firestore: Firestore
+    private firestore: Firestore,
   ) {
-    this.user$ = new Observable<FirebaseUser | null>(observer => {
+    this.user$ = new Observable<FirebaseUser | null>((observer) => {
       return this.auth.onAuthStateChanged(observer);
     }).pipe(
-      switchMap(user => {
+      switchMap((user) => {
         if (user) {
           return this.getUserData(user.uid);
         } else {
           return of(null);
         }
-      })
+      }),
     );
   }
 
@@ -52,11 +52,11 @@ export class AuthService {
       // Jeśli użytkownik nie istnieje, utwórz jego dane w Firestore
       const user: User = {
         uid: credential.user.uid,
-        email: credential.user.email || '',
-        displayName: credential.user.displayName || 'Anonimowy Użytkownik',
+        email: credential.user.email || "",
+        displayName: credential.user.displayName || "Anonimowy Użytkownik",
         medicalConditions: [],
         savedRecipes: [],
-        dietPlans: []
+        dietPlans: [],
       };
 
       await this.createUserData(user);
@@ -65,20 +65,28 @@ export class AuthService {
     return credential;
   }
 
-  async signUp(email: string, password: string, displayName: string): Promise<UserCredential> {
-    const credential = await createUserWithEmailAndPassword(this.auth, email, password);
-    
+  async signUp(
+    email: string,
+    password: string,
+    displayName: string,
+  ): Promise<UserCredential> {
+    const credential = await createUserWithEmailAndPassword(
+      this.auth,
+      email,
+      password,
+    );
+
     const user: User = {
       uid: credential.user.uid,
       email: credential.user.email || email,
       displayName: displayName,
       medicalConditions: [],
       savedRecipes: [],
-      dietPlans: []
+      dietPlans: [],
     };
-    
+
     await this.createUserData(user);
-    
+
     return credential;
   }
 
@@ -93,18 +101,22 @@ export class AuthService {
 
   private getUserData(uid: string): Observable<User | null> {
     const userRef = doc(this.firestore, `users/${uid}`);
-    return new Observable<User | null>(observer => {
-      getDoc(userRef).then(doc => {
-        if (doc.exists()) {
-          observer.next(doc.data() as User);
-        } else {
-          observer.next(null);
-        }
-        observer.complete();
-      }).catch(error => {
-        observer.error(error);
-      });
-    });
+    return new Observable<User | null>((observer) => {
+      getDoc(userRef)
+        .then((doc) => {
+          if (doc.exists()) {
+            observer.next(doc.data() as User);
+          } else {
+            observer.next(null);
+          }
+          observer.complete();
+        })
+        .catch((error) => {
+          observer.error(error);
+        });
+    }).pipe(
+      distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+    );
   }
 
   getCurrentUser(): FirebaseUser | null {

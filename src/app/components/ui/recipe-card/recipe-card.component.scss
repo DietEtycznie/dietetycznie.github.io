@@ -1,0 +1,222 @@
+@import "../../../../vars";
+
+/* "normal" card styles */
+.card {
+  background-color: #ffffff;
+  max-width: 200px;
+  height: 250px;
+  position: relative;
+  border-radius: 5%;
+  overflow: hidden;
+  display: grid;
+  justify-items: center;
+  border: 1px solid transparent;
+  transition: 400ms ease-in-out;
+  margin: 5px 5px;
+}
+
+.card:hover {
+  border: 1px solid #cccccc;
+}
+
+.card:hover .card-hover {
+  opacity: 1;
+  height: 80px;
+}
+
+.card:hover .card-photo {
+  width: 60%;
+}
+
+.card-photo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: 15px 0;
+  overflow: hidden;
+  background-color: transparent;
+  transition: 400ms ease-in-out;
+}
+
+.card-title {
+  background-color: transparent;
+  width: 80%;
+  text-align: center;
+}
+
+.card-time {
+  position: absolute;
+  top: 8%;
+  left: 8%;
+  display: grid;
+  text-align: center;
+  background-color: transparent;
+  font-family: "Noto Serif Oriya", serif;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 10px;
+}
+
+.card-hover {
+  background-color: transparent;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  transition: 400ms ease-in-out;
+}
+
+.card-values {
+  font-family: "Noto Serif Oriya", serif;
+  font-size: 11px;
+  color: #aaaaaa;
+}
+
+.card-like {
+  font-size: 16px;
+  color: black;
+  background-color: transparent;
+  position: absolute;
+  top: 7.5%;
+  right: 8%;
+  transition: 400ms ease-in-out;
+}
+
+.card-like:hover {
+  color: red;
+}
+
+.card-values-box {
+  display: grid;
+  font-family: "Noto Serif Oriya", serif;
+  font-size: 8px;
+  justify-items: center;
+  margin: 0 7px;
+}
+
+.card-values-box span {
+  font-family: "Noto Serif Oriya", serif;
+}
+
+/* "wide" card styles */
+.card-wide {
+  max-width: 420px;
+  height: 200px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: 400ms ease-in-out;
+}
+
+.card-wide .card-values-box {
+  margin-top: 10px;
+}
+
+.card-wide .card-like {
+  left: 4.2%;
+  width: 16px;
+  top: 21%;
+  opacity: 0;
+  transition: 400ms ease-in-out;
+}
+
+.card-wide .card-time {
+  left: 4%;
+}
+
+.card-wide:hover {
+  border: 1px solid #cccccc;
+}
+
+.card-wide:hover .card-photo-wide {
+  width: 41%;
+}
+
+.card-wide:hover .card-photo-wide-stars {
+  width: 41%;
+  margin-bottom: 45px;
+}
+
+.card-wide:hover .card-like {
+  opacity: 1;
+}
+
+.card-wide:hover .card-stars {
+  opacity: 1;
+  height: 0;
+}
+
+.card-photo-wide {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin: 15px 15px;
+  overflow: hidden;
+  background-color: transparent;
+  transition: 400ms ease-in-out;
+  margin-right: -10px;
+  position: relative;
+}
+
+.card-photo-wide-stars {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  width: 45%;
+  margin: 15px 15px;
+  overflow: hidden;
+  background-color: transparent;
+  transition: 400ms ease-in-out;
+  margin-right: -10px;
+  position: relative;
+}
+
+.card-hover-wide {
+  height: 150px;
+  width: 200px;
+  overflow: hidden;
+  display: grid;
+  grid-column: auto;
+  align-items: center;
+  justify-items: center;
+  transition: 400ms ease-in-out;
+}
+
+.card-img {
+  background-image: url("../../../assets/recipes/biryani.png");
+  width: 200px;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+}
+
+.card-stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -15px;
+  opacity: 0;
+  height: 0;
+  transition: 400ms ease-in-out;
+  color: #282828;
+}
+
+/* Universal classes */
+.red {
+  color: red;
+}
+
+.flex-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -16,4 +16,5 @@ export interface Recipe {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+  stars?: number;
 }

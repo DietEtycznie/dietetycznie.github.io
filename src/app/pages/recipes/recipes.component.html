@@ -1,0 +1,57 @@
+<div class="recipes-container">
+  <aside class="filters">
+    <form class="filters-form">
+      <app-input-text
+        [label]="'Nazwa potrawy'"
+        [(model)]="filterName"
+        name="filterName"
+        placeholder="Szukaj po nazwie"
+      ></app-input-text>
+      <app-input-multi
+        [label]="'Choroba'"
+        [model]="filterCondition"
+        (modelChange)="filterCondition = $event"
+        name="filterCondition"
+        [options]="conditions"
+      ></app-input-multi>
+      <app-input-multi
+        [label]="'Rodzaj diety'"
+        [model]="filterDiet"
+        (modelChange)="filterDiet = $event"
+        name="filterDiet"
+        [options]="diets"
+      ></app-input-multi>
+      <app-input-number
+        [label]="'Maks. kcal'"
+        [model]="filterMaxKcal"
+        (modelChange)="filterMaxKcal = $event"
+        name="filterMaxKcal"
+        placeholder="np. 500"
+      ></app-input-number>
+      <app-input-multi
+        [label]="'Rodzaj posiłku'"
+        [model]="filterType"
+        (modelChange)="filterType = $event"
+        name="filterType"
+        [options]="types"
+      ></app-input-multi>
+      <div class="form-group">
+        <label>Rodzaj posiłku</label>
+        <div class="checkbox-group">
+          <mat-checkbox
+            *ngFor="let type of types"
+            [checked]="filterType.includes(type)"
+            (change)="onTypeChange(type, $event.checked)"
+          >
+            {{ type }}
+          </mat-checkbox>
+        </div>
+      </div>
+    </form>
+  </aside>
+  <section class="recipes-list">
+    @for (recipe of filteredRecipes; track recipe.id) {
+      <app-recipe-card [recipe]="recipe" cardStyle="normal"></app-recipe-card>
+    }
+  </section>
+</div>
