@@ -14,13 +14,7 @@ import { FooterComponent } from "../../../components/ui/footer/footer.component"
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    HeaderComponent,
-    FooterComponent,
-  ],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
 })

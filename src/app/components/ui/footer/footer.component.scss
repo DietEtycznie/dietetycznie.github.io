@@ -1,7 +1,12 @@
+@import "../../../../vars";
+
 .footer {
-  background-color: #f5f5f5;
+  background-color: $background-color;
   padding: 3rem 0 1rem;
-  margin-top: 3rem;
+
+  &-margin {
+    margin-top: 3rem;
+  }
 }
 
 .container {
@@ -21,15 +26,19 @@
   flex: 0 0 100%;
   max-width: 300px;
   margin-bottom: 2rem;
-}
 
-.footer-logo h2 {
-  color: #20b2aa;
-  margin: 0 0 0.5rem;
+  &-img {
+    width: 200px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/assets/logo.svg");
+    margin-bottom: 0.5rem;
+  }
 }
 
 .footer-logo p {
-  color: #666;
+  color: $text-secondary-color;
   margin: 0;
 }
 
@@ -46,7 +55,7 @@
 }
 
 .link-group h3 {
-  color: #333;
+  color: $text-color;
   font-size: 1.1rem;
   margin: 0 0 1rem;
 }
@@ -62,13 +71,13 @@
 }
 
 .link-group a {
-  color: #666;
+  color: $text-secondary-color;
   text-decoration: none;
   transition: color 0.3s;
 }
 
 .link-group a:hover {
-  color: #20b2aa;
+  color: $primary-color;
 }
 
 .footer-bottom {
@@ -78,7 +87,7 @@
 }
 
 .footer-bottom p {
-  color: #888;
+  color: $text-secondary-color;
   margin: 0;
 }
 

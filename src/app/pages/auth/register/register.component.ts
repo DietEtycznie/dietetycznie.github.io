@@ -14,13 +14,7 @@ import { FooterComponent } from "../../../components/ui/footer/footer.component"
 @Component({
   selector: "app-register",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    HeaderComponent,
-    FooterComponent,
-  ],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: "./register.component.html",
   styleUrls: ["./register.component.scss"],
 })

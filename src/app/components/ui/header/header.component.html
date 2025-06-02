@@ -1,13 +1,24 @@
-<nav class="header">
+<nav class="header" (document:click)="closeUserMenu()">
   <div class="container">
     <div class="header-content">
-      <div class="logo">
-        <a routerLink="/">
-          <h1>ZdrowaDieta</h1>
-        </a>
-      </div>
+      <a routerLink="/">
+        <div class="logo"></div>
+      </a>
 
-      <nav class="main-nav">
+      <!-- Hamburger -->
+      <button
+        class="hamburger"
+        type="button"
+        aria-label="Otwórz menu"
+        (click)="toggleMobileNav(); $event.stopPropagation()"
+      >
+        <span [class.open]="isMobileNavOpen"></span>
+        <span [class.open]="isMobileNavOpen"></span>
+        <span [class.open]="isMobileNavOpen"></span>
+      </button>
+
+      <!-- Desktop nav -->
+      <nav class="main-nav desktop-nav">
         <ul class="nav-items">
           <li>
             <a
@@ -18,40 +29,119 @@
             >
           </li>
           <li>
-            <a routerLink="/conditions" routerLinkActive="active">Schorzenia</a>
-          </li>
-          <li>
             <a routerLink="/recipes" routerLinkActive="active">Przepisy</a>
           </li>
           <li>
-            <a routerLink="/diet-plans" routerLinkActive="active"
-              >Plany diety</a
-            >
+            <a routerLink="/conditions" routerLinkActive="active">Schorzenia</a>
+          </li>
+          <li>
+            <a routerLink="/diet-plans" routerLinkActive="active">Jadłospisy</a>
           </li>
         </ul>
       </nav>
 
-      <div class="auth-nav">
+      <div class="auth-nav desktop-auth">
         <ng-container *ngIf="user$ | async as user; else loginButtons">
           <div class="user-menu">
             <span class="user-greeting">Witaj,</span>
-            <div class="user-bubble">
-              {{ user.displayName?.slice(0, 1) || "Użytkowniku" }}
+            <div
+              class="user-bubble"
+              tabindex="0"
+              (click)="toggleUserMenu($event)"
+              (keydown.enter)="toggleUserMenu($event)"
+            >
+              {{ getFirstLetters(user.displayName) }}
             </div>
-            <button class="btn btn-profile" routerLink="/profile">
-              Profil
-            </button>
-            <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
+            <div
+              class="user-dropdown"
+              *ngIf="isUserMenuOpen"
+              (click)="$event.stopPropagation()"
+            >
+              <button
+                class="btn btn-profile"
+                routerLink="/profile"
+                (click)="closeMobileNav()"
+              >
+                Profil
+              </button>
+              <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
+            </div>
           </div>
         </ng-container>
-
         <ng-template #loginButtons>
-          <button class="btn btn-login" routerLink="/login">Zaloguj</button>
+          <button class="btn btn-login" routerLink="/login">Logowanie</button>
           <button class="btn btn-register" routerLink="/register">
-            Zarejestruj
+            Rejestracja
           </button>
         </ng-template>
       </div>
+    </div>
+  </div>
+
+  <!-- Rozwijane menu mobilne pod headerem -->
+  <div class="mobile-dropdown" *ngIf="isMobileNavOpen">
+    <ul class="nav-items">
+      <li>
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMobileNav()"
+          >Strona główna</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/recipes"
+          routerLinkActive="active"
+          (click)="closeMobileNav()"
+          >Przepisy</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/conditions"
+          routerLinkActive="active"
+          (click)="closeMobileNav()"
+          >Schorzenia</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/diet-plans"
+          routerLinkActive="active"
+          (click)="closeMobileNav()"
+          >Jadłospisy</a
+        >
+      </li>
+    </ul>
+    <div class="mobile-auth">
+      <ng-container *ngIf="user$ | async as user; else mobileLoginButtons">
+        <button
+          class="btn btn-profile"
+          routerLink="/profile"
+          (click)="closeMobileNav()"
+        >
+          Profil
+        </button>
+        <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
+      </ng-container>
+      <ng-template #mobileLoginButtons>
+        <button
+          class="btn btn-login"
+          routerLink="/login"
+          (click)="closeMobileNav()"
+        >
+          Logowanie
+        </button>
+        <button
+          class="btn btn-register"
+          routerLink="/register"
+          (click)="closeMobileNav()"
+        >
+          Rejestracja
+        </button>
+      </ng-template>
     </div>
   </div>
 </nav>

@@ -1,10 +1,12 @@
+@import "../../../../vars";
+
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 200px);
   padding: 2rem 1rem;
-  background-color: #f9f9f9;
+  background-color: $background-secondary;
 }
 
 .auth-card {
@@ -48,7 +50,7 @@ label {
 }
 
 .form-control:focus {
-  border-color: #20b2aa;
+  border-color: $primary-color;
   outline: none;
 }
 
@@ -74,7 +76,7 @@ label {
 .btn-primary {
   width: 100%;
   padding: 0.75rem;
-  background-color: #20b2aa;
+  background-color: $primary-color;
   color: white;
   border: none;
   border-radius: 4px;
@@ -85,11 +87,11 @@ label {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #178783;
+  background-color: $primary-color;
 }
 
 .btn-primary:disabled {
-  background-color: #94d8d5;
+  background-color: $primary-disabled;
   cursor: not-allowed;
 }
 
@@ -130,7 +132,7 @@ label {
 }
 
 .btn-google:disabled {
-  background-color: #f9f9f9;
+  background-color: $background-secondary;
   color: #999;
   cursor: not-allowed;
 }
@@ -142,7 +144,7 @@ label {
 }
 
 .auth-footer a {
-  color: #20b2aa;
+  color: $primary-hover;
   text-decoration: none;
   font-weight: 500;
 }
