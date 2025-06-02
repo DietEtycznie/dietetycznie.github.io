@@ -1,0 +1,113 @@
+<div class="admin-container">
+  <div class="admin-section">
+    <h2>Dodaj przepis</h2>
+    <form (ngSubmit)="addRecipe()" #recipeForm="ngForm" class="admin-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Nazwa</mat-label>
+        <input matInput required [(ngModel)]="recipe.name" name="name" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Opis</mat-label>
+        <textarea
+          matInput
+          required
+          [(ngModel)]="recipe.description"
+          name="description"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Składniki (po przecinku)</mat-label>
+        <input matInput [(ngModel)]="recipe.ingredients" name="ingredients" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Instrukcje (po przecinku)</mat-label>
+        <input matInput [(ngModel)]="recipe.instructions" name="instructions" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Czas przygotowania (min)</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="recipe.prepTimeMinutes"
+          name="prepTimeMinutes"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Czas gotowania (min)</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="recipe.cookTimeMinutes"
+          name="cookTimeMinutes"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Ilość porcji</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="recipe.servings"
+          name="servings"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Kcal</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="recipe.calories"
+          name="calories"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Białko</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="recipe.protein"
+          name="protein"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Węglowodany</mat-label>
+        <input matInput type="number" [(ngModel)]="recipe.carbs" name="carbs" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Tłuszcz</mat-label>
+        <input matInput type="number" [(ngModel)]="recipe.fat" name="fat" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Link do zdjęcia (imageUrl)</mat-label>
+        <input matInput [(ngModel)]="recipe.imageUrl" name="imageUrl" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Choroby (multi)</mat-label>
+        <mat-select
+          [(ngModel)]="recipe.suitableForConditions"
+          name="suitableForConditions"
+          multiple
+        >
+          <mat-option *ngFor="let cond of allConditions" [value]="cond">{{
+            cond
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Tagi (multi)</mat-label>
+        <mat-select [(ngModel)]="recipe.tags" name="tags" multiple>
+          <mat-option *ngFor="let tag of allTags" [value]="tag">{{
+            tag
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">
+        Dodaj przepis
+      </button>
+    </form>
+  </div>
+  <!-- Przykładowa kolejna sekcja -->
+  <div class="admin-section">
+    <h2>Inna sekcja administracyjna</h2>
+    <p>Tu możesz dodać kolejne narzędzia lub formularze dla admina.</p>
+  </div>
+</div>

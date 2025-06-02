@@ -1,0 +1,17 @@
+/* Style dla panelu admina */
+.admin-container {
+  max-width: 600px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  padding: 32px 24px;
+}
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+button[type="submit"] {
+  margin-top: 16px;
+}
