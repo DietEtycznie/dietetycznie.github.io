@@ -16,6 +16,14 @@
         ></textarea>
       </mat-form-field>
       <mat-form-field appearance="outline">
+        <mat-label>Typ posiłku (multi)</mat-label>
+        <mat-select [(ngModel)]="recipe.mealType" name="mealType" multiple>
+          <mat-option *ngFor="let cond of allMealTypes" [value]="cond">{{
+            cond
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Składniki (po przecinku)</mat-label>
         <input matInput [(ngModel)]="recipe.ingredients" name="ingredients" />
       </mat-form-field>
@@ -30,15 +38,6 @@
           type="number"
           [(ngModel)]="recipe.prepTimeMinutes"
           name="prepTimeMinutes"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Czas gotowania (min)</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="recipe.cookTimeMinutes"
-          name="cookTimeMinutes"
         />
       </mat-form-field>
       <mat-form-field appearance="outline">
@@ -60,7 +59,7 @@
         />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Białko</mat-label>
+        <mat-label>Białko (g)</mat-label>
         <input
           matInput
           type="number"
@@ -69,12 +68,25 @@
         />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Węglowodany</mat-label>
+        <mat-label>Węglowodany (g)</mat-label>
         <input matInput type="number" [(ngModel)]="recipe.carbs" name="carbs" />
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Tłuszcz</mat-label>
+        <mat-label>Tłuszcz (g)</mat-label>
         <input matInput type="number" [(ngModel)]="recipe.fat" name="fat" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Sód (mg)</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="recipe.sodium"
+          name="sodium"
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Błonnik (g)</mat-label>
+        <input matInput type="number" [(ngModel)]="recipe.fiber" name="fat" />
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Link do zdjęcia (imageUrl)</mat-label>
@@ -93,9 +105,9 @@
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Tagi (multi)</mat-label>
-        <mat-select [(ngModel)]="recipe.tags" name="tags" multiple>
-          <mat-option *ngFor="let tag of allTags" [value]="tag">{{
+        <mat-label>Diety (multi)</mat-label>
+        <mat-select [(ngModel)]="recipe.dietTags" name="dietTags" multiple>
+          <mat-option *ngFor="let tag of allDietTags" [value]="tag">{{
             tag
           }}</mat-option>
         </mat-select>
@@ -104,10 +116,5 @@
         Dodaj przepis
       </button>
     </form>
-  </div>
-  <!-- Przykładowa kolejna sekcja -->
-  <div class="admin-section">
-    <h2>Inna sekcja administracyjna</h2>
-    <p>Tu możesz dodać kolejne narzędzia lub formularze dla admina.</p>
   </div>
 </div>

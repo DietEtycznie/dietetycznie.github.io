@@ -1,0 +1,34 @@
+@import "../../../../vars";
+
+.filters-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.divider {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  margin: 12px 0 4px 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+mat-slide-toggle.single-toggle {
+  margin: 8px 0 0 0;
+}
+
+app-checkbox-group {
+  margin-bottom: 4px;
+}
+
+app-input-text,
+app-input-number {
+  width: 100%;
+}
+
+.filters-form app-input-text,
+.filters-form app-input-number {
+  margin-bottom: 0;
+}

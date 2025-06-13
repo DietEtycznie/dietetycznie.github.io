@@ -1,0 +1,63 @@
+<div class="recipe-list-element" (click)="onSelect()">
+  <button
+    class="preview-btn"
+    title="Podgląd przepisu"
+    (click)="$event.stopPropagation(); onPreview()"
+  >
+    <span class="material-icons">visibility</span>
+  </button>
+  <div class="recipe-image">
+    <img
+      [src]="recipe.imageUrl"
+      [alt]="recipe.name"
+      (error)="handleImageError($event)"
+    />
+  </div>
+  <div class="recipe-content">
+    <div class="recipe-header">
+      <h4>{{ recipe.name }}</h4>
+    </div>
+
+    <div class="recipe-description" *ngIf="recipe.description">
+      <p>
+        {{ recipe.description | slice: 0 : 120
+        }}{{ recipe.description.length > 120 ? "..." : "" }}
+      </p>
+    </div>
+
+    <div class="recipe-details">
+      <div class="recipe-nutrition">
+        <div class="nutrition-item">
+          <span class="label">Kalorie:</span>
+          <span class="value">{{ recipe.calories }} kcal</span>
+        </div>
+        <div class="nutrition-item">
+          <span class="label">Białko:</span>
+          <span class="value">{{ recipe.protein }}g</span>
+        </div>
+        <div class="nutrition-item">
+          <span class="label">Węglowodany:</span>
+          <span class="value">{{ recipe.carbs }}g</span>
+        </div>
+        <div class="nutrition-item">
+          <span class="label">Tłuszcze:</span>
+          <span class="value">{{ recipe.fat }}g</span>
+        </div>
+        <div class="nutrition-item">
+          <span class="label">Czas:</span>
+          <span class="value">{{ recipe.prepTimeMinutes }} min</span>
+        </div>
+      </div>
+
+      <div class="recipe-tags" *ngIf="recipe.suitableForConditions?.length">
+        <app-pills
+          *ngFor="let condition of recipe.suitableForConditions"
+          [active]="true"
+          [small]="true"
+        >
+          {{ condition }}
+        </app-pills>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="form-group">
+  <div class="checkbox-group-vertical">
+    @for (option of options; track options) {
+      <mat-checkbox
+        [checked]="selected.includes(option)"
+        (change)="onCheckboxChange(option, $event.checked)"
+      >
+        {{ option | titlecase }}
+      </mat-checkbox>
+    }
+  </div>
+</div>

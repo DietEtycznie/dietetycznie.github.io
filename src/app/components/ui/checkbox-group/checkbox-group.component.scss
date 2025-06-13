@@ -1,0 +1,11 @@
+@import "../../../../vars";
+
+.checkbox-group-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 15px;
+  --mdc-slider-with-tick-marks-active-container-color: white;
+  --mdc-checkbox-selected-checkmark-color: white;
+  --mdc-form-field-label-text-color: $text-secondary-color !important;
+}

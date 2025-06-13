@@ -1,0 +1,87 @@
+<div class="recipe-details">
+  <div class="image-meta-col">
+    <div class="image-wrapper" *ngIf="recipe?.imageUrl">
+      <img
+        [src]="recipe?.imageUrl"
+        (error)="handleImageError($event)"
+        alt="Zdjęcie przepisu"
+      />
+      <div class="like-button" *ngIf="user$ | async" (click)="toggleLike()">
+        <mat-icon *ngIf="!like" class="favorite-icon">favorite_border</mat-icon>
+        <mat-icon *ngIf="like" class="favorite-icon red">favorite</mat-icon>
+      </div>
+    </div>
+    <div class="under-image-meta">
+      <div class="meta-row">
+        <div class="meta-item">
+          <mat-icon color="primary">schedule</mat-icon>
+          <span>{{ recipe?.prepTimeMinutes }} min</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon color="primary">restaurant</mat-icon>
+          <span
+            >{{ recipe?.servings }} {{ getPortionText(recipe?.servings) }}</span
+          >
+        </div>
+        <div class="meta-item">
+          <mat-icon color="primary">event</mat-icon>
+          <span>Dodano: {{ recipe?.createdAt | date: "mediumDate" }}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon color="primary">update</mat-icon>
+          <span
+            >Aktualizacja: {{ recipe?.updatedAt | date: "mediumDate" }}</span
+          >
+        </div>
+      </div>
+
+      <div class="conditions-row">
+        <app-pills [list]="tags"></app-pills>
+      </div>
+    </div>
+  </div>
+  <div class="main-content">
+    <h2 class="recipe-title">{{ recipe?.name }}</h2>
+    <div class="description">
+      <p>{{ recipe?.description }}</p>
+    </div>
+    <div class="nutrition" *ngIf="recipe">
+      <div class="nutrition-item">
+        <span class="label">Kalorie:</span>
+        <span class="value">{{ recipe.calories }}</span>
+      </div>
+      <div class="nutrition-item">
+        <span class="label">Białko:</span>
+        <span class="value">{{ recipe.protein }} g</span>
+      </div>
+      <div class="nutrition-item">
+        <span class="label">Tłuszcze:</span>
+        <span class="value">{{ recipe.fat }} g</span>
+      </div>
+      <div class="nutrition-item">
+        <span class="label">Węgle:</span>
+        <span class="value">{{ recipe.carbs }} g</span>
+      </div>
+      <div class="nutrition-item">
+        <span class="label">Sód:</span>
+        <span class="value">{{ recipe.sodium }} mg</span>
+      </div>
+      <div class="nutrition-item">
+        <span class="label">Błonnik:</span>
+        <span class="value">{{ recipe.fiber }} g</span>
+      </div>
+    </div>
+    <div class="ingredients">
+      <h3>Składniki</h3>
+      <ul>
+        <li *ngFor="let ing of recipe?.ingredients">{{ ing }}</li>
+      </ul>
+    </div>
+    <div class="instructions">
+      <h3>Przygotowanie</h3>
+      <ol>
+        <li *ngFor="let step of recipe?.instructions">{{ step }}</li>
+      </ol>
+    </div>
+  </div>
+</div>

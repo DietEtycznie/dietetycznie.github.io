@@ -1,0 +1,7 @@
+@if (list.length) {
+  <div class="pills-row">
+    @for (item of list; track item) {
+      <span class="pill">{{ prefix }}{{ item }}</span>
+    }
+  </div>
+}

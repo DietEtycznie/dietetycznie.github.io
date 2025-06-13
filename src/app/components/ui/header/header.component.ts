@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { RouterLink, RouterLinkActive } from "@angular/router";
+import { RouterLink, RouterLinkActive, Router } from "@angular/router";
 import { CommonModule } from "@angular/common";
 import { AuthService } from "../../../../services/auth.service";
 
@@ -12,6 +12,7 @@ import { AuthService } from "../../../../services/auth.service";
 })
 export class HeaderComponent {
   private authService = inject(AuthService);
+  private router = inject(Router);
   user$ = this.authService.user$.pipe();
 
   isMobileNavOpen = false;
@@ -19,7 +20,6 @@ export class HeaderComponent {
 
   toggleMobileNav(): void {
     this.isMobileNavOpen = !this.isMobileNavOpen;
-    // Zamknij menu użytkownika przy otwieraniu/zamykaniu nawigacji
     if (!this.isMobileNavOpen) {
       this.isUserMenuOpen = false;
     }
@@ -50,5 +50,17 @@ export class HeaderComponent {
   logout(): void {
     this.authService.signOut();
     this.closeMobileNav();
+  }
+
+  goToLikedRecipes() {
+    this.closeUserMenu();
+    this.router.navigate(["/recipes"], { queryParams: { liked: "1" } });
+  }
+
+  goToMyDietPlans() {
+    this.closeUserMenu();
+    this.router.navigate(["/diet-plans"], {
+      queryParams: { section: "myPlans" },
+    });
   }
 }

@@ -1,0 +1,316 @@
+<main class="diet-plans">
+  <div class="diet-plans__header header-flex">
+    <div class="section-intro">
+      <h2>
+        {{
+          activeSection === "myPlans" ? "Twoje jadłospisy" : "Gotowe jadłospisy"
+        }}
+      </h2>
+      <span class="section-underline"></span>
+      <p class="section-description">
+        {{
+          activeSection === "myPlans"
+            ? "Twórz i zarządzaj swoimi własnymi jadłospisami, dostosowanymi do Twoich potrzeb i preferencji."
+            : "Skorzystaj z profesjonalnie przygotowanych planów żywieniowych dopasowanych do różnych potrzeb i chorób dietozależnych."
+        }}
+      </p>
+    </div>
+    <mat-button-toggle-group
+      class="section-toggle"
+      [(ngModel)]="activeSection"
+      aria-label="Wybierz sekcję jadłospisów"
+    >
+      <mat-button-toggle value="readyPlans"
+        >Gotowe jadłospisy</mat-button-toggle
+      >
+      <mat-button-toggle value="myPlans" [disabled]="!currentUserId"
+        >Twoje jadłospisy</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Sekcja z gotowymi jadłospisami -->
+  <section class="diet-plans__ready" *ngIf="activeSection === 'readyPlans'">
+    <div class="diet-plans-list" *ngIf="readyPlans?.length; else noReady">
+      <div *ngFor="let plan of readyPlans" class="diet-plan">
+        <div class="diet-plan-header">
+          <div class="diet-plan-info">
+            <h3>{{ plan.name }}</h3>
+            <p>{{ plan.description }}</p>
+            <div
+              class="diet-plan-tags"
+              *ngIf="plan.suitableForConditions?.length"
+            >
+              <span
+                class="diet-plan-tag"
+                *ngFor="let condition of plan.suitableForConditions"
+                >{{ condition }}</span
+              >
+            </div>
+            <div class="diet-plan-calories">
+              <span class="calories-icon">🔥</span> Tygodniowa suma kalorii:
+              {{ getTotalCalories(plan) }} kcal
+            </div>
+          </div>
+        </div>
+
+        <div class="diet-plan-days-grid">
+          <div *ngFor="let day of weekDays" class="day-column">
+            <h4 class="day-header">{{ day.label }}</h4>
+            <div class="day-calories">
+              {{ getDayCalories(plan, day.key) }} kcal
+            </div>
+
+            <div
+              *ngFor="let meal of meals; let mealIndex = index"
+              class="meal-container"
+            >
+              <div class="meal-label">{{ meal }}</div>
+              <div
+                class="recipe-container"
+                *ngIf="
+                  plan.mealPlan[day.key][mealIndex] &&
+                  getRecipeById(plan.mealPlan[day.key][mealIndex])
+                "
+              >
+                <app-recipe-card
+                  [recipe]="getRecipeById(plan.mealPlan[day.key][mealIndex])!"
+                  [cardStyle]="'normal'"
+                  [withLike]="false"
+                ></app-recipe-card>
+              </div>
+              <ng-template #emptyRecipe>
+                <div class="empty-recipe">Brak przepisu</div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noReady>
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>Brak gotowych jadłospisów.</p>
+      </div>
+    </ng-template>
+  </section>
+
+  <!-- Sekcja z własnymi jadłospisami -->
+  <section class="diet-plans__custom" *ngIf="activeSection === 'myPlans'">
+    <div class="diet-plans-list">
+      <div
+        *ngFor="let plan of myPlans; let planIndex = index"
+        class="diet-plan"
+      >
+        <div class="diet-plan-header">
+          <div class="diet-plan-info" *ngIf="!editModes[plan.id || planIndex]">
+            <h3>{{ plan.name }}</h3>
+            <p>{{ plan.description }}</p>
+            <div
+              class="diet-plan-tags"
+              *ngIf="plan.suitableForConditions?.length"
+            >
+              <span
+                class="diet-plan-tag"
+                *ngFor="let condition of plan.suitableForConditions"
+                >{{ condition }}</span
+              >
+            </div>
+            <div class="diet-plan-calories">
+              <span class="calories-icon">🔥</span> Tygodniowa suma kalorii:
+              {{ getTotalCalories(plan) }} kcal
+            </div>
+          </div>
+          <div
+            class="diet-plan-info-edit"
+            *ngIf="editModes[plan.id || planIndex]"
+          >
+            <input
+              [(ngModel)]="plan.name"
+              placeholder="Nazwa jadłospisu"
+              class="plan-name-input"
+            />
+            <textarea
+              [(ngModel)]="plan.description"
+              placeholder="Opis jadłospisu"
+              class="plan-description-input"
+            ></textarea>
+          </div>
+          <div class="diet-plan-actions">
+            <ng-container *ngIf="!editModes[plan.id || planIndex]">
+              <button
+                mat-icon-button
+                color="primary"
+                class="plan-action-btn"
+                (click)="toggleEditMode(plan.id || planIndex)"
+                matTooltip="Edytuj"
+              >
+                <span class="material-icons">edit</span>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                class="plan-action-btn"
+                (click)="removePlan(planIndex)"
+                matTooltip="Usuń"
+              >
+                <span class="material-icons">delete</span>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="editModes[plan.id || planIndex]">
+              <button
+                mat-icon-button
+                color="primary"
+                class="plan-action-btn"
+                (click)="savePlanAndExitEditMode(plan, planIndex)"
+                matTooltip="Zapisz"
+              >
+                <span class="material-icons">save</span>
+              </button>
+              <button
+                mat-icon-button
+                class="plan-action-btn"
+                (click)="cancelEditMode(plan.id || planIndex)"
+                matTooltip="Anuluj"
+              >
+                <span class="material-icons">close</span>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="diet-plan-days-grid">
+          <div *ngFor="let day of weekDays" class="day-column">
+            <h4 class="day-header">{{ day.label }}</h4>
+            <div class="day-calories">
+              {{ getDayCalories(plan, day.key) }} kcal
+            </div>
+
+            <div
+              *ngFor="let meal of meals; let mealIndex = index"
+              class="meal-container"
+            >
+              <div class="meal-label">{{ meal }}</div>
+
+              <ng-container *ngIf="!editModes[plan.id || planIndex]">
+                <!-- Tryb tylko do odczytu -->
+                <div
+                  class="recipe-container"
+                  *ngIf="
+                    plan.mealPlan[day.key][mealIndex] &&
+                      getRecipeById(plan.mealPlan[day.key][mealIndex]);
+                    else emptyRecipeReadOnly
+                  "
+                >
+                  <app-recipe-card
+                    [recipe]="getRecipeById(plan.mealPlan[day.key][mealIndex])!"
+                    [cardStyle]="'normal'"
+                    [withLike]="false"
+                  ></app-recipe-card>
+                </div>
+                <ng-template #emptyRecipeReadOnly>
+                  <div class="empty-recipe">Brak przepisu</div>
+                </ng-template>
+              </ng-container>
+
+              <ng-container *ngIf="editModes[plan.id || planIndex]">
+                <!-- Tryb edycji -->
+                <div class="recipe-edit-container">
+                  <div
+                    class="recipe-preview"
+                    *ngIf="
+                      plan.mealPlan[day.key][mealIndex] &&
+                      getRecipeById(plan.mealPlan[day.key][mealIndex])
+                    "
+                  >
+                    <app-recipe-card
+                      [recipe]="
+                        getRecipeById(plan.mealPlan[day.key][mealIndex])!
+                      "
+                      [cardStyle]="'normal'"
+                      [withLike]="false"
+                    ></app-recipe-card>
+                    <button
+                      class="remove-recipe-btn"
+                      (click)="removeMeal(planIndex, day.key, mealIndex)"
+                    >
+                      <span class="material-icons">close</span>
+                    </button>
+                  </div>
+                  <button
+                    *ngIf="!plan.mealPlan[day.key][mealIndex]"
+                    class="add-recipe-btn"
+                    (click)="openRecipePicker(planIndex, day.key, mealIndex)"
+                  >
+                    <span class="material-icons">add</span> Wybierz przepis
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="add-plan-btn-row">
+      <button
+        *ngIf="activeSection === 'myPlans'"
+        mat-raised-button
+        color="primary"
+        class="add-plan-btn"
+        (click)="openAddDietPlanDialog()"
+      >
+        <span class="material-icons">add</span> Dodaj nowy jadłospis
+      </button>
+    </div>
+  </section>
+
+  <!-- Modal do wyboru przepisu -->
+  <div *ngIf="pickerOpen" class="picker-modal">
+    <div class="picker-content">
+      <div class="picker-header">
+        <h3>
+          Wybierz przepis na
+          <span class="meal-type">{{ meals[pickerMealIdx] }}</span>
+          ({{ getDayLabel(pickerDay) }})
+        </h3>
+        <button class="close-btn" (click)="closePicker()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+
+      <div class="picker-flex-row">
+        <div class="picker-filters">
+          <app-filters
+            [filterName]="pickerFilter"
+            (filterNameChange)="onPickerFilterChange('name', $event)"
+            [filterCondition]="pickerFilterCondition"
+            (filterConditionChange)="onPickerFilterChange('condition', $event)"
+            [mealTypes]="meals"
+            [activeMealType]="meals[pickerMealIdx]"
+            [filterType]="pickerFilterType"
+            (filterTypeChange)="onPickerFilterChange('type', $event)"
+            [filterLiked]="pickerFilterLiked"
+            (filterLikedChange)="onPickerFilterChange('liked', $event)"
+            [filterMaxKcal]="pickerFilterMaxKcal"
+            (filterMaxKcalChange)="onPickerFilterChange('maxKcal', $event)"
+            [medicalConditions]="availableConditions"
+          ></app-filters>
+        </div>
+        <div class="recipe-list">
+          <div *ngIf="filteredRecipes.length === 0" class="no-recipes">
+            <div class="empty-state-icon">🍳</div>
+            <p>Brak przepisów spełniających kryteria</p>
+          </div>
+
+          <app-recipe-list-element
+            *ngFor="let recipe of filteredRecipes"
+            [recipe]="recipe"
+            (preview)="previewRecipe(recipe)"
+            (select)="selectRecipe(recipe)"
+          ></app-recipe-list-element>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

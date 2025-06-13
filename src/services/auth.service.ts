@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import {
   Auth,
   signInWithEmailAndPassword,
@@ -10,7 +10,7 @@ import {
   signInWithPopup,
 } from "@angular/fire/auth";
 import { distinctUntilChanged, Observable, of } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 import { Firestore, doc, setDoc, getDoc } from "@angular/fire/firestore";
 import { User } from "../models/user.model";
 
@@ -18,24 +18,12 @@ import { User } from "../models/user.model";
   providedIn: "root",
 })
 export class AuthService {
-  user$: Observable<User | null>;
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
 
-  constructor(
-    private auth: Auth,
-    private firestore: Firestore,
-  ) {
-    this.user$ = new Observable<FirebaseUser | null>((observer) => {
-      return this.auth.onAuthStateChanged(observer);
-    }).pipe(
-      switchMap((user) => {
-        if (user) {
-          return this.getUserData(user.uid);
-        } else {
-          return of(null);
-        }
-      }),
-    );
-  }
+  user$ = new Observable<FirebaseUser | null>((observer) => {
+    return this.auth.onAuthStateChanged(observer);
+  }).pipe(switchMap((user) => (user ? this.getUserData(user.uid) : of(null))));
 
   async signIn(email: string, password: string): Promise<UserCredential> {
     return await signInWithEmailAndPassword(this.auth, email, password);
@@ -49,7 +37,6 @@ export class AuthService {
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
-      // Jeśli użytkownik nie istnieje, utwórz jego dane w Firestore
       const user: User = {
         uid: credential.user.uid,
         email: credential.user.email || "",

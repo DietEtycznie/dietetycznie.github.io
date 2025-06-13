@@ -31,6 +31,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "recipes/:uid",
+    loadComponent: () =>
+      import("./pages/recipe-details/recipe-details.component").then(
+        (m) => m.RecipeDetailsComponent,
+      ),
+  },
+  {
+    path: "diet-plans",
+    loadComponent: () =>
+      import("./pages/diet-plans/diet-plans.component").then(
+        (m) => m.DietPlansComponent,
+      ),
+  },
+  {
     path: "admin",
     loadComponent: () =>
       import("./pages/admin/admin.component").then((m) => m.AdminComponent),

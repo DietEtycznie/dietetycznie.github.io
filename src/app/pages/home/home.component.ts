@@ -12,7 +12,7 @@ import { AuthService } from "../../../services/auth.service";
 @Component({
   selector: "app-home",
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgOptimizedImage],
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
 })
@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
   }
 
   loadFeaturedRecipes(): void {
-    this.recipeService.getRecentRecipes(4).subscribe({
+    this.recipeService.getRecentRecipes(3).subscribe({
       next: (recipes) => {
         this.featuredRecipes = recipes;
       },
@@ -44,11 +44,23 @@ export class HomeComponent implements OnInit {
   loadMedicalConditions(): void {
     this.medicalConditionService.getMedicalConditions().subscribe({
       next: (conditions) => {
-        this.medicalConditions = conditions.slice(0, 6); // Display only first 6 conditions
+        this.medicalConditions = conditions.slice(0, 6);
       },
       error: (error) => {
         console.error("Error loading medical conditions:", error);
       },
     });
+  }
+
+  getRecipeImageUrl(recipe: Recipe): string {
+    if (!recipe.imageUrl) {
+      return "../../../assets/recipes/fallback-plate.png";
+    }
+    return recipe.imageUrl;
+  }
+
+  handleImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    imgElement.src = "../../../assets/recipes/fallback-plate.png";
   }
 }

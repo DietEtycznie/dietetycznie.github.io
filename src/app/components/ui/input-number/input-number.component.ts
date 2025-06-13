@@ -32,3 +32,4 @@ export class InputNumberComponent {
     this.modelChange.emit(value);
   }
 }
+

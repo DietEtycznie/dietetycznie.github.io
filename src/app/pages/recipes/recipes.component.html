@@ -1,5 +1,16 @@
 <div class="recipes-container">
-  <aside class="filters">
+  <button
+    class="filters-toggle-btn"
+    (click)="showFilters = true"
+    *ngIf="isMobile"
+  >
+    <mat-icon>filter_list</mat-icon> Filtry
+  </button>
+  <aside class="filters" [class.open]="showFilters" [class.mobile]="isMobile">
+    <button class="close-btn" (click)="showFilters = false" *ngIf="isMobile">
+      <mat-icon>close</mat-icon>
+    </button>
+    <h4>Filtry</h4>
     <form class="filters-form">
       <app-input-text
         [label]="'Nazwa potrawy'"
@@ -7,20 +18,26 @@
         name="filterName"
         placeholder="Szukaj po nazwie"
       ></app-input-text>
-      <app-input-multi
-        [label]="'Choroba'"
-        [model]="filterCondition"
-        (modelChange)="filterCondition = $event"
-        name="filterCondition"
-        [options]="conditions"
-      ></app-input-multi>
-      <app-input-multi
-        [label]="'Rodzaj diety'"
-        [model]="filterDiet"
-        (modelChange)="filterDiet = $event"
-        name="filterDiet"
-        [options]="diets"
-      ></app-input-multi>
+      @if (savedRecipes.length > 0) {
+        <mat-slide-toggle
+          class="single-toggle"
+          [(ngModel)]="filterLiked"
+          name="filterLiked"
+        >
+          Tylko polubione
+        </mat-slide-toggle>
+      }
+      <ng-container
+        *ngTemplateOutlet="divider; context: { text: 'Rodzaj posiłku' }"
+      ></ng-container>
+      <app-checkbox-group
+        [options]="mealTypes"
+        [selected]="filterType"
+        (selectedChange)="filterType = $event"
+      ></app-checkbox-group>
+      <ng-container
+        *ngTemplateOutlet="divider; context: { text: 'Wartości odżywcze' }"
+      ></ng-container>
       <app-input-number
         [label]="'Maks. kcal'"
         [model]="filterMaxKcal"
@@ -28,30 +45,52 @@
         name="filterMaxKcal"
         placeholder="np. 500"
       ></app-input-number>
-      <app-input-multi
-        [label]="'Rodzaj posiłku'"
-        [model]="filterType"
-        (modelChange)="filterType = $event"
-        name="filterType"
-        [options]="types"
-      ></app-input-multi>
-      <div class="form-group">
-        <label>Rodzaj posiłku</label>
-        <div class="checkbox-group">
-          <mat-checkbox
-            *ngFor="let type of types"
-            [checked]="filterType.includes(type)"
-            (change)="onTypeChange(type, $event.checked)"
-          >
-            {{ type }}
-          </mat-checkbox>
-        </div>
-      </div>
+      <ng-container
+        *ngTemplateOutlet="divider; context: { text: 'Choroba dietozależna' }"
+      ></ng-container>
+      <app-checkbox-group
+        [options]="conditions"
+        [selected]="filterCondition"
+        (selectedChange)="filterCondition = $event"
+      ></app-checkbox-group>
+      <ng-container
+        *ngTemplateOutlet="divider; context: { text: 'Rodzaj diety' }"
+      ></ng-container>
+      <app-checkbox-group
+        [options]="diets"
+        [selected]="filterDiet"
+        (selectedChange)="filterDiet = $event"
+      ></app-checkbox-group>
     </form>
   </aside>
-  <section class="recipes-list">
-    @for (recipe of filteredRecipes; track recipe.id) {
-      <app-recipe-card [recipe]="recipe" cardStyle="normal"></app-recipe-card>
+  <section class="recipes-list" [class.wide-list]="isMobile">
+    @if (filteredRecipes.length === 0) {
+      <div class="no-results">
+        <mat-icon
+          class="no-results-icon"
+          color=""
+          fontIcon="search_off"
+        ></mat-icon>
+        <div class="no-results-title">Brak wyników</div>
+        <div class="no-results-text">
+          Przepraszamy, nie znaleźliśmy żadnych wyników dla wybranych filtrów
+        </div>
+      </div>
+    } @else {
+      @for (recipe of filteredRecipes; track recipe.uid) {
+        <app-recipe-card
+          [recipe]="recipe"
+          [cardStyle]="isMobile ? 'wide' : 'normal'"
+        ></app-recipe-card>
+      }
     }
   </section>
 </div>
+
+<ng-template #divider let-text="text">
+  <div class="custom-divider">
+    <div class="line line-left"></div>
+    <span class="divider-text">{{ text }}</span>
+    <div class="line"></div>
+  </div>
+</ng-template>

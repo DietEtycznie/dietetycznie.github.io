@@ -18,14 +18,14 @@
 
   <section class="section conditions-section">
     <div class="container">
-      <h2 class="section-title">Przeglądaj według schorzenia</h2>
+      <h2 class="section-title">Przeglądaj według choroby dietozależnej</h2>
       <p class="section-subtitle">
         Znajdź diety i przepisy odpowiednie dla Twojego stanu zdrowia
       </p>
 
       <div class="conditions-grid">
         <div *ngIf="medicalConditions.length === 0" class="loading">
-          <p>Ładowanie schorzeń...</p>
+          <p>Ładowanie chorób dietozależnych...</p>
         </div>
 
         <a
@@ -47,7 +47,7 @@
 
       <div class="view-all">
         <a routerLink="/conditions" class="btn-text"
-          >Zobacz wszystkie schorzenia <span class="arrow">→</span></a
+          >Zobacz wszystkie choroby dietozależne <span class="arrow">→</span></a
         >
       </div>
     </div>
@@ -58,7 +58,7 @@
     <div class="container">
       <h2 class="section-title">Polecane przepisy</h2>
       <p class="section-subtitle">
-        Zdrowe i smaczne przepisy dla różnych schorzeń
+        Zdrowe i smaczne przepisy dla różnych chorób dietozależnych
       </p>
 
       <div class="recipes-grid">
@@ -68,19 +68,17 @@
 
         <a
           *ngFor="let recipe of featuredRecipes"
-          [routerLink]="['/recipes', recipe.id]"
+          [routerLink]="['/recipes', recipe.uid]"
           class="recipe-card"
         >
-          <div
-            class="recipe-image"
-            [ngStyle]="{
-              'background-image':
-                'url(' +
-                (recipe.imageUrl ||
-                  'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') +
-                ')',
-            }"
-          ></div>
+          <div class="recipe-image">
+            <img
+              [src]="getRecipeImageUrl(recipe)"
+              (error)="handleImageError($event)"
+              alt="Zdjęcie przepisu"
+              class="recipe-img"
+            />
+          </div>
           <div class="recipe-content">
             <h3>{{ recipe.name }}</h3>
             <p>
@@ -89,9 +87,7 @@
             </p>
             <div class="recipe-meta">
               <span class="calories">{{ recipe.calories }} kcal</span>
-              <span class="time"
-                >{{ recipe.prepTimeMinutes + recipe.cookTimeMinutes }} min</span
-              >
+              <span class="time">{{ recipe.prepTimeMinutes }} min</span>
             </div>
           </div>
         </a>
@@ -116,8 +112,8 @@
       <div class="steps-grid">
         <div class="step-card">
           <div class="step-number">1</div>
-          <h3>Wybierz swoje schorzenie</h3>
-          <p>Wybierz swoje schorzenie z naszej obszernej listy</p>
+          <h3>Wybierz swoją chorobę dietozależą</h3>
+          <p>Wybierz swoją chorobę dietozależną z naszej obszernej listy</p>
         </div>
 
         <div class="step-card">
@@ -132,7 +128,9 @@
         <div class="step-card">
           <div class="step-number">3</div>
           <h3>Przeglądaj odpowiednie przepisy</h3>
-          <p>Odkrywaj przepisy bezpieczne i korzystne dla Twojego schorzenia</p>
+          <p>
+            Odkrywaj przepisy korzystne i bezpieczne dla Twojego stanu zdrowia
+          </p>
         </div>
 
         <div class="step-card">

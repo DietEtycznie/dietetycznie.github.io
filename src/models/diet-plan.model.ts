@@ -4,10 +4,14 @@ export interface DietPlan {
   description: string;
   suitableForConditions: string[];
   mealPlan: {
-    breakfast: string[];
-    lunch: string[];
-    dinner: string[];
-    snacks: string[];
+    monday: string[];
+    tuesday: string[];
+    wednesday: string[];
+    thursday: string[];
+    friday: string[];
+    saturday: string[];
+    sunday: string[];
+    [key: string]: string[];
   };
-  recipeIds: string[];
+  userId: string | null;
 }

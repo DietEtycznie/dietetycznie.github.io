@@ -6,8 +6,13 @@ import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
-import { Recipe } from "../../../models/recipe.model";
-import { Firestore, collection, addDoc } from "@angular/fire/firestore";
+import {
+  Recipe,
+  MEDICAL_CONDITIONS,
+  DIET_TAGS,
+  MEAL_TYPES,
+} from "../../../models/recipe.model";
+import { RecipeService } from "../../../services/recipe.service";
 
 @Component({
   selector: "app-admin",
@@ -26,46 +31,98 @@ import { Firestore, collection, addDoc } from "@angular/fire/firestore";
 })
 export class AdminComponent {
   recipe: Partial<Recipe> = {
+    name: "",
+    description: "",
+    mealType: [],
+    ingredients: [],
+    instructions: [],
+    prepTimeMinutes: 0,
+    servings: 0,
+    calories: 0,
+    protein: 0,
+    carbs: 0,
+    fat: 0,
+    sodium: 0,
+    fiber: 0,
+    imageUrl: "",
     suitableForConditions: [],
-    tags: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    dietTags: [],
   };
 
-  allConditions = ["Cukrzyca", "Nadciśnienie", "Hashimoto"];
-  allTags = [
-    "obiad",
-    "kolacja",
-    "śniadanie",
-    "deser",
-    "Wegańska",
-    "Wegetariańska",
-    "Bezglutenowa",
-  ];
+  allConditions = MEDICAL_CONDITIONS;
+  allDietTags = DIET_TAGS;
+  allMealTypes = MEAL_TYPES;
 
-  private firestore = inject(Firestore);
+  private recipeService = inject(RecipeService);
 
   async addRecipe() {
     const recipeToAdd = {
       ...this.recipe,
-      createdAt: new Date(),
-      updatedAt: new Date(),
       ingredients:
         typeof this.recipe.ingredients === "string"
           ? (this.recipe.ingredients as string).split(",").map((i) => i.trim())
-          : this.recipe.ingredients,
+          : (this.recipe.ingredients ?? []),
       instructions:
         typeof this.recipe.instructions === "string"
           ? (this.recipe.instructions as string).split(",").map((i) => i.trim())
-          : this.recipe.instructions,
+          : (this.recipe.instructions ?? []),
     };
-    await addDoc(collection(this.firestore, "recipes"), recipeToAdd);
+    await this.recipeService
+      .addRecipe(recipeToAdd as Omit<Recipe, "uid" | "createdAt" | "updatedAt">)
+      .toPromise();
     alert("Przepis dodany!");
     this.recipe = {
+      name: "",
+      description: "",
+      mealType: [],
+      ingredients: [],
+      instructions: [],
+      prepTimeMinutes: 0,
+      servings: 0,
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+      sodium: 0,
+      fiber: 0,
+      imageUrl: "",
       suitableForConditions: [],
-      tags: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      dietTags: [],
     };
+  }
+
+  async fillAndAddMultipleRecipes() {
+    const payload = `[{}]`;
+    try {
+      const recipes: any[] = JSON.parse(payload);
+
+      for (const parsed of recipes) {
+        this.recipe = {
+          name: parsed.name ?? "",
+          description: parsed.description ?? "",
+          mealType: parsed.mealType ?? [],
+          ingredients:
+            parsed.ingredients?.split(",").map((i: string) => i.trim()) ?? [],
+          instructions:
+            parsed.instructions?.split(",").map((i: string) => i.trim()) ?? [],
+          prepTimeMinutes: parsed.prepTimeMinutes ?? 0,
+          servings: parsed.servings ?? 0,
+          calories: parsed.calories ?? 0,
+          protein: parsed.protein ?? 0,
+          carbs: parsed.carbs ?? 0,
+          fat: parsed.fat ?? 0,
+          imageUrl: parsed.imageUrl ?? "",
+          suitableForConditions: parsed.suitableForConditions ?? [],
+          dietTags: parsed.dietTags ?? [],
+        };
+
+        await this.addRecipe();
+      }
+
+      alert("Wszystkie przepisy zostały dodane!");
+    } catch (error) {
+      alert("Błąd podczas wczytywania listy przepisów.");
+      console.error(error);
+    }
   }
 }

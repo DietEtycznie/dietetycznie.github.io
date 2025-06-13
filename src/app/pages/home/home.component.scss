@@ -1,7 +1,7 @@
 @import "../../../vars";
 
 .hero {
-  background-image: url("../../assets/home_banner.png");
+  background-image: url("../../../assets/home_banner.png");
   color: white;
   padding: 5rem 0;
   text-align: center;
@@ -205,8 +205,14 @@
 
 .recipe-image {
   height: 200px;
-  background-size: cover;
-  background-position: center;
+}
+
+.recipe-img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  margin: 0 auto;
 }
 
 .recipe-content {

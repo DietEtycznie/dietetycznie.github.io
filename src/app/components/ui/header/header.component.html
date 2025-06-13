@@ -32,7 +32,9 @@
             <a routerLink="/recipes" routerLinkActive="active">Przepisy</a>
           </li>
           <li>
-            <a routerLink="/conditions" routerLinkActive="active">Schorzenia</a>
+            <a routerLink="/conditions" routerLinkActive="active"
+              >Choroby dietozależne</a
+            >
           </li>
           <li>
             <a routerLink="/diet-plans" routerLinkActive="active">Jadłospisy</a>
@@ -57,13 +59,12 @@
               *ngIf="isUserMenuOpen"
               (click)="$event.stopPropagation()"
             >
-              <button
-                class="btn btn-profile"
-                routerLink="/profile"
-                (click)="closeMobileNav()"
-              >
-                Profil
-              </button>
+              <div class="user-menu-item" (click)="goToLikedRecipes()">
+                Polubione przepisy
+              </div>
+              <div class="user-menu-item" (click)="goToMyDietPlans()">
+                Moje jadłospisy
+              </div>
               <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
             </div>
           </div>
@@ -103,7 +104,7 @@
           routerLink="/conditions"
           routerLinkActive="active"
           (click)="closeMobileNav()"
-          >Schorzenia</a
+          >Choroby dietozależne</a
         >
       </li>
       <li>

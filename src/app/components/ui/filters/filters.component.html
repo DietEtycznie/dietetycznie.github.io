@@ -1,0 +1,41 @@
+<form class="filters-form">
+  <app-input-text
+    [label]="'Nazwa potrawy'"
+    [model]="filterName"
+    (modelChange)="onFilterNameChange($event)"
+    name="filterName"
+    placeholder="Szukaj po nazwie"
+  ></app-input-text>
+
+  <mat-slide-toggle
+    class="single-toggle"
+    [ngModel]="filterLiked"
+    (ngModelChange)="onFilterLikedChange($event)"
+    name="filterLiked"
+  >
+    Tylko polubione
+  </mat-slide-toggle>
+
+  <div class="divider">Rodzaj posiłku</div>
+  <app-checkbox-group
+    [options]="mealTypes"
+    [selected]="filterType.length ? filterType : [activeMealType]"
+    (selectedChange)="onFilterTypeChange($event)"
+  ></app-checkbox-group>
+
+  <div class="divider">Wartości odżywcze</div>
+  <app-input-number
+    [label]="'Maks. kcal'"
+    [model]="filterMaxKcal"
+    (modelChange)="onFilterMaxKcalChange($event)"
+    name="filterMaxKcal"
+    placeholder="np. 500"
+  ></app-input-number>
+
+  <div class="divider">Choroba dietozależna</div>
+  <app-checkbox-group
+    [options]="medicalConditions"
+    [selected]="filterCondition"
+    (selectedChange)="onFilterConditionChange($event)"
+  ></app-checkbox-group>
+</form>

@@ -35,7 +35,6 @@ export class LoginComponent {
       password: ["", [Validators.required, Validators.minLength(6)]],
     });
 
-    // Get return URL from route parameters
     this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
   }
 

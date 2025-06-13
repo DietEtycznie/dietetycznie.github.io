@@ -1,0 +1,36 @@
+@import "../../../../vars.scss";
+
+:host {
+  display: block;
+}
+
+h2 {
+  color: $primary-color;
+  margin-bottom: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  margin-bottom: 16px;
+}
+
+mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 0;
+}
+
+button[color="primary"] {
+  background-color: $primary-color;
+
+  &:hover {
+    background-color: $primary-hover;
+  }
+
+  &[disabled] {
+    background-color: $primary-disabled;
+  }
+}
