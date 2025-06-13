@@ -29,7 +29,6 @@ export class RecipeService {
       map((snapshot) =>
         snapshot.docs.map((doc) => RecipeModel.toRecipe(doc.data(), doc.id)),
       ),
-      tap((recipes) => console.log(recipes.map((r) => r.name))),
     );
   }
 

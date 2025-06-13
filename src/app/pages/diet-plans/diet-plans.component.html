@@ -15,18 +15,20 @@
         }}
       </p>
     </div>
-    <mat-button-toggle-group
-      class="section-toggle"
-      [(ngModel)]="activeSection"
-      aria-label="Wybierz sekcję jadłospisów"
-    >
-      <mat-button-toggle value="readyPlans"
-        >Gotowe jadłospisy</mat-button-toggle
+    @if (user$ | async) {
+      <mat-button-toggle-group
+        class="section-toggle"
+        [(ngModel)]="activeSection"
+        aria-label="Wybierz sekcję jadłospisów"
       >
-      <mat-button-toggle value="myPlans" [disabled]="!currentUserId"
-        >Twoje jadłospisy</mat-button-toggle
-      >
-    </mat-button-toggle-group>
+        <mat-button-toggle value="readyPlans"
+          >Gotowe jadłospisy</mat-button-toggle
+        >
+        <mat-button-toggle value="myPlans" [disabled]="!currentUserId"
+          >Twoje jadłospisy</mat-button-toggle
+        >
+      </mat-button-toggle-group>
+    }
   </div>
 
   <!-- Sekcja z gotowymi jadłospisami -->

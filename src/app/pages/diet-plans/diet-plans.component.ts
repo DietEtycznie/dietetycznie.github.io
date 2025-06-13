@@ -6,7 +6,7 @@ import { RecipeService } from "../../../services/recipe.service";
 import { MedicalConditionService } from "../../../services/medical-condition.service";
 import { AuthService } from "../../../services/auth.service";
 import { FormsModule } from "@angular/forms";
-import { NgForOf, NgIf } from "@angular/common";
+import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
 import { RecipeCardComponent } from "../../components/ui/recipe-card/recipe-card.component";
 import { Router } from "@angular/router";
 import { Subscription, take, shareReplay } from "rxjs";
@@ -44,6 +44,7 @@ export const MEAL_TYPES = [
     MatIconModule,
     FiltersComponent,
     RecipeListElementComponent,
+    AsyncPipe,
   ],
 })
 export class DietPlansComponent implements OnInit, OnDestroy {
