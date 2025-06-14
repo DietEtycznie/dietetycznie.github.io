@@ -39,6 +39,19 @@
     transform: translate(-50%, -50%) scale(1.18);
     z-index: -1;
   }
+
+  @media (max-width: 768px) {
+    &::before {
+      width: 100vw;
+      left: 50%;
+      min-width: 100%;
+      max-width: 100vw;
+      height: 100vw;
+      top: 80%;
+      filter: blur(60px);
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
 }
 
 .hero-content h1 {
