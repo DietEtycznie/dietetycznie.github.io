@@ -24,6 +24,8 @@ export interface Recipe {
 export const MEDICAL_CONDITIONS = [
   "Cukrzyca typu II",
   "Nadciśnienie tętnicze",
+  "Celiakia",
+  "Choroba wrzodowa",
   "Hashimoto",
 ];
 export const DIET_TAGS = ["Wegańska", "Wegetariańska", "Bezglutenowa"];
