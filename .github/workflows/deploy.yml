@@ -36,4 +36,4 @@ jobs:
           branch: gh-pages
           folder: dist/demo
           clean: true
-
+          token: ${{ secrets.GH_TOKEN }}
