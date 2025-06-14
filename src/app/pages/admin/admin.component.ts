@@ -189,66 +189,8 @@ export class AdminComponent {
   }
 
   async fillAndAddMultipleMedicalConditions() {
-    // Poprawny JSON!
-    const payload = `{
-      "name": "Cukrzyca typu II",
-      "description": "Cukrzyca typu II to przewlekła choroba metaboliczna związana z zaburzoną wrażliwością na insulinę. Wymaga modyfikacji stylu życia i diety w celu kontroli glikemii i zmniejszenia ryzyka powikłań metabolicznych i sercowo-naczyniowych.",
-      "dietaryRecommendations": [
-        "Stopniowo redukuj masę ciała — utrata minimum 5–7% masy ciała poprawia wrażliwość na insulinę.",
-        "Spożywaj posiłki regularnie, co 3–4 godziny, ostatni posiłek 2–3 godziny przed snem.",
-        "Unikaj podjadania i napojów dostarczających energię między posiłkami (kawy z mlekiem i cukrem, słodzone herbaty, napoje).",
-        "Komponuj posiłki zgodnie z Talerzem Zdrowego Żywienia: ½ talerza warzywa i owoce (przewaga warzyw), ¼ białko, ¼ węglowodany złożone.",
-        "Spożywaj minimum 400g warzyw i owoców dziennie, preferuj owoce jagodowe (maliny, truskawki, jagody).",
-        "Węglowodany dostarczaj z pełnoziarnistych produktów zbożowych (pełnoziarniste pieczywo, kasze, brązowy ryż, pełnoziarniste makarony).",
-        "Wybieraj produkty białkowe: chude mięsa, ryby, nasiona roślin strączkowych, niskotłuszczowe produkty mleczne.",
-        "Spożywaj codziennie 2 porcje fermentowanych produktów mlecznych do 3% tłuszczu.",
-        "Ogranicz spożycie tłuszczów nasyconych, preferuj tłuszcze roślinne (olej rzepakowy, oliwa, lniany), orzechy, pestki i awokado.",
-        "Unikaj rozdrabniania i rozgotowywania potraw — jedz powoli i w spokoju.",
-        "Stosuj korzystną kolejność spożywania: warzywa → białka i tłuszcze → węglowodany.",
-        "Spożywaj naturalne słodziki (ksylitol, stewia, erytrytol) zamiast cukru.",
-        "Wypijaj 1,5–2L płynów dziennie (woda, herbaty ziołowe, kawa bez cukru)."
-      ],
-      "lifestyleRecommendations": [
-        "Codziennie podejmuj minimum 30 minut umiarkowanej aktywności fizycznej (spacer, wchodzenie po schodach, aktywne prace domowe).",
-        "Dbaj o redukcję stresu — stosuj techniki relaksacyjne, jogę, uważność, ćwiczenia oddechowe.",
-        "Zapewnij odpowiednią ilość i jakość snu: 7–8 godzin, stałe pory snu, unikanie ekranów godzinę przed snem.",
-        "W przypadku stosowania metforminy kontroluj poziom witaminy B12."
-      ],
-      "foodsToEat": [
-        "świeże i mrożone warzywa i owoce (przewaga warzyw)",
-        "pełnoziarniste produkty zbożowe (pełnoziarniste pieczywo, kasze, brązowy i dziki ryż, pełnoziarniste makarony)",
-        "chude mięsa (kurczak, indyk, cielęcina, królik)",
-        "chude wędliny domowe",
-        "niskotłuszczowe fermentowane produkty mleczne (do 3% tłuszczu)",
-        "chude i półtłuste sery twarogowe, mozzarella light",
-        "ryby morskie i słodkowodne (łosoś, dorsz, makrela, halibut)",
-        "nasiona roślin strączkowych i ich przetwory",
-        "orzechy niesolone, pestki, nasiona",
-        "tłuszcze roślinne: oliwa z oliwek, olej rzepakowy, lniany",
-        "gorzka czekolada min. 70% kakao",
-        "przeciery i musy owocowe bez cukru, dżemy bez cukru",
-        "kisiele i galaretki bez dodatku cukru"
-      ],
-      "foodsToAvoid": [
-        "produkty wysokoprzetworzone: fast-food, instant, gotowe dania z mąki oczyszczonej",
-        "pełnotłuste sery żółte, topione, pleśniowe, mascarpone",
-        "tłuste mięsa: wieprzowina, baranina, kaczka, gęś",
-        "tłuste wędliny (baleron, salami, boczek, mielonki, pasztety)",
-        "pełnotłuste mleko, śmietany, jogurty owocowe z cukrem, desery mleczne",
-        "białe pieczywo, bułki maślane, płatki zbożowe słodzone",
-        "biały ryż, jasne makarony, kasza manna, kuskus",
-        "owoce kandyzowane, owoce w syropach",
-        "słodycze, cukier, miód, syropy, słone przekąski (chipsy, paluszki, krakersy)",
-        "tłuszcze nasycone: smalec, masło, olej kokosowy, palmowy, margaryny twarde",
-        "słodzone napoje, soki wysokosłodzone, czekolada do picia",
-        "gotowe sosy, przyprawy z dużą ilością soli, kostki rosołowe"
-      ],
-      "warnings": [
-        "Alkohol podnosi glikemię poposiłkową — najlepiej całkowicie go wyeliminować.",
-        "Rzuć palenie — zmniejsza ryzyko powikłań sercowo-naczyniowych.",
-        "Diety alternatywne (niskowęglowodanowe, wysokobiałkowe) mogą zwiększać ryzyko zaburzeń glikemii — ich stosowanie skonsultuj z lekarzem."
-      ]
-    }`;
+    const payload = `{}`;
+
     try {
       const parsed = JSON.parse(payload);
       this.medicalCondition = {

@@ -1,8 +1,8 @@
 .presentation-header {
   position: relative;
-  width: 100vw;
+  width: 100%;
   min-height: 200px;
-  max-width: 100vw;
+  max-width: 100%;
   margin: 0;
   padding: 0;
   display: flex;
@@ -75,8 +75,8 @@
 @media (max-width: 900px) {
   .presentation-header-content {
     padding: 1.2rem 0.7rem 1.5rem 0.7rem;
-    width: 100vw;
-    max-width: 100vw;
+    width: 100%;
+    max-width: 100%;
   }
   .presentation-header-title {
     font-size: 2rem;
