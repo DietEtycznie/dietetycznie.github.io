@@ -3,6 +3,8 @@ export interface MedicalCondition {
   name: string;
   description: string;
   dietaryRecommendations: string[];
-  foodsToAvoid: string[];
+  lifestyleRecommendations: string[];
   foodsToEat: string[];
+  foodsToAvoid: string[];
+  warnings?: string[];
 }

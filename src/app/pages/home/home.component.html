@@ -1,5 +1,4 @@
 <main>
-  <!-- Sekcja powitalna -->
   <section class="hero">
     <div class="container">
       <div class="hero-content">
@@ -9,7 +8,7 @@
           potrzeb zdrowotnych
         </p>
         <div class="hero-buttons">
-          <a routerLink="/conditions" class="btn-primary">Znajdź swoją dietę</a>
+          <a routerLink="/diet-plans" class="btn-primary">Znajdź swoją dietę</a>
           <a routerLink="/recipes" class="btn-secondary">Przeglądaj przepisy</a>
         </div>
       </div>
@@ -18,9 +17,11 @@
 
   <section class="section conditions-section">
     <div class="container">
-      <h2 class="section-title">Przeglądaj według choroby dietozależnej</h2>
+      <h2 class="section-title">
+        Przeglądaj zalecenia dla chorób dietozależnych
+      </h2>
       <p class="section-subtitle">
-        Znajdź diety i przepisy odpowiednie dla Twojego stanu zdrowia
+        Dowiedz się, jak dieta może pomóc w zarządzaniu Twoim stanem zdrowia
       </p>
 
       <div class="conditions-grid">
@@ -34,7 +35,6 @@
           class="condition-card"
         >
           <div class="condition-icon">
-            <!-- Placeholder for condition icon -->
             <span class="icon-placeholder"></span>
           </div>
           <h3>{{ condition.name }}</h3>
@@ -53,12 +53,12 @@
     </div>
   </section>
 
-  <!-- Featured Recipes Section -->
   <section class="section recipes-section">
     <div class="container">
       <h2 class="section-title">Polecane przepisy</h2>
       <p class="section-subtitle">
-        Zdrowe i smaczne przepisy dla różnych chorób dietozależnych
+        Zdrowe i smaczne przepisy z systemem filtrowania dla ułatwienia Twojego
+        wyboru
       </p>
 
       <div class="recipes-grid">
@@ -101,26 +101,25 @@
     </div>
   </section>
 
-  <!-- How It Works Section -->
   <section class="section how-it-works-section">
     <div class="container">
       <h2 class="section-title">Jak to działa</h2>
       <p class="section-subtitle">
-        Proste kroki do znalezienia spersonalizowanego jadłospisu
+        Proste kroki do stworzenia spersonalizowanego jadłospisu
       </p>
 
       <div class="steps-grid">
         <div class="step-card">
           <div class="step-number">1</div>
           <h3>Wybierz swoją chorobę dietozależą</h3>
-          <p>Wybierz swoją chorobę dietozależną z naszej obszernej listy</p>
+          <p>Wybierz swoją chorobę dietozależną z przygotowanej listy</p>
         </div>
 
         <div class="step-card">
           <div class="step-number">2</div>
           <h3>Zobacz zalecenia dietetyczne</h3>
           <p>
-            Otrzymaj spersonalizowane wytyczne żywieniowe dla swoich potrzeb
+            Przeglądnij spersonalizowane wytyczne żywieniowe dla swoich potrzeb
             zdrowotnych
           </p>
         </div>

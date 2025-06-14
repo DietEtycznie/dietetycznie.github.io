@@ -4,8 +4,12 @@
   display: block;
 }
 
+.dialog-wrapper {
+  padding: 16px;
+}
+
 h2 {
-  color: $primary-color;
+  color: $text-color;
   margin-bottom: 20px;
 }
 
@@ -17,7 +21,7 @@ mat-form-field {
   margin-bottom: 16px;
 }
 
-mat-dialog-actions {
+.mat-dialog-actions {
   display: flex;
   justify-content: flex-end;
   padding: 16px 0;

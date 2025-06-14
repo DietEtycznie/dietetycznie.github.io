@@ -45,6 +45,41 @@
         name="filterMaxKcal"
         placeholder="np. 500"
       ></app-input-number>
+      <app-input-number
+        [label]="'Maks. białko (g)'"
+        [model]="filterMaxProtein"
+        (modelChange)="filterMaxProtein = $event"
+        name="filterMaxProtein"
+        placeholder="np. 30"
+      ></app-input-number>
+      <app-input-number
+        [label]="'Maks. węglowodany (g)'"
+        [model]="filterMaxCarbs"
+        (modelChange)="filterMaxCarbs = $event"
+        name="filterMaxCarbs"
+        placeholder="np. 50"
+      ></app-input-number>
+      <app-input-number
+        [label]="'Maks. tłuszcz (g)'"
+        [model]="filterMaxFat"
+        (modelChange)="filterMaxFat = $event"
+        name="filterMaxFat"
+        placeholder="np. 20"
+      ></app-input-number>
+      <app-input-number
+        [label]="'Maks. sód (mg)'"
+        [model]="filterMaxSodium"
+        (modelChange)="filterMaxSodium = $event"
+        name="filterMaxSodium"
+        placeholder="np. 500"
+      ></app-input-number>
+      <app-input-number
+        [label]="'Maks. błonnik (g)'"
+        [model]="filterMaxFiber"
+        (modelChange)="filterMaxFiber = $event"
+        name="filterMaxFiber"
+        placeholder="np. 10"
+      ></app-input-number>
       <ng-container
         *ngTemplateOutlet="divider; context: { text: 'Choroba dietozależna' }"
       ></ng-container>

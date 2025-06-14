@@ -1,120 +1,208 @@
 <div class="admin-container">
-  <div class="admin-section">
-    <h2>Dodaj przepis</h2>
-    <form (ngSubmit)="addRecipe()" #recipeForm="ngForm" class="admin-form">
-      <mat-form-field appearance="outline">
-        <mat-label>Nazwa</mat-label>
-        <input matInput required [(ngModel)]="recipe.name" name="name" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Opis</mat-label>
-        <textarea
-          matInput
-          required
-          [(ngModel)]="recipe.description"
-          name="description"
-        ></textarea>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Typ posiłku (multi)</mat-label>
-        <mat-select [(ngModel)]="recipe.mealType" name="mealType" multiple>
-          <mat-option *ngFor="let cond of allMealTypes" [value]="cond">{{
-            cond
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Składniki (po przecinku)</mat-label>
-        <input matInput [(ngModel)]="recipe.ingredients" name="ingredients" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Instrukcje (po przecinku)</mat-label>
-        <input matInput [(ngModel)]="recipe.instructions" name="instructions" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Czas przygotowania (min)</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="recipe.prepTimeMinutes"
-          name="prepTimeMinutes"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Ilość porcji</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="recipe.servings"
-          name="servings"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Kcal</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="recipe.calories"
-          name="calories"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Białko (g)</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="recipe.protein"
-          name="protein"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Węglowodany (g)</mat-label>
-        <input matInput type="number" [(ngModel)]="recipe.carbs" name="carbs" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Tłuszcz (g)</mat-label>
-        <input matInput type="number" [(ngModel)]="recipe.fat" name="fat" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Sód (mg)</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="recipe.sodium"
-          name="sodium"
-        />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Błonnik (g)</mat-label>
-        <input matInput type="number" [(ngModel)]="recipe.fiber" name="fat" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Link do zdjęcia (imageUrl)</mat-label>
-        <input matInput [(ngModel)]="recipe.imageUrl" name="imageUrl" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Choroby (multi)</mat-label>
-        <mat-select
-          [(ngModel)]="recipe.suitableForConditions"
-          name="suitableForConditions"
-          multiple
-        >
-          <mat-option *ngFor="let cond of allConditions" [value]="cond">{{
-            cond
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Diety (multi)</mat-label>
-        <mat-select [(ngModel)]="recipe.dietTags" name="dietTags" multiple>
-          <mat-option *ngFor="let tag of allDietTags" [value]="tag">{{
-            tag
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button mat-raised-button color="primary" type="submit">
-        Dodaj przepis
+  <div class="admin-columns">
+    <div class="admin-section">
+      <h2>Dodaj przepis</h2>
+      <form (ngSubmit)="addRecipe()" #recipeForm="ngForm" class="admin-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Nazwa</mat-label>
+          <input matInput required [(ngModel)]="recipe.name" name="name" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Opis</mat-label>
+          <textarea
+            matInput
+            required
+            [(ngModel)]="recipe.description"
+            name="description"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Typ posiłku (multi)</mat-label>
+          <mat-select [(ngModel)]="recipe.mealType" name="mealType" multiple>
+            <mat-option *ngFor="let cond of allMealTypes" [value]="cond">{{
+              cond
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Składniki (po przecinku)</mat-label>
+          <input matInput [(ngModel)]="recipe.ingredients" name="ingredients" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Instrukcje (po przecinku)</mat-label>
+          <input
+            matInput
+            [(ngModel)]="recipe.instructions"
+            name="instructions"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Czas przygotowania (min)</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="recipe.prepTimeMinutes"
+            name="prepTimeMinutes"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Ilość porcji</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="recipe.servings"
+            name="servings"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Kcal</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="recipe.calories"
+            name="calories"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Białko (g)</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="recipe.protein"
+            name="protein"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Węglowodany (g)</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="recipe.carbs"
+            name="carbs"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Tłuszcz (g)</mat-label>
+          <input matInput type="number" [(ngModel)]="recipe.fat" name="fat" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Sód (mg)</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="recipe.sodium"
+            name="sodium"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Błonnik (g)</mat-label>
+          <input matInput type="number" [(ngModel)]="recipe.fiber" name="fat" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Link do zdjęcia (imageUrl)</mat-label>
+          <input matInput [(ngModel)]="recipe.imageUrl" name="imageUrl" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Choroby (multi)</mat-label>
+          <mat-select
+            [(ngModel)]="recipe.suitableForConditions"
+            name="suitableForConditions"
+            multiple
+          >
+            <mat-option *ngFor="let cond of allConditions" [value]="cond">{{
+              cond
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Diety (multi)</mat-label>
+          <mat-select [(ngModel)]="recipe.dietTags" name="dietTags" multiple>
+            <mat-option *ngFor="let tag of allDietTags" [value]="tag">{{
+              tag
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">
+          Dodaj przepis
+        </button>
+      </form>
+    </div>
+    <div class="admin-section">
+      <h2>Dodaj jednostkę chorobową</h2>
+      <form
+        (ngSubmit)="addMedicalCondition()"
+        #conditionForm="ngForm"
+        class="admin-form"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Nazwa</mat-label>
+          <input
+            matInput
+            required
+            [(ngModel)]="medicalCondition.name"
+            name="mc_name"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Opis</mat-label>
+          <textarea
+            matInput
+            required
+            [(ngModel)]="medicalCondition.description"
+            name="mc_description"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Zalecenia żywieniowe (po przecinku)</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="medicalCondition.dietaryRecommendations"
+            name="mc_dietaryRecommendations"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Zalecenia dotyczące stylu życia (po przecinku)</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="medicalCondition.lifestyleRecommendations"
+            name="mc_lifestyleRecommendations"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Produkty zalecane (po przecinku)</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="medicalCondition.foodsToEat"
+            name="mc_foodsToEat"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Produkty niewskazane (po przecinku)</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="medicalCondition.foodsToAvoid"
+            name="mc_foodsToAvoid"
+          ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Ostrzeżenia (po przecinku, opcjonalnie)</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="medicalCondition.warnings"
+            name="mc_warnings"
+          ></textarea>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">
+          Dodaj jednostkę chorobową
+        </button>
+      </form>
+      <button
+        color="primary"
+        type="submit"
+        (click)="fillAndAddMultipleMedicalConditions()"
+      >
+        Dodaj jednostkę chorobową payload
       </button>
-    </form>
+    </div>
   </div>
 </div>

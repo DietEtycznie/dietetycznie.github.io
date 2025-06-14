@@ -181,7 +181,6 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Utility Classes */
 .text-center {
   text-align: center;
 }
@@ -202,7 +201,6 @@ a:hover {
   color: #f44336;
 }
 
-/* Margin and Padding - 8px scale */
 .m-0 {
   margin: 0;
 }
@@ -279,7 +277,6 @@ a:hover {
   padding: 40px;
 }
 
-/* Buttons */
 .btn {
   display: inline-block;
   font-weight: 500;
@@ -334,7 +331,6 @@ a:hover {
   border-color: #3d8b40;
 }
 
-/* Forms */
 .form-group {
   margin-bottom: 0rem;
 }
@@ -367,7 +363,6 @@ label {
   display: inline-block;
 }
 
-/* Cards */
 .card {
   position: relative;
   display: flex;
@@ -393,7 +388,6 @@ label {
   margin-bottom: 0;
 }
 
-/* Responsive Utilities */
 @media (max-width: 576px) {
   .hidden-xs {
     display: none !important;
@@ -426,7 +420,6 @@ label {
   }
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;

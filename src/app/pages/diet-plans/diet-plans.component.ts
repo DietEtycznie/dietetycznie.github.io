@@ -3,7 +3,6 @@ import { DietPlan } from "../../../models/diet-plan.model";
 import { Recipe } from "../../../models/recipe.model";
 import { DietPlanService } from "../../../services/diet-plan.service";
 import { RecipeService } from "../../../services/recipe.service";
-import { MedicalConditionService } from "../../../services/medical-condition.service";
 import { AuthService } from "../../../services/auth.service";
 import { FormsModule } from "@angular/forms";
 import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
@@ -18,6 +17,7 @@ import { MatExpansionModule } from "@angular/material/expansion";
 import { MatIconModule } from "@angular/material/icon";
 import { FiltersComponent } from "../../components/ui/filters/filters.component";
 import { RecipeListElementComponent } from "../../components/ui/recipe-list-element/recipe-list-element.component";
+import { PresentationHeaderComponent } from "../../components/ui/presentation-header/presentation-header.component";
 
 export const MEAL_TYPES = [
   "Śniadanie",
@@ -45,13 +45,13 @@ export const MEAL_TYPES = [
     FiltersComponent,
     RecipeListElementComponent,
     AsyncPipe,
+    PresentationHeaderComponent,
   ],
 })
 export class DietPlansComponent implements OnInit, OnDestroy {
   readyPlans: DietPlan[] = [];
   myPlans: DietPlan[] = [];
   allRecipes: Recipe[] = [];
-  availableConditions: string[] = [];
   selectedConditions: string[] = [];
   currentUserId: string | null = null;
   activeSection = "readyPlans";
@@ -85,7 +85,6 @@ export class DietPlansComponent implements OnInit, OnDestroy {
 
   dietPlanService = inject(DietPlanService);
   recipeService = inject(RecipeService);
-  medicalConditionService = inject(MedicalConditionService);
   authService = inject(AuthService);
   router = inject(Router);
   dialog = inject(MatDialog);
@@ -94,7 +93,14 @@ export class DietPlansComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadRecipes();
-    this.loadConditions();
+
+    this.router.routerState.root.queryParams.subscribe((params) => {
+      if (params["section"] === "myPlans") {
+        this.activeSection = "myPlans";
+      } else {
+        this.activeSection = "readyPlans";
+      }
+    });
 
     this.subscriptions.add(
       this.user$.subscribe((user) => {
@@ -136,18 +142,6 @@ export class DietPlansComponent implements OnInit, OnDestroy {
       this.recipeService.getRecipes().subscribe((recipes) => {
         this.allRecipes = recipes;
       }),
-    );
-  }
-
-  loadConditions() {
-    this.subscriptions.add(
-      this.medicalConditionService
-        .getMedicalConditions()
-        .subscribe((conditions) => {
-          this.availableConditions = conditions.map(
-            (condition) => condition.name,
-          );
-        }),
     );
   }
 

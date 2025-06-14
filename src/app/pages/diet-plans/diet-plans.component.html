@@ -1,37 +1,29 @@
-<main class="diet-plans">
-  <div class="diet-plans__header header-flex">
-    <div class="section-intro">
-      <h2>
-        {{
-          activeSection === "myPlans" ? "Twoje jadłospisy" : "Gotowe jadłospisy"
-        }}
-      </h2>
-      <span class="section-underline"></span>
-      <p class="section-description">
-        {{
-          activeSection === "myPlans"
-            ? "Twórz i zarządzaj swoimi własnymi jadłospisami, dostosowanymi do Twoich potrzeb i preferencji."
-            : "Skorzystaj z profesjonalnie przygotowanych planów żywieniowych dopasowanych do różnych potrzeb i chorób dietozależnych."
-        }}
-      </p>
-    </div>
-    @if (user$ | async) {
-      <mat-button-toggle-group
-        class="section-toggle"
-        [(ngModel)]="activeSection"
-        aria-label="Wybierz sekcję jadłospisów"
+<app-presentation-header
+  [title]="
+    activeSection === 'myPlans' ? 'Twoje jadłospisy' : 'Gotowe jadłospisy'
+  "
+  [description]="
+    activeSection === 'myPlans'
+      ? 'Twórz i zarządzaj swoimi własnymi jadłospisami, dostosowanymi do Twoich potrzeb i preferencji.'
+      : 'Skorzystaj z profesjonalnie przygotowanych planów żywieniowych dopasowanych do różnych potrzeb i chorób dietozależnych.'
+  "
+>
+  <ng-container *ngIf="user$ | async">
+    <mat-button-toggle-group
+      class="section-toggle"
+      [(ngModel)]="activeSection"
+      aria-label="Wybierz sekcję jadłospisów"
+    >
+      <mat-button-toggle value="readyPlans"
+        >Gotowe jadłospisy</mat-button-toggle
       >
-        <mat-button-toggle value="readyPlans"
-          >Gotowe jadłospisy</mat-button-toggle
-        >
-        <mat-button-toggle value="myPlans" [disabled]="!currentUserId"
-          >Twoje jadłospisy</mat-button-toggle
-        >
-      </mat-button-toggle-group>
-    }
-  </div>
-
-  <!-- Sekcja z gotowymi jadłospisami -->
+      <mat-button-toggle value="myPlans" [disabled]="!currentUserId"
+        >Twoje jadłospisy</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </ng-container>
+</app-presentation-header>
+<main class="diet-plans">
   <section class="diet-plans__ready" *ngIf="activeSection === 'readyPlans'">
     <div class="diet-plans-list" *ngIf="readyPlans?.length; else noReady">
       <div *ngFor="let plan of readyPlans" class="diet-plan">
@@ -98,7 +90,6 @@
     </ng-template>
   </section>
 
-  <!-- Sekcja z własnymi jadłospisami -->
   <section class="diet-plans__custom" *ngIf="activeSection === 'myPlans'">
     <div class="diet-plans-list">
       <div
@@ -196,7 +187,6 @@
               <div class="meal-label">{{ meal }}</div>
 
               <ng-container *ngIf="!editModes[plan.id || planIndex]">
-                <!-- Tryb tylko do odczytu -->
                 <div
                   class="recipe-container"
                   *ngIf="
@@ -217,7 +207,6 @@
               </ng-container>
 
               <ng-container *ngIf="editModes[plan.id || planIndex]">
-                <!-- Tryb edycji -->
                 <div class="recipe-edit-container">
                   <div
                     class="recipe-preview"
@@ -267,7 +256,6 @@
     </div>
   </section>
 
-  <!-- Modal do wyboru przepisu -->
   <div *ngIf="pickerOpen" class="picker-modal">
     <div class="picker-content">
       <div class="picker-header">
@@ -288,7 +276,6 @@
             (filterNameChange)="onPickerFilterChange('name', $event)"
             [filterCondition]="pickerFilterCondition"
             (filterConditionChange)="onPickerFilterChange('condition', $event)"
-            [mealTypes]="meals"
             [activeMealType]="meals[pickerMealIdx]"
             [filterType]="pickerFilterType"
             (filterTypeChange)="onPickerFilterChange('type', $event)"
@@ -296,7 +283,6 @@
             (filterLikedChange)="onPickerFilterChange('liked', $event)"
             [filterMaxKcal]="pickerFilterMaxKcal"
             (filterMaxKcalChange)="onPickerFilterChange('maxKcal', $event)"
-            [medicalConditions]="availableConditions"
           ></app-filters>
         </div>
         <div class="recipe-list">

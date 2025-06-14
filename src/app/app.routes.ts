@@ -45,6 +45,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: "conditions",
+    loadComponent: () =>
+      import("./pages/conditions/conditions.component").then(
+        (m) => m.ConditionsComponent,
+      ),
+  },
+  {
     path: "admin",
     loadComponent: () =>
       import("./pages/admin/admin.component").then((m) => m.AdminComponent),

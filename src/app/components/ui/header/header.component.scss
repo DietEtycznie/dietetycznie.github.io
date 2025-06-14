@@ -142,13 +142,26 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   border-radius: 3px;
   min-width: 140px;
-  padding: 0.5rem 0 0.5rem 0;
+  padding: 1rem;
   z-index: 1200;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   animation: fadeIn 0.2s;
   box-sizing: border-box;
+  transform: translateX(10%);
+
+  .user-menu-item {
+    color: $text-color;
+    text-decoration: none;
+    transition: color 0.3s;
+    border-bottom: 2px solid #f0f0f0;
+    cursor: pointer;
+
+    &:hover {
+      color: $text-secondary-color;
+    }
+  }
 }
 
 @keyframes fadeIn {
@@ -168,7 +181,6 @@
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
-  margin-left: 0.5rem;
   transition: all 0.3s;
 }
 
@@ -197,6 +209,8 @@
 
 .btn-logout {
   background-color: #f44336;
+  width: 100%;
+  display: block;
   color: white;
 }
 
@@ -206,36 +220,6 @@
 
 .hamburger {
   display: none;
-  flex-direction: column;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 1rem;
-  z-index: 1101;
-
-  span {
-    display: block;
-    height: 4px;
-    width: 28px;
-    margin: 4px 0;
-    background: $primary-color;
-    border-radius: 2px;
-    transition: 0.3s;
-  }
-
-  span.open:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-  }
-  span.open:nth-child(2) {
-    opacity: 0;
-  }
-  span.open:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-  }
 }
 
 .mobile-overlay {
@@ -246,6 +230,17 @@
   .desktop-nav,
   .desktop-auth {
     display: none !important;
+  }
+
+  .hamburger {
+    justify-content: flex-end;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    span.material-icons {
+      font-size: 32px;
+      color: $primary-color;
+    }
   }
 
   .mobile-dropdown {
@@ -372,7 +367,6 @@
 
 @media (max-width: 768px) {
   .header-content {
-    flex-direction: column;
     align-items: flex-start;
   }
 

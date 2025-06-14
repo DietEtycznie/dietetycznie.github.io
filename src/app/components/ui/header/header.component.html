@@ -5,19 +5,16 @@
         <div class="logo"></div>
       </a>
 
-      <!-- Hamburger -->
       <button
+        mat-icon-button
         class="hamburger"
         type="button"
         aria-label="Otwórz menu"
         (click)="toggleMobileNav(); $event.stopPropagation()"
       >
-        <span [class.open]="isMobileNavOpen"></span>
-        <span [class.open]="isMobileNavOpen"></span>
-        <span [class.open]="isMobileNavOpen"></span>
+        <span class="material-icons">menu</span>
       </button>
 
-      <!-- Desktop nav -->
       <nav class="main-nav desktop-nav">
         <ul class="nav-items">
           <li>
@@ -79,7 +76,6 @@
     </div>
   </div>
 
-  <!-- Rozwijane menu mobilne pod headerem -->
   <div class="mobile-dropdown" *ngIf="isMobileNavOpen">
     <ul class="nav-items">
       <li>
@@ -118,13 +114,18 @@
     </ul>
     <div class="mobile-auth">
       <ng-container *ngIf="user$ | async as user; else mobileLoginButtons">
-        <button
-          class="btn btn-profile"
-          routerLink="/profile"
-          (click)="closeMobileNav()"
+        <div
+          class="user-menu-item"
+          (click)="goToLikedRecipes(); closeMobileNav()"
         >
-          Profil
-        </button>
+          Polubione przepisy
+        </div>
+        <div
+          class="user-menu-item"
+          (click)="goToMyDietPlans(); closeMobileNav()"
+        >
+          Moje jadłospisy
+        </div>
         <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
       </ng-container>
       <ng-template #mobileLoginButtons>

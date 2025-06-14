@@ -31,11 +31,53 @@
     name="filterMaxKcal"
     placeholder="np. 500"
   ></app-input-number>
+  <app-input-number
+    [label]="'Maks. białko (g)'"
+    [model]="filterMaxProtein"
+    (modelChange)="onFilterMaxProteinChange($event)"
+    name="filterMaxProtein"
+    placeholder="np. 30"
+  ></app-input-number>
+  <app-input-number
+    [label]="'Maks. węglowodany (g)'"
+    [model]="filterMaxCarbs"
+    (modelChange)="onFilterMaxCarbsChange($event)"
+    name="filterMaxCarbs"
+    placeholder="np. 50"
+  ></app-input-number>
+  <app-input-number
+    [label]="'Maks. tłuszcz (g)'"
+    [model]="filterMaxFat"
+    (modelChange)="onFilterMaxFatChange($event)"
+    name="filterMaxFat"
+    placeholder="np. 20"
+  ></app-input-number>
+  <app-input-number
+    [label]="'Maks. sód (mg)'"
+    [model]="filterMaxSodium"
+    (modelChange)="onFilterMaxSodiumChange($event)"
+    name="filterMaxSodium"
+    placeholder="np. 500"
+  ></app-input-number>
+  <app-input-number
+    [label]="'Maks. błonnik (g)'"
+    [model]="filterMaxFiber"
+    (modelChange)="onFilterMaxFiberChange($event)"
+    name="filterMaxFiber"
+    placeholder="np. 10"
+  ></app-input-number>
 
   <div class="divider">Choroba dietozależna</div>
   <app-checkbox-group
     [options]="medicalConditions"
     [selected]="filterCondition"
     (selectedChange)="onFilterConditionChange($event)"
+  ></app-checkbox-group>
+
+  <div class="divider">Rodzaj diety</div>
+  <app-checkbox-group
+    [options]="dietTags"
+    [selected]="filterDiets"
+    (selectedChange)="onFilterDietsChange($event)"
   ></app-checkbox-group>
 </form>

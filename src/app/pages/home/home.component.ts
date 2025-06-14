@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
   loadMedicalConditions(): void {
     this.medicalConditionService.getMedicalConditions().subscribe({
       next: (conditions) => {
-        this.medicalConditions = conditions.slice(0, 6);
+        this.medicalConditions = conditions.slice(0, 4);
       },
       error: (error) => {
         console.error("Error loading medical conditions:", error);

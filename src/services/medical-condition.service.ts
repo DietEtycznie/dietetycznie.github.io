@@ -10,7 +10,7 @@ import {
   getDoc,
   DocumentData,
 } from "@angular/fire/firestore";
-import { Observable, from, map } from "rxjs";
+import { Observable, from, map, of } from "rxjs";
 import { MedicalCondition } from "../models/medical-condition.model";
 
 @Injectable({

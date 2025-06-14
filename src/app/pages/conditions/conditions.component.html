@@ -1,0 +1,10 @@
+<app-presentation-header
+  title="Choroby dietozależne"
+  description="Poznaj najważniejsze choroby dietozależne i dowiedz się, jak odpowiednia dieta oraz styl życia mogą wspierać leczenie i profilaktykę. Sprawdź zalecenia, produkty wskazane i niewskazane oraz praktyczne porady dla każdej jednostki chorobowej."
+></app-presentation-header>
+<div class="conditions-list">
+  <app-medical-condition-card
+    *ngFor="let condition of conditions$ | async"
+    [condition]="condition"
+  ></app-medical-condition-card>
+</div>

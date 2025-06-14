@@ -1,0 +1,83 @@
+<mat-card class="condition-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon color="primary">health_and_safety</mat-icon>
+      {{ condition.name }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{ condition.description }}</p>
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="card-icon">restaurant</mat-icon> Zalecenia
+            żywieniowe
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <li *ngFor="let rec of condition.dietaryRecommendations">
+            <mat-icon color="primary">check_circle</mat-icon> {{ rec }}
+          </li>
+        </ul>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="card-icon">directions_run</mat-icon> Zalecenia
+            dotyczące stylu życia
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <li *ngFor="let rec of condition.lifestyleRecommendations">
+            <mat-icon color="primary">check_circle</mat-icon> {{ rec }}
+          </li>
+        </ul>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="card-icon">local_dining</mat-icon> Produkty
+            zalecane
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <li *ngFor="let food of condition.foodsToEat">
+            <mat-icon color="primary">add_circle</mat-icon> {{ food }}
+          </li>
+        </ul>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="card-icon">block</mat-icon> Produkty niewskazane
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <li *ngFor="let food of condition.foodsToAvoid">
+            <mat-icon color="warn">remove_circle</mat-icon> {{ food }}
+          </li>
+        </ul>
+      </mat-expansion-panel>
+      <mat-expansion-panel
+        *ngIf="condition.warnings && condition.warnings.length"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="card-icon">warning</mat-icon> Ostrzeżenia
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ul>
+          <li *ngFor="let warning of condition.warnings">
+            <mat-icon color="warn">error</mat-icon> {{ warning }}
+          </li>
+        </ul>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+  <mat-card-actions>
+    <a (click)="goToRecipesWithCondition()" class="btn-text"
+      >Zobacz dopasowane przepisy <span class="arrow">→</span></a
+    >
+  </mat-card-actions>
+</mat-card>

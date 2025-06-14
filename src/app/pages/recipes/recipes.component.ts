@@ -20,6 +20,7 @@ import { AuthService } from "../../../services/auth.service";
 import { user } from "@angular/fire/auth";
 import { MatIcon } from "@angular/material/icon";
 import { MatSlideToggle } from "@angular/material/slide-toggle";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-recipes",
@@ -54,6 +55,11 @@ export class RecipesComponent implements OnInit {
   filterMaxKcal: number | null = null;
   filterType: string[] = [];
   filterLiked: boolean = false;
+  filterMaxProtein: number | null = null;
+  filterMaxCarbs: number | null = null;
+  filterMaxFat: number | null = null;
+  filterMaxSodium: number | null = null;
+  filterMaxFiber: number | null = null;
 
   conditions = MEDICAL_CONDITIONS;
   diets = DIET_TAGS;
@@ -61,6 +67,8 @@ export class RecipesComponent implements OnInit {
 
   showFilters = false;
   isMobile = false;
+
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.recipeService.getRecipes().subscribe((recipes) => {
@@ -76,10 +84,15 @@ export class RecipesComponent implements OnInit {
     this.checkMobile();
     window.addEventListener("resize", this.checkMobile.bind(this));
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("liked") === "1") {
-      this.filterLiked = true;
-    }
+    this.route.queryParamMap.subscribe((params) => {
+      if (params.get("liked") === "1") {
+        this.filterLiked = true;
+      }
+      const condition = params.get("condition");
+      if (condition) {
+        this.filterCondition = [condition];
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -116,6 +129,37 @@ export class RecipesComponent implements OnInit {
       filtered = filtered.filter(
         (recipe) =>
           this.filterMaxKcal != null && recipe.calories <= this.filterMaxKcal,
+      );
+    }
+    if (typeof this.filterMaxProtein === "number") {
+      filtered = filtered.filter(
+        (recipe) =>
+          this.filterMaxProtein != null &&
+          recipe.protein <= this.filterMaxProtein,
+      );
+    }
+    if (typeof this.filterMaxCarbs === "number") {
+      filtered = filtered.filter(
+        (recipe) =>
+          this.filterMaxCarbs != null && recipe.carbs <= this.filterMaxCarbs,
+      );
+    }
+    if (typeof this.filterMaxFat === "number") {
+      filtered = filtered.filter(
+        (recipe) =>
+          this.filterMaxFat != null && recipe.fat <= this.filterMaxFat,
+      );
+    }
+    if (typeof this.filterMaxSodium === "number") {
+      filtered = filtered.filter(
+        (recipe) =>
+          this.filterMaxSodium != null && recipe.sodium <= this.filterMaxSodium,
+      );
+    }
+    if (typeof this.filterMaxFiber === "number") {
+      filtered = filtered.filter(
+        (recipe) =>
+          this.filterMaxFiber != null && recipe.fiber <= this.filterMaxFiber,
       );
     }
     if (this.filterType.length > 0) {
