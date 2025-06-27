@@ -7,4 +7,5 @@ export interface MedicalCondition {
   foodsToEat: string[];
   foodsToAvoid: string[];
   warnings?: string[];
+  pdfURL?: string;
 }

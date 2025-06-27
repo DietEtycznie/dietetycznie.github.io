@@ -76,6 +76,15 @@
     </mat-accordion>
   </mat-card-content>
   <mat-card-actions>
+    <a
+      [href]="condition.pdfURL"
+      *ngIf="condition.pdfURL"
+      class="btn-text"
+      target="_blank"
+    >
+      Pełne informację z Narodowego Centrum Edukacji Żywieniowej
+      <span class="arrow">→</span>
+    </a>
     <a (click)="goToRecipesWithCondition()" class="btn-text"
       >Zobacz dopasowane przepisy <span class="arrow">→</span></a
     >
