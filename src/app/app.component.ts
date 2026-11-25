@@ -2,12 +2,12 @@ import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { RouterOutlet } from "@angular/router";
 import { SwUpdate } from "@angular/service-worker";
-import { FooterComponent, HeaderComponent } from "./components/ui";
+import { FooterComponent, HeaderComponent, PwaInstallBannerComponent } from "./components/ui";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, PwaInstallBannerComponent],
   template: `
     <div class="app-shell">
       <app-header />
@@ -15,6 +15,8 @@ import { FooterComponent, HeaderComponent } from "./components/ui";
         <router-outlet></router-outlet>
       </div>
       <app-footer />
+
+      <app-pwa-install-banner [hidden]="updateAvailable" />
 
       @if (updateAvailable) {
         <div class="pwa-update-toast" role="status" aria-live="polite">

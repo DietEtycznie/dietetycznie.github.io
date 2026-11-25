@@ -11,5 +11,6 @@ export { LoadingStateComponent } from "./loading-state/loading-state.component";
 export type { LoadingVariant } from "./loading-state/loading-state.component";
 export { PresentationHeaderComponent } from "./presentation-header/presentation-header.component";
 export { PrintHeaderComponent } from "./print-header/print-header.component";
+export { PwaInstallBannerComponent } from "./pwa-install-banner/pwa-install-banner.component";
 export { RecipeCardComponent } from "./recipe-card/recipe-card.component";
 export { SearchInputComponent } from "./search-input/search-input.component";
