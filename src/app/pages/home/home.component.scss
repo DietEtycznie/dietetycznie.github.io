@@ -926,6 +926,12 @@
   gap: 0.85rem;
 }
 
+.dietitian-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .dietitian-kicker {
   font-size: 0.76rem;
   font-weight: 700;
@@ -1063,11 +1069,6 @@
 
   .scroll-hint-btn {
     font-size: 0.78rem;
-  }
-
-  .dietitian-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
   }
 
   .magic-track {
@@ -1316,19 +1317,55 @@
   }
 
   .dietitian-section {
-    padding-top: 3rem;
+    padding: 3rem 0 3.25rem;
+  }
+
+  .dietitian-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.15rem;
   }
 
   .dietitian-copy {
-    padding-bottom: 0.5rem;
+    display: contents;
+  }
+
+  .dietitian-intro {
+    order: 1;
   }
 
   .dietitian-portrait-col {
-    min-height: 260px;
+    order: 2;
+    min-height: 0;
+    width: 100%;
+    max-width: 300px;
+    margin: 0.25rem auto 0.35rem;
+    padding: 1rem 1rem 0;
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+    background:
+      radial-gradient(circle at 50% 85%, rgba(32, 178, 127, 0.16), transparent 72%),
+      var(--bg-subtle);
+    overflow: hidden;
   }
 
   .dietitian-silhouette {
-    max-width: 280px;
+    max-width: 230px;
+  }
+
+  .dietitian-bio {
+    order: 3;
+    margin: 0.15rem 0 0.25rem;
+  }
+
+  .dietitian-specs {
+    order: 4;
+    margin-bottom: 0.25rem;
+  }
+
+  .dietitian-actions {
+    order: 5;
   }
 }
 
