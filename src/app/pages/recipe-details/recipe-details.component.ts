@@ -18,6 +18,11 @@ import { DietPlanService } from "../../../services/diet-plan.service";
 import { RecipeService } from "../../../services/recipe.service";
 import { UserService } from "../../../services/user.service";
 import {
+  calculateMacroPercentages,
+  getPolishPortionLabel,
+  scaleIngredientText,
+} from "../../../utils/recipe-helpers";
+import {
   LoadingStateComponent,
   PrintHeaderComponent,
   RecipeCardComponent,
@@ -128,32 +133,12 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
   }
 
   scaleIngredient(text: string): string {
-    const factor = this.scaleFactor;
-    if (Math.abs(factor - 1) < 0.001) return text;
-    return text.replace(
-      /(^|\s)(\d+(?:[.,]\d+)?)(?=\s?(?:g|kg|ml|l|szt|łyż|szkl|krom|plastr|ząb|szczypt|\b))/gi,
-      (_match, prefix: string, numStr: string) => {
-        const parsed = parseFloat(numStr.replace(",", "."));
-        if (Number.isNaN(parsed)) return `${prefix}${numStr}`;
-        const scaled = Math.round(parsed * factor * 10) / 10;
-        const formatted = Number.isInteger(scaled)
-          ? String(scaled)
-          : String(scaled).replace(".", ",");
-        return `${prefix}${formatted}`;
-      },
-    );
+    return scaleIngredientText(text, this.scaleFactor);
   }
 
   get macroPercentages(): { protein: number; carbs: number; fat: number } {
     if (!this.recipe) return { protein: 33, carbs: 34, fat: 33 };
-    const pCal = this.recipe.protein * 4;
-    const cCal = this.recipe.carbs * 4;
-    const fCal = this.recipe.fat * 9;
-    const total = pCal + cCal + fCal || 1;
-    const protein = Math.round((pCal / total) * 100);
-    const carbs = Math.round((cCal / total) * 100);
-    const fat = Math.max(0, 100 - protein - carbs);
-    return { protein, carbs, fat };
+    return calculateMacroPercentages(this.recipe.protein, this.recipe.carbs, this.recipe.fat);
   }
 
   changeServings(delta: number): void {
@@ -225,11 +210,7 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
   }
 
   getPortionText(count: number): string {
-    if (count >= 11 && count <= 19) return "porcji";
-    const last = count % 10;
-    if (last === 1) return "porcja";
-    if (last >= 2 && last <= 4) return "porcje";
-    return "porcji";
+    return getPolishPortionLabel(count);
   }
 
   getPortionGenitive(): string {
