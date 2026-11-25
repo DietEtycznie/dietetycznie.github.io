@@ -1316,6 +1316,7 @@
 
   .dietitian-section {
     padding: 3rem 0 3.25rem;
+    background: var(--bg-surface);
   }
 
   .dietitian-grid {
@@ -1337,19 +1338,23 @@
     order: 2;
     min-height: 0;
     width: 100%;
-    max-width: 300px;
-    margin: 0.25rem auto 0.35rem;
-    padding: 1rem 1rem 0;
-    border-radius: 16px;
-    border: 1px solid var(--border-subtle);
-    background:
-      radial-gradient(circle at 50% 85%, rgba(32, 178, 127, 0.16), transparent 72%),
-      var(--bg-subtle);
+    max-width: none;
+    margin: 0.25rem 0 0.45rem;
+    padding: 0.75rem 0 0;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-subtle);
+    background: radial-gradient(
+      280px 185px at 50% 100%,
+      rgba(32, 178, 127, 0.16) 0%,
+      rgba(32, 178, 127, 0.05) 52%,
+      transparent 78%
+    );
     overflow: hidden;
   }
 
   .dietitian-silhouette {
-    max-width: 230px;
+    max-width: 245px;
   }
 
   .dietitian-bio {
