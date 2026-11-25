@@ -3,17 +3,108 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrapAdmin() {
+      return isSignedIn() && request.auth.uid == 'QXmfYBytYyPzHQKr3IhMILGlQrv2';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        isBootstrapAdmin() ||
+        request.auth.token.admin == true ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        )
+      );
+    }
+
+    // Public catalog of recipes — readable by anyone, writable only by admins
+    match /recipes/{recipeId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Public catalog of medical conditions — readable by anyone, writable only by admins
+    match /medicalConditions/{conditionId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Diet plans:
+    // - Public templates (userId == null) readable by everyone, writable only by admins
+    // - Personalized clinical plans (isPersonalized == true) readable by owner & admins, writable ONLY by admins
+    // - Regular user plans (userId == auth.uid && isPersonalized != true) manageable by owner
+    match /dietPlans/{planId} {
+      allow read: if resource.data.userId == null
+        || (isSignedIn() && resource.data.userId == request.auth.uid)
+        || isAdmin();
+
+      allow create: if isAdmin()
+        || (
+          isSignedIn() &&
+          request.resource.data.userId == request.auth.uid &&
+          request.resource.data.get('isPersonalized', false) == false
+        );
+
+      allow update: if isAdmin()
+        || (
+          isSignedIn() &&
+          resource.data.userId == request.auth.uid &&
+          request.resource.data.userId == request.auth.uid &&
+          resource.data.get('isPersonalized', false) == false &&
+          request.resource.data.get('isPersonalized', false) == false
+        );
+
+      allow delete: if isAdmin()
+        || (
+          isSignedIn() &&
+          resource.data.userId == request.auth.uid &&
+          resource.data.get('isPersonalized', false) == false
+        );
+    }
+
+    // User profiles — users can manage their own profile, but ONLY existing admins can set/change `role`
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+
+      allow create: if isAdmin()
+        || (
+          isSignedIn() &&
+          request.auth.uid == userId &&
+          !('role' in request.resource.data)
+        );
+
+      allow update: if isAdmin()
+        || (
+          isSignedIn() &&
+          request.auth.uid == userId &&
+          request.resource.data.get('role', 'user') == resource.data.get('role', 'user')
+        );
+
+      allow delete: if isAdmin();
+    }
+
+    // Admin registry — readable by self/admins, writable ONLY by existing admins
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Private plan requests / demo paywall orders
+    match /privatePlanOrders/{orderId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Default deny everything else
     match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 6, 22);
+      allow read, write: if false;
     }
   }
 }

@@ -1,10 +1,41 @@
 <app-presentation-header
   title="Choroby dietozależne"
-  description="Poznaj najważniejsze choroby dietozależne i dowiedz się, jak odpowiednia dieta oraz styl życia mogą wspierać leczenie i profilaktykę. Sprawdź zalecenia, produkty wskazane i niewskazane oraz praktyczne porady dla każdej jednostki chorobowej."
-></app-presentation-header>
-<div class="conditions-list">
-  <app-medical-condition-card
-    *ngFor="let condition of conditions$ | async"
-    [condition]="condition"
-  ></app-medical-condition-card>
+  description="Poznaj najważniejsze jednostki chorobowe i sprawdź oparte na wytycznych NCEŻ zalecenia żywieniowe, produkty wskazane i niewskazane oraz pasujące przepisy."
+>
+  <app-search-input
+    class="header-search"
+    [(value)]="searchQuery"
+    (valueChange)="selectedConditionId = null"
+    placeholder="Szukaj choroby..."
+    ariaLabel="Szukaj jednostki chorobowej"
+  ></app-search-input>
+</app-presentation-header>
+
+<div class="container conditions-page fade-in">
+  <app-filter-strip
+    [items]="conditionFilterItems"
+    [activeValue]="selectedConditionId || ''"
+    (selected)="selectCondition($event || null)"
+  ></app-filter-strip>
+
+  <div class="conditions-list">
+    @for (condition of visibleConditions; track condition.id) {
+      <app-medical-condition-card
+        [condition]="condition"
+        [expandedByDefault]="selectedConditionId === condition.id"
+      ></app-medical-condition-card>
+    } @empty {
+      <div class="surface-card empty-box">
+        <mat-icon>search_off</mat-icon>
+        <h3>Nie znaleziono pasującej jednostki chorobowej</h3>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="searchQuery = ''; selectCondition(null)"
+        >
+          Pokaż wszystkie
+        </button>
+      </div>
+    }
+  </div>
 </div>

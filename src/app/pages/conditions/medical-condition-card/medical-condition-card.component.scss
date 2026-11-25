@@ -1,143 +1,135 @@
-@import "../../../../vars";
+@use "../../../../vars" as *;
 
 .condition-card {
-  width: 100%;
-  max-width: 1440px;
-  padding: 1rem 1.5rem 1.5rem 1.5rem;
-  margin-bottom: 1.2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 18px;
-  background: #fff;
+  padding: 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
-  position: relative;
+  gap: 1.25rem;
 }
-mat-card-header {
-  border-radius: 18px 18px 0 0;
-  background: none;
-}
-mat-card-title {
+
+.condition-card__head {
   display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-size: 2rem;
-  font-weight: 600;
-  color: $text-color;
+  align-items: flex-start;
+  gap: 1rem;
+
+  h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.4rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
 }
-mat-card-content > p {
-  font-size: 1.15rem;
-  margin-bottom: 1.2rem;
-  color: #444;
-}
-mat-accordion {
-  margin-top: 1rem;
-}
-ul {
-  padding-left: 1.5rem;
-  margin: 0;
-}
-li {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-size: 1.05rem;
-  margin-bottom: 0.7rem;
-}
-mat-icon {
-  vertical-align: middle;
-  font-size: 1.15em;
-  width: 1.4em;
-  height: 1.4em;
-  min-width: 1.4em;
-  min-height: 1.4em;
+
+.condition-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: $primary-soft;
+  color: $primary-dark;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-mat-expansion-panel-header {
-  font-size: 1.1rem;
-  font-weight: 500;
+  flex-shrink: 0;
 }
 
-.card-icon {
-  margin-right: 0.7rem;
+.condition-accordion {
+  ::ng-deep .mat-expansion-panel {
+    box-shadow: none !important;
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px !important;
+    margin-bottom: 0.5rem;
+    background: var(--bg-subtle);
+    color: var(--ink-primary);
+  }
+
+  ::ng-deep .mat-expansion-panel-header {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 600;
+    font-size: 0.94rem;
+  }
+
+  ::ng-deep .mat-expansion-panel-header-title {
+    color: var(--ink-primary);
+  }
 }
 
-.btn-text {
-  color: $primary-color;
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  transition: all 0.3s;
-  margin: 1rem;
+.panel-icon {
+  margin-right: 0.55rem;
+  color: var(--accent-primary);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+
+  &--warn {
+    color: $warn-color;
+  }
 }
 
-.btn-text:hover {
-  color: $primary-hover;
-}
-
-.arrow {
-  margin-left: 0.5rem;
-  transition: transform 0.3s;
-}
-
-.btn-text:hover .arrow {
-  transform: translateX(5px);
-}
-
-mat-card-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-  align-items: flex-end;
+.rec-list {
+  list-style: none;
+  margin: 0;
   padding: 0;
-}
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
 
-button[mat-stroked-button] {
-  min-width: 180px;
-  font-weight: 600;
-  font-size: 1.05rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
-  background: #f7f7fa;
-  color: #1976d2;
-  border: 1.5px solid #1976d2;
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-
-button[mat-stroked-button]:hover {
-  background: #e3f2fd;
-  color: #0d47a1;
-}
-
-a {
-  cursor: pointer;
-}
-
-@media (max-width: 900px) {
-  .condition-card {
-    max-width: 98vw;
-    margin: 0 1vw 2rem 1vw;
-    padding: 0.7rem 0.5rem 1rem 0.5rem;
-  }
-  mat-card-title {
-    font-size: 1.8rem;
-  }
-  button[mat-stroked-button] {
-    min-width: 120px;
-    font-size: 0.98rem;
-  }
-  mat-card-actions {
-    flex-direction: column;
+  li {
+    display: flex;
     align-items: flex-start;
-    margin: 1rem;
-    gap: 0.8rem;
-  }
+    gap: 0.55rem;
+    font-size: 0.9rem;
+    color: var(--ink-primary);
+    line-height: 1.5;
 
-  .btn-text {
-    margin: 0.5rem;
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.icon-ok {
+  color: $primary-color;
+}
+
+.icon-warn {
+  color: $warn-color;
+}
+
+.condition-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px solid $surface-border;
+}
+
+.condition-card__ctas {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .condition-card {
+    padding: 1.2rem;
+  }
+  .condition-card__ctas {
+    width: 100%;
+    margin-left: 0;
+    button {
+      flex: 1;
+    }
   }
 }

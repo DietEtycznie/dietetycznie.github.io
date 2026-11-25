@@ -1,87 +1,291 @@
-<div class="recipe-details">
-  <div class="image-meta-col">
-    <div class="image-wrapper" *ngIf="recipe?.imageUrl">
-      <img
-        [src]="recipe?.imageUrl"
-        (error)="handleImageError($event)"
-        alt="Zdjęcie przepisu"
-      />
-      <div class="like-button" *ngIf="user$ | async" (click)="toggleLike()">
-        <mat-icon *ngIf="!like" class="favorite-icon">favorite_border</mat-icon>
-        <mat-icon *ngIf="like" class="favorite-icon red">favorite</mat-icon>
-      </div>
-    </div>
-    <div class="under-image-meta">
-      <div class="meta-row">
-        <div class="meta-item">
-          <mat-icon color="primary">schedule</mat-icon>
-          <span>{{ recipe?.prepTimeMinutes }} min</span>
-        </div>
-        <div class="meta-item">
-          <mat-icon color="primary">restaurant</mat-icon>
-          <span
-            >{{ recipe?.servings }} {{ getPortionText(recipe?.servings) }}</span
-          >
-        </div>
-        <div class="meta-item">
-          <mat-icon color="primary">event</mat-icon>
-          <span>Dodano: {{ recipe?.createdAt | date: "mediumDate" }}</span>
-        </div>
-        <div class="meta-item">
-          <mat-icon color="primary">update</mat-icon>
-          <span
-            >Aktualizacja: {{ recipe?.updatedAt | date: "mediumDate" }}</span
-          >
-        </div>
-      </div>
+<div class="recipe-detail-shell fade-in">
+  <div class="container">
+    <!-- Print-only branded header (logo left + domain right) -->
+    <app-print-header></app-print-header>
 
-      <div class="conditions-row">
-        <app-pills [list]="tags"></app-pills>
+    <nav class="breadcrumbs" aria-label="Ścieżka nawigacji">
+      <a routerLink="/">Start</a>
+      <span class="crumb-sep">/</span>
+      <a routerLink="/przepisy">Przepisy</a>
+      @if (recipe) {
+        <span class="crumb-sep">/</span>
+        <span class="crumb-current">{{ recipe.name }}</span>
+      }
+    </nav>
+
+    @if (notFound) {
+      <div class="not-found-box">
+        <mat-icon>restaurant_menu</mat-icon>
+        <h2>Nie znaleziono przepisu</h2>
+        <p>Wybrana potrawa mogła zostać usunięta lub link jest nieprawidłowy.</p>
+        <a routerLink="/przepisy" class="btn btn-primary">Wróć do katalogu przepisów</a>
       </div>
-    </div>
-  </div>
-  <div class="main-content">
-    <h2 class="recipe-title">{{ recipe?.name }}</h2>
-    <div class="description">
-      <p>{{ recipe?.description }}</p>
-    </div>
-    <div class="nutrition" *ngIf="recipe">
-      <div class="nutrition-item">
-        <span class="label">Kalorie:</span>
-        <span class="value">{{ recipe.calories }}</span>
-      </div>
-      <div class="nutrition-item">
-        <span class="label">Białko:</span>
-        <span class="value">{{ recipe.protein }} g</span>
-      </div>
-      <div class="nutrition-item">
-        <span class="label">Tłuszcze:</span>
-        <span class="value">{{ recipe.fat }} g</span>
-      </div>
-      <div class="nutrition-item">
-        <span class="label">Węgle:</span>
-        <span class="value">{{ recipe.carbs }} g</span>
-      </div>
-      <div class="nutrition-item">
-        <span class="label">Sód:</span>
-        <span class="value">{{ recipe.sodium }} mg</span>
-      </div>
-      <div class="nutrition-item">
-        <span class="label">Błonnik:</span>
-        <span class="value">{{ recipe.fiber }} g</span>
-      </div>
-    </div>
-    <div class="ingredients">
-      <h3>Składniki</h3>
-      <ul>
-        <li *ngFor="let ing of recipe?.ingredients">{{ ing }}</li>
-      </ul>
-    </div>
-    <div class="instructions">
-      <h3>Przygotowanie</h3>
-      <ol>
-        <li *ngFor="let step of recipe?.instructions">{{ step }}</li>
-      </ol>
-    </div>
+    } @else if (recipe) {
+      <!-- 1. EDITORIAL HERO -->
+      <section class="detail-hero">
+        <div class="hero-media">
+          <img
+            [src]="resolvedImageUrl"
+            (error)="handleImageError($event)"
+            [alt]="recipe.name"
+          />
+          @if (user$ | async) {
+            <button
+              type="button"
+              class="like-fab"
+              [class.is-liked]="like"
+              (click)="toggleLike()"
+              [attr.aria-label]="like ? 'Usuń z polubionych' : 'Dodaj do polubionych'"
+            >
+              <mat-icon>{{ like ? "favorite" : "favorite_border" }}</mat-icon>
+            </button>
+          }
+        </div>
+
+        <div class="hero-info">
+          <div class="hero-kicker">
+            @if (recipe.mealType.length) {
+              <span class="kicker-accent">{{ recipe.mealType.join(" · ") }}</span>
+              <span class="kicker-dot"></span>
+            }
+            <span>{{ recipe.prepTimeMinutes }} min</span>
+            @if (recipe.stars) {
+              <span class="kicker-dot"></span>
+              <span class="kicker-rating">
+                <mat-icon>star</mat-icon>
+                {{ recipe.stars | number: "1.1-1" }}
+              </span>
+            }
+          </div>
+
+          <h1 class="detail-title">{{ recipe.name }}</h1>
+          <p class="detail-desc">{{ recipe.description }}</p>
+
+          <!-- Clean Inline Nutrition Strip -->
+          <div class="nutrition-strip">
+            <div class="nutrition-metrics">
+              <div class="metric metric--kcal">
+                <strong>{{ scaledValue(recipe.calories) }}</strong>
+                <span>kcal</span>
+              </div>
+              <div class="metric">
+                <strong>{{ scaledValue(recipe.protein) }} g</strong>
+                <span>Białko</span>
+              </div>
+              <div class="metric">
+                <strong>{{ scaledValue(recipe.carbs) }} g</strong>
+                <span>Węgle</span>
+              </div>
+              <div class="metric">
+                <strong>{{ scaledValue(recipe.fat) }} g</strong>
+                <span>Tłuszcz</span>
+              </div>
+              <div class="metric">
+                <strong>{{ scaledValue(recipe.fiber) }} g</strong>
+                <span>Błonnik</span>
+              </div>
+              <div class="metric">
+                <strong>{{ scaledValue(recipe.sodium) }} mg</strong>
+                <span>Sód</span>
+              </div>
+            </div>
+
+            <div class="macro-bar" role="img" aria-label="Proporcje makroskładników">
+              <div class="macro-bar__seg macro-bar__seg--p" [style.width.%]="macroPercentages.protein"></div>
+              <div class="macro-bar__seg macro-bar__seg--c" [style.width.%]="macroPercentages.carbs"></div>
+              <div class="macro-bar__seg macro-bar__seg--f" [style.width.%]="macroPercentages.fat"></div>
+            </div>
+
+            <div class="macro-meta-row">
+              <div class="macro-legend">
+                <span><i class="dot dot--p"></i> Białko {{ macroPercentages.protein }}%</span>
+                <span><i class="dot dot--c"></i> Węgle {{ macroPercentages.carbs }}%</span>
+                <span><i class="dot dot--f"></i> Tłuszcz {{ macroPercentages.fat }}%</span>
+              </div>
+              <span class="macro-scope">Wartości dla {{ servings }} {{ getPortionGenitive() }}</span>
+            </div>
+          </div>
+
+          <!-- Unified Action Row: Servings Stepper + Print + Add to Plan -->
+          <div class="hero-actions">
+            <div class="portion-stepper" aria-label="Przelicznik porcji">
+              <button
+                type="button"
+                (click)="changeServings(-1)"
+                [disabled]="servings <= 1"
+                aria-label="Mniej porcji"
+              >
+                −
+              </button>
+              <span>{{ servings }} {{ getPortionText(servings) }}</span>
+              <button
+                type="button"
+                (click)="changeServings(1)"
+                [disabled]="servings >= 10"
+                aria-label="Więcej porcji"
+              >
+                +
+              </button>
+            </div>
+
+            <div class="hero-actions__right">
+              <button type="button" class="btn btn-secondary" (click)="printRecipe()">
+                <mat-icon>print</mat-icon>
+                Drukuj
+              </button>
+
+              <button type="button" class="btn btn-primary" (click)="openAddToPlan()">
+                <mat-icon>playlist_add</mat-icon>
+                Dodaj do jadłospisu
+              </button>
+            </div>
+          </div>
+
+          @if (addPlanOpen) {
+            <div class="add-plan-drawer">
+              @if (userPlans.length === 0) {
+                <p class="drawer-empty">
+                  Nie masz jeszcze własnego jadłospisu.
+                  <a routerLink="/jadlospisy" [queryParams]="{ section: 'myPlans' }"
+                    >Utwórz pierwszy plan →</a
+                  >
+                </p>
+              } @else {
+                <div class="drawer-fields">
+                  <mat-select class="app-select drawer-plan" [(ngModel)]="selectedPlanId" name="planId" aria-label="Wybierz jadłospis">
+                    @for (p of userPlans; track p.id) {
+                      <mat-option [value]="p.id">{{ p.name }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-select class="app-select" [(ngModel)]="selectedDay" name="dayKey" aria-label="Wybierz dzień">
+                    @for (d of weekDays; track d.key) {
+                      <mat-option [value]="d.key">{{ d.label }}</mat-option>
+                    }
+                  </mat-select>
+                  <mat-select class="app-select" [(ngModel)]="selectedMealIndex" name="mealIdx" aria-label="Wybierz posiłek">
+                    @for (m of mealTypes; track m; let i = $index) {
+                      <mat-option [value]="i">{{ m }}</mat-option>
+                    }
+                  </mat-select>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="confirmAddToPlan()"
+                  >
+                    Zapisz
+                  </button>
+                </div>
+                @if (addedToPlanMessage) {
+                  <div class="drawer-success">{{ addedToPlanMessage }}</div>
+                }
+              }
+            </div>
+          }
+
+          <!-- Quiet, understated tag links -->
+          @if (recipe.suitableForConditions.length || recipe.dietTags.length) {
+            <div class="quiet-tags">
+              @for (cond of recipe.suitableForConditions; track cond) {
+                <a
+                  routerLink="/przepisy"
+                  [queryParams]="{ condition: cond }"
+                  class="q-tag q-tag--cond"
+                >
+                  {{ cond }}
+                </a>
+              }
+              @for (diet of recipe.dietTags; track diet) {
+                <a
+                  routerLink="/przepisy"
+                  [queryParams]="{ diet: diet }"
+                  class="q-tag"
+                >
+                  {{ diet }}
+                </a>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- 2. CLEAN 2-COLUMN COOKING WORKSPACE -->
+      <section class="cooking-grid">
+        <!-- Ingredients Checklist -->
+        <aside class="ingredients-col">
+          <div class="section-head">
+            <h2>Składniki</h2>
+            <span class="counter-meta">
+              {{ checkedIngredients.size }} / {{ recipe.ingredients.length }}
+            </span>
+          </div>
+
+          <div class="ingredients-list">
+            @for (ing of recipe.ingredients; track $index; let i = $index) {
+              <label
+                class="ingredient-row"
+                [class.is-checked]="checkedIngredients.has(i)"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="checkedIngredients.has(i)"
+                  (change)="toggleIngredient(i)"
+                />
+                <span>{{ scaleIngredient(ing) }}</span>
+              </label>
+            }
+          </div>
+        </aside>
+
+        <!-- Cooking Steps -->
+        <div class="steps-col">
+          <div class="section-head">
+            <h2>Przygotowanie</h2>
+            <span class="counter-meta">
+              {{ checkedSteps.size }} / {{ recipe.instructions.length }}
+            </span>
+          </div>
+
+          <ol class="steps-list">
+            @for (step of recipe.instructions; track $index; let i = $index) {
+              <li
+                class="step-row"
+                [class.is-done]="checkedSteps.has(i)"
+                (click)="toggleStep(i)"
+              >
+                <span class="step-num">
+                  @if (checkedSteps.has(i)) {
+                    <mat-icon>check</mat-icon>
+                  } @else {
+                    {{ (i + 1) < 10 ? "0" + (i + 1) : i + 1 }}
+                  }
+                </span>
+                <p>{{ step }}</p>
+              </li>
+            }
+          </ol>
+
+          @if (recipe.updatedAt) {
+            <p class="recipe-updated">
+              Aktualizacja przepisu: {{ formatDate(recipe.updatedAt) }}
+            </p>
+          }
+        </div>
+      </section>
+
+      <!-- 3. SIMILAR RECIPES -->
+      @if (similarRecipes.length > 0) {
+        <section class="similar-section">
+          <div class="similar-head">
+            <h2>Podobne przepisy</h2>
+            <a routerLink="/przepisy" class="similar-all-link">Wszystkie przepisy →</a>
+          </div>
+          <div class="similar-grid">
+            @for (sim of similarRecipes; track sim.uid) {
+              <app-recipe-card [recipe]="sim"></app-recipe-card>
+            }
+          </div>
+        </section>
+      }
+    }
   </div>
 </div>

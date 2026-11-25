@@ -1,94 +1,198 @@
 import { inject, Injectable } from "@angular/core";
 import {
-  Firestore,
-  collection,
-  doc,
   addDoc,
-  updateDoc,
+  collection,
   deleteDoc,
-  getDocs,
+  doc,
   getDoc,
-  query,
-  where,
-  orderBy,
+  getDocs,
   limit,
-  DocumentData,
-} from "@angular/fire/firestore";
-import { Observable, from, map, tap } from "rxjs";
-import { Recipe, RecipeModel } from "../models/recipe.model";
+  orderBy,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { catchError, from, map, Observable, of } from "rxjs";
+import { SEED_RECIPES } from "../data/seed-recipes";
+import { Recipe, RecipeModel, resolveRecipeImageUrl } from "../models/recipe.model";
+import { FirebaseService } from "./firebase.service";
+import { LocalStoreService } from "./local-store.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class RecipeService {
-  private firestore = inject(Firestore);
+  private firebase = inject(FirebaseService);
+  private localStore = inject(LocalStoreService);
 
   getRecipes(): Observable<Recipe[]> {
-    const recipesRef = collection(this.firestore, "recipes");
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      return of(this.localStore.getRecipes());
+    }
+
+    const recipesRef = collection(this.firebase.db, "recipes");
     return from(getDocs(recipesRef)).pipe(
-      map((snapshot) =>
-        snapshot.docs.map((doc) => RecipeModel.toRecipe(doc.data(), doc.id)),
-      ),
+      map((snapshot) => {
+        const list = snapshot.docs.map((d) => RecipeModel.toRecipe(d.data(), d.id));
+        if (list.length === 0) {
+          return this.localStore.getRecipes();
+        }
+        return list;
+      }),
+      catchError((err) => {
+        console.warn("Firestore recipes fetch failed, using seed fallback.", err);
+        this.firebase.activateFallback("Brak dostępu do Firestore — aktywowano lokalną bazę seed.");
+        return of(this.localStore.getRecipes());
+      }),
     );
   }
 
   getRecipesByCondition(condition: string): Observable<Recipe[]> {
-    const recipesRef = collection(this.firestore, "recipes");
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      return of(
+        this.localStore
+          .getRecipes()
+          .filter((r) => r.suitableForConditions.includes(condition)),
+      );
+    }
+
+    const recipesRef = collection(this.firebase.db, "recipes");
     const q = query(
       recipesRef,
       where("suitableForConditions", "array-contains", condition),
     );
-
     return from(getDocs(q)).pipe(
       map((snapshot) =>
-        snapshot.docs.map((doc) => RecipeModel.toRecipe(doc.data(), doc.id)),
+        snapshot.docs.map((d) => RecipeModel.toRecipe(d.data(), d.id)),
+      ),
+      catchError(() =>
+        of(
+          this.localStore
+            .getRecipes()
+            .filter((r) => r.suitableForConditions.includes(condition)),
+        ),
       ),
     );
   }
 
-  getRecipeById(id: string): Observable<Recipe> {
-    const recipeRef = doc(this.firestore, `recipes/${id}`);
+  getRecipeById(id: string): Observable<Recipe | null> {
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      const found = this.localStore.getRecipes().find((r) => r.uid === id) ?? null;
+      return of(found);
+    }
+
+    const recipeRef = doc(this.firebase.db, `recipes/${id}`);
     return from(getDoc(recipeRef)).pipe(
-      map((doc) => RecipeModel.toRecipe(doc.data(), doc.id)),
+      map((snap) =>
+        snap.exists() ? RecipeModel.toRecipe(snap.data(), snap.id) : null,
+      ),
+      catchError(() => {
+        const found =
+          this.localStore.getRecipes().find((r) => r.uid === id) ?? null;
+        return of(found);
+      }),
     );
   }
 
   addRecipe(
     recipe: Omit<Recipe, "uid" | "createdAt" | "updatedAt">,
   ): Observable<string> {
-    const recipesRef = collection(this.firestore, "recipes");
-    const newRecipe = {
+    const now = new Date();
+    const normalized = {
       ...recipe,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      imageUrl: recipe.imageUrl || "fallback-plate.png",
+      createdAt: now,
+      updatedAt: now,
     };
 
-    return from(addDoc(recipesRef, newRecipe)).pipe(map((docRef) => docRef.id));
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      const id = "rec-" + Date.now();
+      const all = this.localStore.getRecipes();
+      all.unshift({
+        ...normalized,
+        uid: id,
+        imageUrl: resolveRecipeImageUrl(normalized.imageUrl),
+      });
+      this.localStore.saveRecipes(all);
+      return of(id);
+    }
+
+    const recipesRef = collection(this.firebase.db, "recipes");
+    return from(
+      addDoc(recipesRef, this.firebase.cleanPayload(normalized)),
+    ).pipe(map((docRef) => docRef.id));
   }
 
   updateRecipe(id: string, recipe: Partial<Recipe>): Observable<void> {
-    const recipeRef = doc(this.firestore, `recipes/${id}`);
-    const updatedRecipe = {
-      ...recipe,
-      updatedAt: new Date(),
-    };
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      const all = this.localStore.getRecipes().map((r) =>
+        r.uid === id
+          ? {
+              ...r,
+              ...recipe,
+              imageUrl: resolveRecipeImageUrl(recipe.imageUrl ?? r.imageUrl),
+              updatedAt: new Date(),
+            }
+          : r,
+      );
+      this.localStore.saveRecipes(all);
+      return of(void 0);
+    }
 
-    return from(updateDoc(recipeRef, updatedRecipe));
+    const { uid: _ignoredUid, ...rest } = recipe;
+    const recipeRef = doc(this.firebase.db, `recipes/${id}`);
+    return from(
+      updateDoc(
+        recipeRef,
+        this.firebase.cleanPayload({
+          ...rest,
+          updatedAt: new Date(),
+        }),
+      ),
+    );
   }
 
   deleteRecipe(id: string): Observable<void> {
-    const recipeRef = doc(this.firestore, `recipes/${id}`);
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      const filtered = this.localStore.getRecipes().filter((r) => r.uid !== id);
+      this.localStore.saveRecipes(filtered);
+      return of(void 0);
+    }
+
+    const recipeRef = doc(this.firebase.db, `recipes/${id}`);
     return from(deleteDoc(recipeRef));
   }
 
-  getRecentRecipes(count: number = 5): Observable<Recipe[]> {
-    const recipesRef = collection(this.firestore, "recipes");
-    const q = query(recipesRef, orderBy("createdAt", "desc"), limit(count));
+  getRecentRecipes(count = 6): Observable<Recipe[]> {
+    if (this.firebase.isFallbackMode || !this.firebase.db) {
+      return of(this.localStore.getRecipes().slice(0, count));
+    }
 
+    const recipesRef = collection(this.firebase.db, "recipes");
+    const q = query(recipesRef, orderBy("createdAt", "desc"), limit(count));
     return from(getDocs(q)).pipe(
-      map((snapshot) =>
-        snapshot.docs.map((doc) => RecipeModel.toRecipe(doc.data(), doc.id)),
-      ),
+      map((snapshot) => {
+        const list = snapshot.docs.map((d) => RecipeModel.toRecipe(d.data(), d.id));
+        return list.length ? list : this.localStore.getRecipes().slice(0, count);
+      }),
+      catchError(() => of(this.localStore.getRecipes().slice(0, count))),
     );
+  }
+
+  async seedToFirestore(): Promise<number> {
+    if (!this.firebase.db) {
+      this.localStore.resetAllToSeed();
+      return SEED_RECIPES.length;
+    }
+    let count = 0;
+    for (const r of SEED_RECIPES) {
+      const { uid, ...payload } = r;
+      await setDoc(doc(this.firebase.db, `recipes/${uid}`), payload, {
+        merge: true,
+      });
+      count++;
+    }
+    return count;
   }
 }

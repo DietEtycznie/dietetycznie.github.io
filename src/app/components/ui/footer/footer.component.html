@@ -1,48 +1,55 @@
-<footer class="footer" [class.footer-margin]="withMargin">
+<footer class="site-footer">
   <div class="container">
-    <div class="footer-content">
-      <div class="footer-logo">
-        <div class="logo-div"></div>
-        <p>Spersonalizowane diety dla Twojego zdrowia</p>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a routerLink="/" class="footer-lockup" aria-label="DietEtycznie">
+          <app-brand-logo size="sm" surface="surface"></app-brand-logo>
+        </a>
+        <p>
+          Spersonalizowane jadłospisy, sprawdzone przepisy z pełnym makro oraz
+          praktyczne zalecenia dla chorób dietozależnych oparte na wytycznych NCEŻ.
+        </p>
       </div>
 
-      <div class="footer-links">
-        <div class="link-group">
-          <h3>Nawigacja</h3>
-          <ul>
-            <li><a routerLink="/">Strona główna</a></li>
-            <li><a routerLink="/conditions">Chroby dietozależne</a></li>
-            <li><a routerLink="/recipes">Przepisy</a></li>
-            <li><a routerLink="/diet-plans">Plany dietetyczne</a></li>
-          </ul>
-        </div>
+      <div class="footer-col">
+        <h4>Odkrywaj</h4>
+        <ul>
+          <li><a routerLink="/">Strona główna</a></li>
+          <li><a routerLink="/przepisy">Katalog przepisów</a></li>
+          <li><a routerLink="/choroby">Choroby dietozależne</a></li>
+          <li><a routerLink="/jadlospisy">Jadłospisy tygodniowe</a></li>
+        </ul>
+      </div>
 
-        <div class="link-group">
-          <h3>Konto</h3>
-          <ul>
-            <li><a routerLink="/login">Logowanie</a></li>
-            <li><a routerLink="/register">Rejestracja</a></li>
-            <li><a routerLink="/profile">Profil</a></li>
-          </ul>
-        </div>
+      <div class="footer-col">
+        <h4>Twoje konto</h4>
+        <ul>
+          <li><a routerLink="/logowanie">Logowanie</a></li>
+          <li><a routerLink="/rejestracja">Rejestracja</a></li>
+          <li>
+            <a routerLink="/jadlospisy" [queryParams]="{ section: 'myPlans' }"
+              >Moje jadłospisy</a
+            >
+          </li>
+          <li>
+            <a routerLink="/przepisy" [queryParams]="{ liked: '1' }"
+              >Polubione przepisy</a
+            >
+          </li>
+        </ul>
+      </div>
 
-        <div class="link-group">
-          <h3>Zasoby</h3>
-          <ul>
-            <li><a routerLink="/about">O nas</a></li>
-            <li><a routerLink="/contact">Kontakt</a></li>
-            <li><a routerLink="/privacy">Polityka prywatności</a></li>
-            <li><a routerLink="/terms">Regulamin</a></li>
-          </ul>
-        </div>
+      <div class="footer-col">
+        <h4>Ważna informacja</h4>
+        <p class="disclaimer">
+          Treści mają charakter edukacyjny i wspierają zdrowe nawyki żywieniowe.
+          Nie zastępują indywidualnej konsultacji lekarskiej ani dietetycznej.
+        </p>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <p>
-        <a routerLink="/admin" style="text-decoration: none">&copy;</a> 2025
-        DietEtycznie. Wszelkie prawa zastrzeżone.
-      </p>
+      <span>&copy; 2026 DietEtycznie. Wszelkie prawa zastrzeżone.</span>
     </div>
   </div>
 </footer>

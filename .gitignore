@@ -2,5 +2,9 @@
 dist
 node_modules
 .env
+.env.*
+.idea
+*.log
+backups/*.json
 src/environments/environment.ts
 src/environments/environment.prod.ts

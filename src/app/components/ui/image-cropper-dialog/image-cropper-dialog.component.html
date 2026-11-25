@@ -1,0 +1,263 @@
+@if (isOpen) {
+  <div class="cropper-backdrop" (click)="close()">
+    <div
+      class="cropper-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cropperTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="cropper-header">
+        <div>
+          <h3 id="cropperTitle">Przytnij zdjęcie przepisu</h3>
+          <p>Przesuwaj kadr, przybliżaj i dopasuj zaokrąglenie rogów — tło poza kształtem będzie przezroczyste.</p>
+        </div>
+        <button type="button" class="icon-close" (click)="close()" aria-label="Zamknij">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <input
+        #fileInput
+        type="file"
+        accept="image/*"
+        class="sr-file"
+        (change)="onFileSelected($event)"
+      />
+
+      <div class="cropper-body">
+        <!-- Left: Interactive stage -->
+        <div class="stage-col">
+          @if (!sourceDataUrl) {
+            <div
+              class="dropzone"
+              [class.is-over]="isFileDragOver"
+              (click)="triggerFilePicker()"
+              (dragover)="onFileDragOver($event)"
+              (dragleave)="onFileDragLeave($event)"
+              (drop)="onFileDrop($event)"
+            >
+              <mat-icon>add_photo_alternate</mat-icon>
+              <strong>Upuść zdjęcie lub kliknij, aby wybrać</strong>
+              <span>PNG, JPG lub WebP — najlepiej zdjęcie dania z góry</span>
+            </div>
+          } @else {
+            <div
+              class="stage-frame"
+              [class.is-dragging]="isDragging"
+              (pointerdown)="onStagePointerDown($event)"
+              (wheel)="onStageWheel($event)"
+              (dragover)="onFileDragOver($event)"
+              (dragleave)="onFileDragLeave($event)"
+              (drop)="onFileDrop($event)"
+            >
+              <div
+                class="stage-mask"
+                [style.border-radius.%]="borderRadius"
+              >
+                <img
+                  [src]="sourceDataUrl"
+                  alt="Podgląd przycinania"
+                  class="stage-img"
+                  [style.transform]="previewTransform"
+                  draggable="false"
+                />
+              </div>
+
+              <!-- Subtle shape outline guide -->
+              <div
+                class="stage-outline"
+                [style.border-radius.%]="borderRadius"
+                aria-hidden="true"
+              ></div>
+            </div>
+
+            <div class="stage-hint">
+              <span>Przeciągnij, aby wykadrować · scroll przybliża</span>
+              <div class="stage-quick-actions">
+                <button type="button" class="mini-btn" (click)="triggerFilePicker()">
+                  Zmień plik
+                </button>
+                <button type="button" class="mini-btn" (click)="resetTransform()">
+                  Wyśrodkuj
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (errorMessage) {
+            <div class="cropper-error">{{ errorMessage }}</div>
+          }
+        </div>
+
+        <!-- Right: Controls & live card preview -->
+        <div class="controls-col">
+          <div class="control-block">
+            <div class="control-label">
+              <span>Kształt / zaokrąglenie</span>
+              <strong>{{ radiusLabel }}</strong>
+            </div>
+
+            <div class="preset-row">
+              @for (preset of radiusPresets; track preset.value) {
+                <button
+                  type="button"
+                  class="preset-btn"
+                  [class.is-active]="borderRadius === preset.value"
+                  (click)="setRadiusPreset(preset.value)"
+                >
+                  <span
+                    class="preset-swatch"
+                    [style.border-radius.%]="preset.value"
+                  ></span>
+                  {{ preset.label }}
+                </button>
+              }
+            </div>
+
+            <input
+              type="range"
+              min="0"
+              max="50"
+              step="1"
+              [(ngModel)]="borderRadius"
+              aria-label="Zaokrąglenie rogów w procentach"
+              class="range-slider"
+            />
+            <div class="range-scale">
+              <span>Ostro (0%)</span>
+              <span>Zaokrąglony</span>
+              <span>Koło (50%)</span>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <div class="control-label">
+              <span>Przybliżenie</span>
+              <strong>{{ zoom | number: "1.2-2" }}×</strong>
+            </div>
+            <input
+              type="range"
+              min="0.6"
+              max="3"
+              step="0.02"
+              [ngModel]="zoom"
+              (ngModelChange)="setZoom($event)"
+              [disabled]="!sourceDataUrl"
+              aria-label="Przybliżenie zdjęcia"
+              class="range-slider"
+            />
+          </div>
+
+          <div class="control-block">
+            <div class="control-label">
+              <span>Obrót</span>
+              <strong>{{ rotation }}°</strong>
+            </div>
+            <div class="rotate-row">
+              <button
+                type="button"
+                class="tool-btn"
+                [disabled]="!sourceDataUrl"
+                (click)="rotateBy(-90)"
+              >
+                <mat-icon>rotate_left</mat-icon>
+                -90°
+              </button>
+              <button
+                type="button"
+                class="tool-btn"
+                [disabled]="!sourceDataUrl"
+                (click)="rotateBy(90)"
+              >
+                <mat-icon>rotate_right</mat-icon>
+                +90°
+              </button>
+              <button
+                type="button"
+                class="tool-btn"
+                [disabled]="!sourceDataUrl"
+                (click)="rotation = 0"
+              >
+                0°
+              </button>
+            </div>
+          </div>
+
+          <div class="control-block">
+            <div class="control-label">
+              <span>Rozdzielczość eksportu (WebP Base64)</span>
+              <strong>{{ outputSize }} × {{ outputSize }} px</strong>
+            </div>
+            <div class="size-row">
+              @for (sp of sizePresets; track sp.size) {
+                <button
+                  type="button"
+                  class="preset-btn"
+                  [class.is-active]="outputSize === sp.size"
+                  (click)="outputSize = sp.size"
+                >
+                  {{ sp.label }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Live preview on a mini recipe card -->
+          <div class="live-card-preview">
+            <span class="preview-caption">Podgląd na karcie przepisu</span>
+            <div class="mini-recipe-card">
+              <div class="mini-recipe-media">
+                @if (sourceDataUrl) {
+                  <div
+                    class="mini-cutout"
+                    [style.border-radius.%]="borderRadius"
+                  >
+                    <img
+                      [src]="sourceDataUrl"
+                      alt=""
+                      [style.transform]="previewCardTransform"
+                      draggable="false"
+                    />
+                  </div>
+                } @else {
+                  <span class="mini-placeholder">Brak zdjęcia</span>
+                }
+              </div>
+              <div class="mini-recipe-title">
+                {{ recipeTitle || "Nowy przepis" }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cropper-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          [disabled]="!sourceDataUrl"
+          (click)="downloadPng()"
+        >
+          <mat-icon>download</mat-icon>
+          Pobierz PNG
+        </button>
+
+        <div class="footer-right">
+          <button type="button" class="btn btn-secondary" (click)="close()">
+            Anuluj
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="!sourceDataUrl"
+            (click)="applyCrop()"
+          >
+            <mat-icon>check</mat-icon>
+            Zastosuj zdjęcie
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

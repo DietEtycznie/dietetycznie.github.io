@@ -1,27 +1,36 @@
 <!doctype html>
 <html lang="pl">
   <head>
-    <title>DietEtycznie</title>
+    <title>DietEtycznie — Spersonalizowane diety i przepisy dla zdrowia</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Znajdź odpowiednią dietę dla swojego stanu zdrowia. Spersonalizowane plany żywieniowe dla różnych dolegliwości."
+      content="Znajdź odpowiednią dietę dla swojego stanu zdrowia. Spersonalizowane 7-dniowe jadłospisy, przepisy z pełnym makro i zalecenia dla chorób dietozależnych."
     />
     <base href="/" />
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <link
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("dietetycznie_theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            document.documentElement.style.colorScheme = "dark";
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body class="mat-typography">
     <app-root>
@@ -32,11 +41,13 @@
           justify-content: center;
           height: 100vh;
           text-align: center;
+          background: var(--bg-page, #f6f9f7);
+          font-family: 'Plus Jakarta Sans', sans-serif;
         "
       >
         <div>
-          <div class="logo-div" style="background-position: center"></div>
-          <p style="color: #666">
+          <div class="logo-div" style="background-position: center; height: 48px; margin-bottom: 12px;"></div>
+          <p style="color: var(--ink-secondary, #4f635a); font-size: 0.95rem;">
             Ładowanie spersonalizowanych planów żywieniowych...
           </p>
         </div>

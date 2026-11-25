@@ -1,150 +1,359 @@
-<main>
-  <section class="hero">
-    <div class="container">
-      <div class="hero-content">
-        <h1>Znajdź odpowiednią dietę dla swojego zdrowia</h1>
-        <p>
-          Spersonalizowane plany żywieniowe i przepisy dopasowane do Twoich
-          potrzeb zdrowotnych
-        </p>
-        <div class="hero-buttons">
-          <a routerLink="/diet-plans" class="btn-primary">Znajdź swoją dietę</a>
-          <a routerLink="/recipes" class="btn-secondary">Przeglądaj przepisy</a>
+<main class="home-page">
+  <!-- 1. FIRST VIEWPORT: HERO + BOTTOM SCROLL CUE -->
+  <div class="hero-screen">
+    <section class="notion-hero">
+      <div class="container notion-hero__inner">
+        <div class="notion-hero__copy">
+          <h1>
+            Jedna dieta.<br />
+            Pełen spokój.
+          </h1>
+          <p class="notion-hero__lead">
+            Sprawdzone przepisy z pełnym makro, zalecenia dla chorób
+            dietozależnych i tygodniowe jadłospisy w jednym, czystym miejscu.
+          </p>
+
+          <form class="notion-search" (ngSubmit)="submitSearch()">
+            <mat-icon>search</mat-icon>
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              name="searchQuery"
+              placeholder="Szukaj potrawy lub składnika, np. łosoś, owsianka..."
+              aria-label="Szukaj przepisów"
+            />
+            <button type="submit" class="notion-btn notion-btn--primary">
+              Szukaj
+            </button>
+          </form>
+
+          <div class="notion-hero__actions">
+            <a routerLink="/jadlospisy" class="notion-btn notion-btn--dark">
+              Przeglądaj jadłospisy
+            </a>
+            <a routerLink="/przepisy" class="notion-link">
+              Wszystkie przepisy ({{ totalRecipesCount || 39 }}) →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div
+      class="scroll-hint-bar"
+      [style.opacity]="scrollHintOpacity"
+      [style.pointer-events]="scrollHintOpacity < 0.1 ? 'none' : 'auto'"
+    >
+      <button type="button" class="scroll-hint-btn" (click)="jumpToChapter(0)">
+        <span>Przewiń w dół, aby zobaczyć jak działa DietEtycznie</span>
+        <mat-icon>south</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. FULL-BLEED 100VH SCROLL STORYTELLING + INTERACTIVE BENTO -->
+  <section class="magic-track" #magicTrack>
+    <div class="magic-sticky">
+      <div class="magic-ambient-glow"></div>
+
+      <div class="container magic-grid">
+        <!-- Left narrative with expanding line indicators -->
+        <div class="magic-copy">
+          <div class="chapter-dots" role="tablist" aria-label="Etapy">
+            @for (ch of storyChapters; track ch.index) {
+              <button
+                type="button"
+                class="chapter-dot"
+                [class.is-active]="activeChapter === ch.index"
+                (click)="jumpToChapter(ch.index)"
+              >
+                <span class="chapter-dot__bar"></span>
+                <span class="chapter-dot__label">{{ ch.kicker }}</span>
+              </button>
+            }
+          </div>
+
+          <div class="chapter-text-wrap">
+            @for (ch of storyChapters; track ch.index) {
+              <div
+                class="chapter-slide"
+                [class.is-active]="activeChapter === ch.index"
+              >
+                <h2>{{ ch.title }}</h2>
+                <p>{{ ch.body }}</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Right Interactive Product Bento (Apple / Oura / ZOE style) -->
+        <div class="magic-stage">
+          <div class="bento-stage">
+            <!-- CHAPTER 0: Interactive Condition Matrix -->
+            @if (activeChapter === 0) {
+              <div class="bento-layout fade-stage">
+                <div class="bento-tile bento-tile--full">
+                  <div class="bento-pills">
+                    @for (c of previewConditions; track c.name; let i = $index) {
+                      <button
+                        type="button"
+                        class="bento-pill"
+                        [class.is-active]="previewConditionIdx === i"
+                        (click)="previewConditionIdx = i"
+                      >
+                        {{ c.name }}
+                      </button>
+                    }
+                  </div>
+                  <div class="bento-focus-line">
+                    {{ activePreviewCondition.focus }}
+                  </div>
+                </div>
+
+                <div class="bento-tile">
+                  <div class="tile-label tile-label--good">Zalecane</div>
+                  <ul class="tile-list">
+                    @for (item of activePreviewCondition.eat; track item) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+
+                <div class="bento-tile">
+                  <div class="tile-label tile-label--avoid">Ograniczaj</div>
+                  <ul class="tile-list">
+                    @for (item of activePreviewCondition.avoid; track item) {
+                      <li>{{ item }}</li>
+                    }
+                  </ul>
+                </div>
+
+                <a
+                  routerLink="/przepisy"
+                  [queryParams]="{ condition: activePreviewCondition.name }"
+                  class="bento-tile bento-tile--full bento-tile--cta"
+                >
+                  <span>Dopasowane przepisy: <strong>{{ activePreviewCondition.name }}</strong></span>
+                  <span class="cta-count">{{ activePreviewCondition.recipesCount }} dań →</span>
+                </a>
+              </div>
+            }
+
+            <!-- CHAPTER 1: Interactive Macro Ring + Portion Scaler Bento -->
+            @if (activeChapter === 1) {
+              <div class="bento-layout fade-stage">
+                <div class="bento-tile bento-tile--full dish-header-tile">
+                  <img
+                    src="assets/recipes/omlet-losos-szpinak.png"
+                    alt="Omlet z łososiem i szpinakiem"
+                    class="dish-thumb"
+                  />
+                  <div class="dish-header-meta">
+                    <span class="tile-label tile-label--good">Śniadanie · 12 min</span>
+                    <h3>Omlet z łososiem i szpinakiem</h3>
+                    <div class="portion-switcher">
+                      <span>Porcje:</span>
+                      @for (p of [1, 2, 3]; track p) {
+                        <button
+                          type="button"
+                          [class.is-active]="previewPortions === p"
+                          (click)="previewPortions = p"
+                        >
+                          {{ p }}×
+                        </button>
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bento-tile macro-ring-tile">
+                  <svg class="macro-ring" viewBox="0 0 100 100" aria-hidden="true">
+                    <circle class="ring-bg" cx="50" cy="50" r="40" />
+                    <circle
+                      class="ring-p"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-dasharray="78 251"
+                      stroke-dashoffset="0"
+                    />
+                    <circle
+                      class="ring-f"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-dasharray="152 251"
+                      stroke-dashoffset="-82"
+                    />
+                  </svg>
+                  <div class="ring-center">
+                    <strong>{{ 435 * previewPortions }}</strong>
+                    <span>kcal</span>
+                  </div>
+                </div>
+
+                <div class="bento-tile macro-numbers-tile">
+                  <div class="macro-line">
+                    <span>Białko</span>
+                    <strong>{{ 32 * previewPortions }} g</strong>
+                  </div>
+                  <div class="macro-line">
+                    <span>Węglowodany</span>
+                    <strong>{{ 5 * previewPortions }} g</strong>
+                  </div>
+                  <div class="macro-line">
+                    <span>Tłuszcze</span>
+                    <strong>{{ 31 * previewPortions }} g</strong>
+                  </div>
+                  <div class="macro-line">
+                    <span>Sód / Błonnik</span>
+                    <strong>{{ 520 * previewPortions }} mg · {{ 2 * previewPortions }} g</strong>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- CHAPTER 2: 5-Meal Day Plan + Live Shopping Checklist Bento -->
+            @if (activeChapter === 2) {
+              <div class="bento-layout fade-stage">
+                <div class="bento-tile">
+                  <div class="tile-head-row">
+                    <span class="tile-label tile-label--good">Poniedziałek</span>
+                    <strong class="day-kcal">1 885 kcal</strong>
+                  </div>
+                  <div class="mini-meals">
+                    <div class="mini-meal"><span>Śniadanie</span><strong>Omlet z łososiem</strong></div>
+                    <div class="mini-meal"><span>Obiad</span><strong>Kurczak grecki z ryżem</strong></div>
+                    <div class="mini-meal"><span>Podwieczorek</span><strong>Jogurt z malinami</strong></div>
+                    <div class="mini-meal"><span>Kolacja</span><strong>Sałatka z awokado</strong></div>
+                    <div class="mini-meal"><span>Przekąska</span><strong>Orzechy i czekolada</strong></div>
+                  </div>
+                </div>
+
+                <div class="bento-tile">
+                  <div class="tile-head-row">
+                    <span class="tile-label tile-label--good">Lista zakupów</span>
+                    <span class="shop-hint">kliknij, aby odhaczyć</span>
+                  </div>
+                  <div class="mini-shopping">
+                    @for (item of previewShopping; track item.name; let i = $index) {
+                      <label class="mini-shop-row" [class.is-checked]="item.checked">
+                        <input
+                          type="checkbox"
+                          [checked]="item.checked"
+                          (change)="togglePreviewShopping(i)"
+                        />
+                        <span>{{ item.name }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+
+                <a routerLink="/jadlospisy" class="bento-tile bento-tile--full bento-tile--cta">
+                  <span>5 gotowych jadłospisów na 7 dni</span>
+                  <span class="cta-count">Otwórz planer →</span>
+                </a>
+              </div>
+            }
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section conditions-section">
+  <!-- 3. CLEAN CONDITIONS & RECIPES PREVIEW -->
+  <section class="clean-section">
     <div class="container">
-      <h2 class="section-title">
-        Przeglądaj zalecenia dla chorób dietozależnych
-      </h2>
-      <p class="section-subtitle">
-        Dowiedz się, jak dieta może pomóc w zarządzaniu Twoim stanem zdrowia
-      </p>
+      <div class="section-head">
+        <div>
+          <h2>Choroby dietozależne</h2>
+          <p>Konkretne zalecenia i dopasowane przepisy dla każdego schorzenia.</p>
+        </div>
+        <a routerLink="/choroby" class="notion-link">
+          Wszystkie ({{ totalConditionsCount || 8 }}) →
+        </a>
+      </div>
 
       <div class="conditions-grid">
-        <div *ngIf="medicalConditions.length === 0" class="loading">
-          <p>Ładowanie chorób dietozależnych...</p>
-        </div>
-
-        <a
-          *ngFor="let condition of medicalConditions"
-          [routerLink]="['/conditions', condition.id]"
-          class="condition-card"
-        >
-          <div class="condition-icon">
-            <span class="icon-placeholder"></span>
-          </div>
-          <h3>{{ condition.name }}</h3>
-          <p>
-            {{ condition.description | slice: 0 : 100
-            }}{{ condition.description.length > 100 ? "..." : "" }}
-          </p>
-        </a>
-      </div>
-
-      <div class="view-all">
-        <a routerLink="/conditions" class="btn-text"
-          >Zobacz wszystkie choroby dietozależne <span class="arrow">→</span></a
-        >
-      </div>
-    </div>
-  </section>
-
-  <section class="section recipes-section">
-    <div class="container">
-      <h2 class="section-title">Polecane przepisy</h2>
-      <p class="section-subtitle">
-        Zdrowe i smaczne przepisy z systemem filtrowania dla ułatwienia Twojego
-        wyboru
-      </p>
-
-      <div class="recipes-grid">
-        <div *ngIf="featuredRecipes.length === 0" class="loading">
-          <p>Ładowanie przepisów...</p>
-        </div>
-
-        <a
-          *ngFor="let recipe of featuredRecipes"
-          [routerLink]="['/recipes', recipe.uid]"
-          class="recipe-card"
-        >
-          <div class="recipe-image">
-            <img
-              [src]="getRecipeImageUrl(recipe)"
-              (error)="handleImageError($event)"
-              alt="Zdjęcie przepisu"
-              class="recipe-img"
-            />
-          </div>
-          <div class="recipe-content">
-            <h3>{{ recipe.name }}</h3>
+        @for (condition of medicalConditions; track condition.id) {
+          <a [routerLink]="['/choroby', condition.id]" class="condition-card">
+            <h3>{{ condition.name }}</h3>
             <p>
-              {{ recipe.description | slice: 0 : 100
-              }}{{ recipe.description.length > 100 ? "..." : "" }}
+              {{
+                condition.shortSummary ||
+                  (condition.description | slice: 0 : 95) + "..."
+              }}
             </p>
-            <div class="recipe-meta">
-              <span class="calories">{{ recipe.calories }} kcal</span>
-              <span class="time">{{ recipe.prepTimeMinutes }} min</span>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="view-all">
-        <a routerLink="/recipes" class="btn-text"
-          >Zobacz wszystkie przepisy <span class="arrow">→</span></a
-        >
+            <span class="condition-card__meta">
+              {{ getRecipeCountForCondition(condition.name) }} przepisów →
+            </span>
+          </a>
+        }
       </div>
     </div>
   </section>
 
-  <section class="section how-it-works-section">
+  <section class="clean-section clean-section--paper">
     <div class="container">
-      <h2 class="section-title">Jak to działa</h2>
-      <p class="section-subtitle">
-        Proste kroki do stworzenia spersonalizowanego jadłospisu
-      </p>
+      <div class="section-head">
+        <div>
+          <h2>Polecane przepisy</h2>
+          <p>Proste, zbilansowane dania na każdy dzień tygodnia.</p>
+        </div>
+        <a routerLink="/przepisy" class="notion-link">
+          Wszystkie przepisy ({{ totalRecipesCount || 39 }}) →
+        </a>
+      </div>
 
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Wybierz swoją chorobę dietozależą</h3>
-          <p>Wybierz swoją chorobę dietozależną z przygotowanej listy</p>
+      <div class="featured-recipes-grid">
+        @for (recipe of featuredRecipes; track recipe.uid) {
+          <app-recipe-card [recipe]="recipe" [cardStyle]="'normal'"></app-recipe-card>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. DIETITIAN / AUTHOR SPOTLIGHT -->
+  <section class="dietitian-section">
+    <div class="container dietitian-grid">
+      <div class="dietitian-copy">
+        <span class="dietitian-kicker">O mnie</span>
+        <h2>mgr Maja Harkot</h2>
+        <p class="dietitian-role">Dietetyk kliniczny i sportowy · absolwentka UM w Lublinie (dyplom z wyróżnieniem)</p>
+
+        <p class="dietitian-bio">
+          Ukończyłam z wyróżnieniem studia magisterskie z dietetyki na
+          <strong>Uniwersytecie Medycznym w Lublinie</strong>. Mam doświadczenie
+          w prowadzeniu pacjentów z chorobami dietozależnymi oraz sportowców.
+          Łączę aktualną wiedzę kliniczną z praktycznymi jadłospisami
+          dopasowanymi do trybu życia i celów treningowych.
+        </p>
+
+        <div class="dietitian-specs">
+          <span>Choroby dietozależne</span>
+          <span>Dietetyka sportowa</span>
+          <span>Hashimoto</span>
+          <span>Cukrzyca typu II</span>
+          <span>Insulinooporność</span>
+          <span>Dieta DASH</span>
         </div>
 
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Zobacz zalecenia dietetyczne</h3>
-          <p>
-            Przeglądnij spersonalizowane wytyczne żywieniowe dla swoich potrzeb
-            zdrowotnych
-          </p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Przeglądaj odpowiednie przepisy</h3>
-          <p>
-            Odkrywaj przepisy korzystne i bezpieczne dla Twojego stanu zdrowia
-          </p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number">4</div>
-          <h3>Stwórz swój plan posiłków</h3>
-          <p>Zapisz ulubione przepisy i stwórz własny plan posiłków</p>
+        <div class="dietitian-actions">
+          <a routerLink="/jadlospisy" class="notion-btn notion-btn--primary">
+            Zobacz przygotowane jadłospisy
+          </a>
+          <a routerLink="/choroby" class="notion-link">
+            Poznaj zalecenia żywieniowe →
+          </a>
         </div>
       </div>
 
-      <div class="cta-container">
-        <a
-          [routerLink]="(user$ | async) ? '/conditions' : '/register'"
-          class="btn-primary"
-          >Rozpocznij teraz</a
-        >
+      <div class="dietitian-portrait-col">
+        <img
+          src="assets/dietitian-cutout.png"
+          alt="mgr Maja Harkot — Dietetyk kliniczny"
+          class="dietitian-silhouette"
+        />
       </div>
     </div>
   </section>

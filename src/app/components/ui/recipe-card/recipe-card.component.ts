@@ -1,79 +1,81 @@
-import {
-  Component,
-  Input,
-  AfterViewInit,
-  ViewChildren,
-  QueryList,
-  ElementRef,
-  ChangeDetectorRef,
-  inject,
-} from "@angular/core";
-import { Recipe } from "../../../../models/recipe.model";
-import { NgClass, NgIf, NgFor, AsyncPipe } from "@angular/common";
+import { CommonModule } from "@angular/common";
+import { Component, inject, Input, OnDestroy, OnInit } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
 import { Router } from "@angular/router";
-import { MatIcon } from "@angular/material/icon";
+import { Subscription } from "rxjs";
+import {
+  FALLBACK_RECIPE_IMAGE,
+  Recipe,
+  resolveRecipeImageUrl,
+} from "../../../../models/recipe.model";
+import { AuthService } from "../../../../services/auth.service";
 import { UserService } from "../../../../services/user.service";
-import { take } from "rxjs/operators";
 
 @Component({
   selector: "app-recipe-card",
   templateUrl: "./recipe-card.component.html",
   styleUrls: ["./recipe-card.component.scss"],
   standalone: true,
-  imports: [NgClass, NgIf, NgFor, MatIcon, AsyncPipe],
+  imports: [CommonModule, MatIconModule],
 })
-export class RecipeCardComponent implements AfterViewInit {
-  @Input() recipe!: Recipe;
-  @Input() cardStyle: "normal" | "wide" = "normal";
+export class RecipeCardComponent implements OnInit, OnDestroy {
+  @Input({ required: true }) recipe!: Recipe;
+  @Input() cardStyle: "normal" | "wide" | "compact" = "normal";
   @Input() withOpen = true;
   @Input() withLike = true;
-  @ViewChildren("starsContainer") starsContainer!: QueryList<ElementRef>;
-  like = false;
-  starsVisible: boolean = false;
 
-  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
-  private router: Router = inject(Router);
+  like = false;
+  private currentUserId: string | null = null;
+  private sub = new Subscription();
+
+  private router = inject(Router);
+  private authService = inject(AuthService);
   private userService = inject(UserService);
 
-  user$ = this.userService.currentUser$.pipe(take(1));
+  user$ = this.authService.user$;
 
-  toggleLike(): void {
-    this.like = !this.like;
-    this.user$.pipe(take(1)).subscribe((user) => {
-      if (!user) return;
-      if (this.like) {
-        this.userService.addSavedRecipe(user.uid, this.recipe.uid).subscribe();
-      } else {
-        this.userService
-          .removeSavedRecipe(user.uid, this.recipe.uid)
-          .subscribe();
-      }
-    });
+  ngOnInit(): void {
+    this.sub.add(
+      this.authService.user$.subscribe((user) => {
+        this.currentUserId = user?.uid ?? null;
+        this.like = Boolean(
+          user?.savedRecipes?.includes(this.recipe?.uid ?? ""),
+        );
+      }),
+    );
   }
 
-  open(): void {
-    if (!this.withOpen) return;
-    if (this.recipe && this.recipe.uid) {
-      this.router.navigate(["/recipes", this.recipe.uid]);
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
+  get resolvedImageUrl(): string {
+    return resolveRecipeImageUrl(this.recipe?.imageUrl);
+  }
+
+  toggleLike(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    if (!this.currentUserId || !this.recipe?.uid) return;
+
+    this.like = !this.like;
+    if (this.like) {
+      this.userService
+        .addSavedRecipe(this.currentUserId, this.recipe.uid)
+        .subscribe();
+    } else {
+      this.userService
+        .removeSavedRecipe(this.currentUserId, this.recipe.uid)
+        .subscribe();
     }
   }
 
-  handleImageError(event: Event): void {
-    const imgElement = event.target as HTMLImageElement;
-    imgElement.src = "../../../assets/recipes/fallback-plate.png";
+  open(): void {
+    if (!this.withOpen || !this.recipe?.uid) return;
+    this.router.navigate(["/przepisy", this.recipe.uid]);
   }
 
-  ngAfterViewInit(): void {
-    const starContainersArray = this.starsContainer.toArray();
-    this.starsVisible = starContainersArray.length > 0;
-    this.starsVisible =
-      this.starsVisible &&
-      starContainersArray.some(
-        (container) => container.nativeElement.children.length > 0,
-      );
-    this.user$.pipe(take(1)).subscribe((user) => {
-      this.like = !!user?.savedRecipes?.includes(this.recipe.uid);
-      this.cdr.detectChanges();
-    });
+  handleImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = FALLBACK_RECIPE_IMAGE;
   }
 }
