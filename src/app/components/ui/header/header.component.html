@@ -124,7 +124,8 @@
       <button
         type="button"
         class="mobile-toggle"
-        aria-label="Otwórz menu"
+        [attr.aria-label]="isMobileNavOpen ? 'Zamknij menu' : 'Otwórz menu'"
+        [attr.aria-expanded]="isMobileNavOpen"
         (click)="toggleMobileNav(); $event.stopPropagation()"
       >
         <mat-icon>{{ isMobileNavOpen ? "close" : "menu" }}</mat-icon>

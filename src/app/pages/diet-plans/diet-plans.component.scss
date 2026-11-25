@@ -260,18 +260,18 @@
 
 .slot-mini-btn {
   flex: 1;
-  padding: 0.36rem 0.5rem;
+  padding: 0.38rem 0.5rem;
   border-radius: 8px;
-  border: 1px solid #dce5e0;
-  background: #fff;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
   font-size: 0.76rem;
   font-weight: 600;
-  color: $text-color;
+  color: var(--ink-primary);
   cursor: pointer;
 
   &:hover {
-    border-color: $primary-color;
-    color: $primary-dark;
+    border-color: var(--accent-primary);
+    color: var(--accent-dark);
   }
 
   &--danger {
@@ -286,9 +286,9 @@
 .add-meal-btn {
   min-height: 150px;
   border-radius: 10px;
-  border: 1px dashed #c8d6cf;
-  background: #fafcfb;
-  color: $text-secondary-color;
+  border: 1px dashed var(--border-strong);
+  background: var(--bg-subtle);
+  color: var(--ink-secondary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -299,17 +299,17 @@
   cursor: pointer;
 
   &:hover {
-    border-color: $primary-color;
-    color: $primary-dark;
-    background: $primary-soft;
+    border-color: var(--accent-primary);
+    color: var(--accent-dark);
+    background: var(--accent-soft);
   }
 }
 
 .empty-slot {
   min-height: 130px;
   border-radius: 10px;
-  border: 1px dashed #e2eae5;
-  color: $text-muted;
+  border: 1px dashed var(--border-subtle);
+  color: var(--ink-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -324,7 +324,7 @@
 
 .week-day-block {
   padding-top: 1rem;
-  border-top: 1px solid #ecefed;
+  border-top: 1px solid var(--border-subtle);
 
   &__head {
     display: flex;
@@ -680,15 +680,102 @@
 }
 
 @media (max-width: 780px) {
-  .plan-card {
-    padding: 1.25rem;
+  .section-tabs {
+    width: 100%;
+    gap: 1.1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
+
+  .section-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .plans-page {
+    padding-top: 1.35rem;
+    gap: 1.25rem;
+  }
+
+  .plan-card {
+    padding: 1.15rem;
+    gap: 1rem;
+  }
+
+  .plan-card__head {
+    gap: 1rem;
+  }
+
+  .plan-card__meta {
+    min-width: 0;
+    width: 100%;
+
+    h2 {
+      font-size: 1.18rem;
+    }
+  }
+
+  .plan-card__actions {
+    width: 100%;
+
+    .btn-primary {
+      flex: 1;
+    }
+  }
+
+  .day-bar {
+    gap: 0.65rem;
+  }
+
+  .day-tabs {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 1rem;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .day-tab {
+    flex-shrink: 0;
+  }
+
   .meals-grid-5 {
     grid-template-columns: 1fr;
   }
+
+  .modal-shell {
+    max-height: 92dvh;
+  }
+
   .picker-filters-row {
     grid-template-columns: 1fr;
+    padding: 0.75rem 1rem;
   }
+
+  .picker-list {
+    padding: 0.85rem 1rem;
+  }
+
+  .picker-row {
+    flex-wrap: wrap;
+
+    &__actions {
+      width: 100%;
+
+      .btn {
+        flex: 1;
+      }
+    }
+  }
+
   .shopping-list-grid {
     grid-template-columns: 1fr;
   }

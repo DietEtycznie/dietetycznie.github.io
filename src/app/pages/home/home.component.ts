@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Scroll storytelling state
   storyProgress = 0;
   activeChapter = 0;
-  scrollHintOpacity = 1;
+  scrollHintOpacity = this.isCompactViewport() ? 0 : 1;
   private rafId: number | null = null;
 
   // Interactive Bento states inside scroll chapters
@@ -148,7 +148,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.updateScrollProgress();
+    this.ngZone.runOutsideAngular(() => {
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        this.updateScrollProgress();
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -169,7 +174,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  private isCompactViewport(): boolean {
+    return typeof window !== "undefined" && window.innerWidth <= 980;
+  }
+
   private updateScrollProgress(): void {
+    const el = this.magicTrackRef?.nativeElement;
+
+    if (this.isCompactViewport()) {
+      if (this.scrollHintOpacity !== 0) {
+        this.ngZone.run(() => {
+          this.scrollHintOpacity = 0;
+        });
+      }
+      if (el) {
+        el.style.setProperty("--story-p", "0.5");
+        el.style.setProperty("--wave-p", "1");
+        el.style.setProperty("--stage-scale", "1");
+      }
+      return;
+    }
+
     const hintOp = Math.max(0, Math.min(1, 1 - window.scrollY / 160));
     if (Math.abs(hintOp - this.scrollHintOpacity) > 0.02) {
       this.ngZone.run(() => {
@@ -177,7 +202,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
 
-    const el = this.magicTrackRef?.nativeElement;
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
@@ -207,6 +231,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   jumpToChapter(chapterIdx: number): void {
+    if (this.isCompactViewport()) {
+      this.activeChapter = chapterIdx;
+      return;
+    }
+
     const el = this.magicTrackRef?.nativeElement;
     if (!el) return;
     const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
