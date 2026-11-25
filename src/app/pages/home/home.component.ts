@@ -200,7 +200,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const isCompact = this.isCompactViewport();
-    const stickyTop = isCompact ? 60 : 0;
 
     const hintOp = Math.max(0, Math.min(1, 1 - window.scrollY / 140));
     if (Math.abs(hintOp - this.scrollHintOpacity) > 0.02) {
@@ -212,8 +211,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
-    const scrollable = Math.max(1, el.offsetHeight - (window.innerHeight - stickyTop));
-    const raw = -(rect.top - stickyTop) / scrollable;
+    const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
+    const raw = -rect.top / scrollable;
     const clamped = Math.max(0, Math.min(1, raw));
 
     // Strictly 0 before entering the track (zero green bleed under hero!)
@@ -246,11 +245,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const el = this.magicTrackRef?.nativeElement;
     if (!el) return;
-    const stickyTop = this.isCompactViewport() ? 60 : 0;
-    const scrollable = Math.max(1, el.offsetHeight - (window.innerHeight - stickyTop));
+    const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
     const targetProgress = chapterIdx === 0 ? 0.16 : chapterIdx === 1 ? 0.5 : 0.84;
-    const top =
-      window.scrollY + el.getBoundingClientRect().top - stickyTop + scrollable * targetProgress;
+    const top = window.scrollY + el.getBoundingClientRect().top + scrollable * targetProgress;
     window.scrollTo({ top, behavior: "smooth" });
   }
 
