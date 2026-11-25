@@ -84,12 +84,15 @@ export class ThemeService {
 
   private applyTheme(mode: ThemeMode): void {
     const root = document.documentElement;
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (mode === "dark") {
       root.setAttribute("data-theme", "dark");
       root.style.colorScheme = "dark";
+      themeColorMeta?.setAttribute("content", "#0e1613");
     } else {
       root.removeAttribute("data-theme");
       root.style.colorScheme = "light";
+      themeColorMeta?.setAttribute("content", "#fffefc");
     }
   }
 }

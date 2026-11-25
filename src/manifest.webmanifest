@@ -1,0 +1,63 @@
+{
+  "name": "DietEtycznie — Diety, przepisy i jadłospisy",
+  "short_name": "DietEtycznie",
+  "description": "Spersonalizowane 7-dniowe jadłospisy, przepisy z pełnym makro i zalecenia dla chorób dietozależnych oparte na wytycznych NCEŻ.",
+  "lang": "pl",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#fffefc",
+  "background_color": "#f6f9f7",
+  "categories": ["health", "food", "lifestyle"],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Przepisy",
+      "short_name": "Przepisy",
+      "description": "Przeglądaj katalog przepisów z makro",
+      "url": "/przepisy",
+      "icons": [{ "src": "assets/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Jadłospisy",
+      "short_name": "Jadłospisy",
+      "description": "Otwórz 7-dniowe plany żywieniowe",
+      "url": "/jadlospisy",
+      "icons": [{ "src": "assets/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Choroby",
+      "short_name": "Choroby",
+      "description": "Zalecenia dla chorób dietozależnych",
+      "url": "/choroby",
+      "icons": [{ "src": "assets/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
