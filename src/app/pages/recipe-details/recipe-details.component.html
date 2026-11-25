@@ -14,10 +14,7 @@
     </nav>
 
     @if (loading) {
-      <app-loading-state
-        variant="detail"
-        label="Wczytywanie przepisu..."
-      ></app-loading-state>
+      <app-loading-state variant="detail" label="Wczytywanie przepisu..."></app-loading-state>
     } @else if (notFound) {
       <div class="not-found-box">
         <mat-icon>restaurant_menu</mat-icon>
@@ -29,11 +26,7 @@
       <!-- 1. EDITORIAL HERO -->
       <section class="detail-hero">
         <div class="hero-media">
-          <img
-            [src]="resolvedImageUrl"
-            (error)="handleImageError($event)"
-            [alt]="recipe.name"
-          />
+          <img [src]="resolvedImageUrl" (error)="handleImageError($event)" [alt]="recipe.name" />
           @if (user$ | async) {
             <button
               type="button"
@@ -96,9 +89,18 @@
             </div>
 
             <div class="macro-bar" role="img" aria-label="Proporcje makroskładników">
-              <div class="macro-bar__seg macro-bar__seg--p" [style.width.%]="macroPercentages.protein"></div>
-              <div class="macro-bar__seg macro-bar__seg--c" [style.width.%]="macroPercentages.carbs"></div>
-              <div class="macro-bar__seg macro-bar__seg--f" [style.width.%]="macroPercentages.fat"></div>
+              <div
+                class="macro-bar__seg macro-bar__seg--p"
+                [style.width.%]="macroPercentages.protein"
+              ></div>
+              <div
+                class="macro-bar__seg macro-bar__seg--c"
+                [style.width.%]="macroPercentages.carbs"
+              ></div>
+              <div
+                class="macro-bar__seg macro-bar__seg--f"
+                [style.width.%]="macroPercentages.fat"
+              ></div>
             </div>
 
             <div class="macro-meta-row">
@@ -107,7 +109,9 @@
                 <span><i class="dot dot--c"></i> Węgle {{ macroPercentages.carbs }}%</span>
                 <span><i class="dot dot--f"></i> Tłuszcz {{ macroPercentages.fat }}%</span>
               </div>
-              <span class="macro-scope">Wartości dla {{ servings }} {{ getPortionGenitive() }}</span>
+              <span class="macro-scope"
+                >Wartości dla {{ servings }} {{ getPortionGenitive() }}</span
+              >
             </div>
           </div>
 
@@ -157,26 +161,37 @@
                 </p>
               } @else {
                 <div class="drawer-fields">
-                  <mat-select class="app-select drawer-plan" [(ngModel)]="selectedPlanId" name="planId" aria-label="Wybierz jadłospis">
+                  <mat-select
+                    class="app-select drawer-plan"
+                    [(ngModel)]="selectedPlanId"
+                    name="planId"
+                    aria-label="Wybierz jadłospis"
+                  >
                     @for (p of userPlans; track p.id) {
                       <mat-option [value]="p.id">{{ p.name }}</mat-option>
                     }
                   </mat-select>
-                  <mat-select class="app-select" [(ngModel)]="selectedDay" name="dayKey" aria-label="Wybierz dzień">
+                  <mat-select
+                    class="app-select"
+                    [(ngModel)]="selectedDay"
+                    name="dayKey"
+                    aria-label="Wybierz dzień"
+                  >
                     @for (d of weekDays; track d.key) {
                       <mat-option [value]="d.key">{{ d.label }}</mat-option>
                     }
                   </mat-select>
-                  <mat-select class="app-select" [(ngModel)]="selectedMealIndex" name="mealIdx" aria-label="Wybierz posiłek">
+                  <mat-select
+                    class="app-select"
+                    [(ngModel)]="selectedMealIndex"
+                    name="mealIdx"
+                    aria-label="Wybierz posiłek"
+                  >
                     @for (m of mealTypes; track m; let i = $index) {
                       <mat-option [value]="i">{{ m }}</mat-option>
                     }
                   </mat-select>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    (click)="confirmAddToPlan()"
-                  >
+                  <button type="button" class="btn btn-primary" (click)="confirmAddToPlan()">
                     Zapisz
                   </button>
                 </div>
@@ -200,11 +215,7 @@
                 </a>
               }
               @for (diet of recipe.dietTags; track diet) {
-                <a
-                  routerLink="/przepisy"
-                  [queryParams]="{ diet: diet }"
-                  class="q-tag"
-                >
+                <a routerLink="/przepisy" [queryParams]="{ diet: diet }" class="q-tag">
                   {{ diet }}
                 </a>
               }
@@ -226,10 +237,7 @@
 
           <div class="ingredients-list">
             @for (ing of recipe.ingredients; track $index; let i = $index) {
-              <label
-                class="ingredient-row"
-                [class.is-checked]="checkedIngredients.has(i)"
-              >
+              <label class="ingredient-row" [class.is-checked]="checkedIngredients.has(i)">
                 <input
                   type="checkbox"
                   [checked]="checkedIngredients.has(i)"
@@ -252,16 +260,12 @@
 
           <ol class="steps-list">
             @for (step of recipe.instructions; track $index; let i = $index) {
-              <li
-                class="step-row"
-                [class.is-done]="checkedSteps.has(i)"
-                (click)="toggleStep(i)"
-              >
+              <li class="step-row" [class.is-done]="checkedSteps.has(i)" (click)="toggleStep(i)">
                 <span class="step-num">
                   @if (checkedSteps.has(i)) {
                     <mat-icon>check</mat-icon>
                   } @else {
-                    {{ (i + 1) < 10 ? "0" + (i + 1) : i + 1 }}
+                    {{ i + 1 < 10 ? "0" + (i + 1) : i + 1 }}
                   }
                 </span>
                 <p>{{ step }}</p>
@@ -270,9 +274,7 @@
           </ol>
 
           @if (recipe.updatedAt) {
-            <p class="recipe-updated">
-              Aktualizacja przepisu: {{ formatDate(recipe.updatedAt) }}
-            </p>
+            <p class="recipe-updated">Aktualizacja przepisu: {{ formatDate(recipe.updatedAt) }}</p>
           }
         </div>
       </section>

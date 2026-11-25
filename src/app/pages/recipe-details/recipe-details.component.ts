@@ -94,21 +94,17 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
           this.checkedSteps.clear();
           this.like = Boolean(user?.savedRecipes?.includes(recipe.uid));
           this.loadSimilarRecipes(recipe);
-          const defaultMealIdx = this.mealTypes.findIndex((m) =>
-            recipe.mealType?.includes(m),
-          );
+          const defaultMealIdx = this.mealTypes.findIndex((m) => recipe.mealType?.includes(m));
           this.selectedMealIndex = defaultMealIdx >= 0 ? defaultMealIdx : 0;
         }
 
         if (user?.uid) {
-          this.dietPlanService
-            .getUserDietPlans(user.uid)
-            .subscribe((plans) => {
-              this.userPlans = plans;
-              if (plans.length && !this.selectedPlanId) {
-                this.selectedPlanId = plans[0].id;
-              }
-            });
+          this.dietPlanService.getUserDietPlans(user.uid).subscribe((plans) => {
+            this.userPlans = plans;
+            if (plans.length && !this.selectedPlanId) {
+              this.selectedPlanId = plans[0].id;
+            }
+          });
         }
       }),
     );
@@ -184,13 +180,9 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
     if (!this.currentUserId || !this.recipe) return;
     this.like = !this.like;
     if (this.like) {
-      this.userService
-        .addSavedRecipe(this.currentUserId, this.recipe.uid)
-        .subscribe();
+      this.userService.addSavedRecipe(this.currentUserId, this.recipe.uid).subscribe();
     } else {
-      this.userService
-        .removeSavedRecipe(this.currentUserId, this.recipe.uid)
-        .subscribe();
+      this.userService.removeSavedRecipe(this.currentUserId, this.recipe.uid).subscribe();
     }
   }
 
@@ -219,8 +211,7 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
     this.dietPlanService
       .updateDietPlan(targetPlan.id, { mealPlan: updatedMealPlan })
       .subscribe(() => {
-        const dayLabel =
-          this.weekDays.find((d) => d.key === this.selectedDay)?.label ?? "";
+        const dayLabel = this.weekDays.find((d) => d.key === this.selectedDay)?.label ?? "";
         this.addedToPlanMessage = `Dodano do planu „${targetPlan.name}” (${dayLabel} — ${this.mealTypes[this.selectedMealIndex]})!`;
       });
   }
@@ -256,11 +247,7 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
         .map((r) => {
           let score = 0;
           if (r.mealType?.some((m) => current.mealType?.includes(m))) score += 2;
-          if (
-            r.suitableForConditions?.some((c) =>
-              current.suitableForConditions?.includes(c),
-            )
-          ) {
+          if (r.suitableForConditions?.some((c) => current.suitableForConditions?.includes(c))) {
             score += 2;
           }
           return { r, score };

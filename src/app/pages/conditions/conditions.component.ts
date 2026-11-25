@@ -81,9 +81,7 @@ export class ConditionsComponent implements OnInit, OnDestroy {
     const q = this.searchQuery.trim().toLowerCase();
     if (q) {
       list = list.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q),
+        (c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q),
       );
     }
     return list;

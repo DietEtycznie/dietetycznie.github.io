@@ -51,27 +51,16 @@ export class RecipeService {
   getRecipesByCondition(condition: string): Observable<Recipe[]> {
     if (this.firebase.isFallbackMode || !this.firebase.db) {
       return of(
-        this.localStore
-          .getRecipes()
-          .filter((r) => r.suitableForConditions.includes(condition)),
+        this.localStore.getRecipes().filter((r) => r.suitableForConditions.includes(condition)),
       );
     }
 
     const recipesRef = collection(this.firebase.db, "recipes");
-    const q = query(
-      recipesRef,
-      where("suitableForConditions", "array-contains", condition),
-    );
+    const q = query(recipesRef, where("suitableForConditions", "array-contains", condition));
     return this.firebase.fromFirebase(getDocs(q)).pipe(
-      map((snapshot) =>
-        snapshot.docs.map((d) => RecipeModel.toRecipe(d.data(), d.id)),
-      ),
+      map((snapshot) => snapshot.docs.map((d) => RecipeModel.toRecipe(d.data(), d.id))),
       catchError(() =>
-        of(
-          this.localStore
-            .getRecipes()
-            .filter((r) => r.suitableForConditions.includes(condition)),
-        ),
+        of(this.localStore.getRecipes().filter((r) => r.suitableForConditions.includes(condition))),
       ),
     );
   }
@@ -84,20 +73,15 @@ export class RecipeService {
 
     const recipeRef = doc(this.firebase.db, `recipes/${id}`);
     return this.firebase.fromFirebase(getDoc(recipeRef)).pipe(
-      map((snap) =>
-        snap.exists() ? RecipeModel.toRecipe(snap.data(), snap.id) : null,
-      ),
+      map((snap) => (snap.exists() ? RecipeModel.toRecipe(snap.data(), snap.id) : null)),
       catchError(() => {
-        const found =
-          this.localStore.getRecipes().find((r) => r.uid === id) ?? null;
+        const found = this.localStore.getRecipes().find((r) => r.uid === id) ?? null;
         return of(found);
       }),
     );
   }
 
-  addRecipe(
-    recipe: Omit<Recipe, "uid" | "createdAt" | "updatedAt">,
-  ): Observable<string> {
+  addRecipe(recipe: Omit<Recipe, "uid" | "createdAt" | "updatedAt">): Observable<string> {
     const now = new Date();
     const normalized = {
       ...recipe,

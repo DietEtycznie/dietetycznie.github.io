@@ -38,9 +38,7 @@ export class RecipeCardComponent implements OnInit, OnDestroy {
     this.sub.add(
       this.authService.user$.subscribe((user) => {
         this.currentUserId = user?.uid ?? null;
-        this.like = Boolean(
-          user?.savedRecipes?.includes(this.recipe?.uid ?? ""),
-        );
+        this.like = Boolean(user?.savedRecipes?.includes(this.recipe?.uid ?? ""));
       }),
     );
   }
@@ -60,13 +58,9 @@ export class RecipeCardComponent implements OnInit, OnDestroy {
 
     this.like = !this.like;
     if (this.like) {
-      this.userService
-        .addSavedRecipe(this.currentUserId, this.recipe.uid)
-        .subscribe();
+      this.userService.addSavedRecipe(this.currentUserId, this.recipe.uid).subscribe();
     } else {
-      this.userService
-        .removeSavedRecipe(this.currentUserId, this.recipe.uid)
-        .subscribe();
+      this.userService.removeSavedRecipe(this.currentUserId, this.recipe.uid).subscribe();
     }
   }
 

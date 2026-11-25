@@ -146,7 +146,11 @@ Reguły bezpieczeństwa Firestore w [`firestore.rules`](../firestore.rules) wymu
 ## 7. Komendy deweloperskie
 
 ```bash
-npm start          # Lokalny serwer developerski (http://localhost:4200)
-npm run build      # Produkcyjny build (dist/demo)
-npm run seed       # Zasilenie Firestore danymi startowymi (Node script)
+npm start            # Lokalny serwer developerski (http://localhost:4200)
+npm run build        # Produkcyjny build (dist/demo)
+npm run lint         # ESLint (TypeScript + szablony Angular)
+npm run format:check # Sprawdzenie formatowania Prettier
+npm run format       # Automatyczne formatowanie Prettier
+npm test             # Testy jednostkowe Vitest
+npm run seed         # Zasilenie Firestore danymi startowymi (Node script)
 ```

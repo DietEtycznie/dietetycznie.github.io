@@ -1,11 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { Component, inject } from "@angular/core";
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../../../services/auth.service";
 import { FirebaseService } from "../../../../services/firebase.service";
@@ -14,12 +9,7 @@ import { AuthShellComponent } from "../../../components/ui";
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    AuthShellComponent,
-  ],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, AuthShellComponent],
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
 })
@@ -44,9 +34,7 @@ export class LoginComponent {
 
     const rawReturn = this.route.snapshot.queryParams["returnUrl"] || "/";
     this.returnUrl =
-      typeof rawReturn === "string" &&
-      rawReturn.startsWith("/") &&
-      !rawReturn.startsWith("//")
+      typeof rawReturn === "string" && rawReturn.startsWith("/") && !rawReturn.startsWith("//")
         ? rawReturn
         : "/";
   }
@@ -92,9 +80,7 @@ export class LoginComponent {
     this.loading = true;
     this.authService
       .signInDemo(asAdmin)
-      .then(() =>
-        this.router.navigateByUrl(asAdmin ? "/admin" : this.returnUrl),
-      )
+      .then(() => this.router.navigateByUrl(asAdmin ? "/admin" : this.returnUrl))
       .finally(() => {
         this.loading = false;
       });

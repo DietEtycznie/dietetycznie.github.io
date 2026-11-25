@@ -47,8 +47,7 @@ export const SEED_MEDICAL_CONDITIONS: MedicalCondition[] = [
     id: "cond-nadcisnienie",
     name: "Nadciśnienie tętnicze",
     icon: "favorite",
-    shortSummary:
-      "Model diety DASH: ograniczenie sodu, wysoka podaż potasu, magnezu i warzyw.",
+    shortSummary: "Model diety DASH: ograniczenie sodu, wysoka podaż potasu, magnezu i warzyw.",
     description:
       "Nadciśnienie tętnicze to najczęstszy czynnik ryzyka chorób sercowo-naczyniowych. Złotym standardem żywieniowym jest dieta DASH (Dietary Approaches to Stop Hypertension), która realnie obniża ciśnienie skurczowe i rozkurczowe.",
     dietaryRecommendations: [
@@ -89,8 +88,7 @@ export const SEED_MEDICAL_CONDITIONS: MedicalCondition[] = [
     id: "cond-celiakia",
     name: "Celiakia",
     icon: "grain",
-    shortSummary:
-      "Ścisła, dożywotnia dieta 100% bezglutenowa z dbałością o brak zanieczyszczeń.",
+    shortSummary: "Ścisła, dożywotnia dieta 100% bezglutenowa z dbałością o brak zanieczyszczeń.",
     description:
       "Celiakia to choroba autoimmunologiczna o podłożu genetycznym, w której spożycie glutenu (białka obecnego w pszenicy, życie i jęczmieniu) prowadzi do zaniku kosmków jelita cienkiego i zaburzeń wchłaniania. Jedynym skutecznym leczeniem jest ścisła dieta bezglutenowa.",
     dietaryRecommendations: [
@@ -204,8 +202,7 @@ export const SEED_MEDICAL_CONDITIONS: MedicalCondition[] = [
     warnings: [
       "Nie stosuj suplementów jodu ani selenu w wysokich dawkach bez konsultacji z endokrynologiem — nadmiar jodu może zaostrzyć stan zapalny tarczycy.",
     ],
-    pdfURL:
-      "https://ncez.pzh.gov.pl/wp-content/uploads/2021/03/zalecenia_dietetycy_hashimoto.pdf",
+    pdfURL: "https://ncez.pzh.gov.pl/wp-content/uploads/2021/03/zalecenia_dietetycy_hashimoto.pdf",
   },
   {
     id: "cond-insulinoopornosc",
@@ -239,9 +236,7 @@ export const SEED_MEDICAL_CONDITIONS: MedicalCondition[] = [
       "Kawa z syropami smakowymi i słodkie napoje mleczne",
       "Rozgotowane makarony, biały ryż i tłuczone ziemniaki na gorąco",
     ],
-    warnings: [
-      "Stosowanie metforminy lub berberyny zawsze konsultuj z lekarzem prowadzącym.",
-    ],
+    warnings: ["Stosowanie metforminy lub berberyny zawsze konsultuj z lekarzem prowadzącym."],
   },
   {
     id: "cond-refluks",

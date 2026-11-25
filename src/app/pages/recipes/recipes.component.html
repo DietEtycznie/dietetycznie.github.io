@@ -3,7 +3,7 @@
   description="Wyszukuj sprawdzone dania po nazwie, składnikach, chorobach dietozależnych, rodzaju diety i dokładnych makroskładnikach."
 >
   <span class="badge badge--primary">
-    <mat-icon style="font-size: 16px; width: 16px; height: 16px;">restaurant</mat-icon>
+    <mat-icon style="font-size: 16px; width: 16px; height: 16px">restaurant</mat-icon>
     @if (loading) {
       Wczytywanie...
     } @else {
@@ -15,11 +15,7 @@
 <div class="container recipes-layout fade-in">
   <!-- Mobile filter trigger -->
   <div class="mobile-toolbar">
-    <button
-      type="button"
-      class="btn btn-secondary"
-      (click)="mobileFiltersOpen = true"
-    >
+    <button type="button" class="btn btn-secondary" (click)="mobileFiltersOpen = true">
       <mat-icon>tune</mat-icon>
       Filtry
       @if (activeFiltersCount > 0) {
@@ -27,7 +23,12 @@
       }
     </button>
 
-    <mat-select class="app-select sort-select" [(ngModel)]="sortBy" name="mobileSort" aria-label="Sortuj przepisy">
+    <mat-select
+      class="app-select sort-select"
+      [(ngModel)]="sortBy"
+      name="mobileSort"
+      aria-label="Sortuj przepisy"
+    >
       <mat-option value="rating">Najwyżej oceniane</mat-option>
       <mat-option value="kcalAsc">Najmniej kcal</mat-option>
       <mat-option value="proteinDesc">Najwięcej białka</mat-option>
@@ -64,106 +65,106 @@
     <div class="filters-panel__body">
       <div class="filter-group">
         <label class="filter-label" for="recipeSearch">Szukaj (nazwa lub składnik)</label>
-      <div class="search-input-wrap">
-        <mat-icon>search</mat-icon>
-        <input
-          id="recipeSearch"
-          type="text"
-          [(ngModel)]="filterName"
-          name="filterName"
-          placeholder="np. łosoś, szpinak, owsianka..."
-        />
+        <div class="search-input-wrap">
+          <mat-icon>search</mat-icon>
+          <input
+            id="recipeSearch"
+            type="text"
+            [(ngModel)]="filterName"
+            name="filterName"
+            placeholder="np. łosoś, szpinak, owsianka..."
+          />
+        </div>
       </div>
-    </div>
 
-    @if (isLoggedIn) {
-      <label class="liked-toggle">
-        <input type="checkbox" [(ngModel)]="filterLiked" name="filterLiked" />
-        <span>
-          <mat-icon>favorite</mat-icon>
-          Tylko polubione
-          <span class="count-pill">{{ savedRecipes.length }}</span>
-        </span>
-      </label>
-    }
+      @if (isLoggedIn) {
+        <label class="liked-toggle">
+          <input type="checkbox" [(ngModel)]="filterLiked" name="filterLiked" />
+          <span>
+            <mat-icon>favorite</mat-icon>
+            Tylko polubione
+            <span class="count-pill">{{ savedRecipes.length }}</span>
+          </span>
+        </label>
+      }
 
-    <div class="filter-group">
-      <div class="filter-label">Wartości odżywcze i czas</div>
-      <div class="number-grid">
-        <label class="mini-field">
-          <span>Maks. kcal</span>
-          <input
-            type="number"
-            min="0"
-            [(ngModel)]="filterMaxKcal"
-            name="maxKcal"
-            placeholder="np. 450"
-          />
-        </label>
-        <label class="mini-field">
-          <span>Min. białko (g)</span>
-          <input
-            type="number"
-            min="0"
-            [(ngModel)]="filterMinProtein"
-            name="minProtein"
-            placeholder="np. 20"
-          />
-        </label>
-        <label class="mini-field">
-          <span>Maks. czas (min)</span>
-          <input
-            type="number"
-            min="0"
-            [(ngModel)]="filterMaxTime"
-            name="maxTime"
-            placeholder="np. 15"
-          />
-        </label>
-        <label class="mini-field">
-          <span>Maks. sód (mg)</span>
-          <input
-            type="number"
-            min="0"
-            [(ngModel)]="filterMaxSodium"
-            name="maxSodium"
-            placeholder="np. 400"
-          />
-        </label>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <div class="filter-label">Choroba dietozależna</div>
-      <div class="check-list">
-        @for (cond of conditions; track cond) {
-          <label class="check-item">
+      <div class="filter-group">
+        <div class="filter-label">Wartości odżywcze i czas</div>
+        <div class="number-grid">
+          <label class="mini-field">
+            <span>Maks. kcal</span>
             <input
-              type="checkbox"
-              [checked]="filterCondition.includes(cond)"
-              (change)="toggleItem(filterCondition, cond)"
+              type="number"
+              min="0"
+              [(ngModel)]="filterMaxKcal"
+              name="maxKcal"
+              placeholder="np. 450"
             />
-            <span>{{ cond }}</span>
           </label>
-        }
+          <label class="mini-field">
+            <span>Min. białko (g)</span>
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="filterMinProtein"
+              name="minProtein"
+              placeholder="np. 20"
+            />
+          </label>
+          <label class="mini-field">
+            <span>Maks. czas (min)</span>
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="filterMaxTime"
+              name="maxTime"
+              placeholder="np. 15"
+            />
+          </label>
+          <label class="mini-field">
+            <span>Maks. sód (mg)</span>
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="filterMaxSodium"
+              name="maxSodium"
+              placeholder="np. 400"
+            />
+          </label>
+        </div>
       </div>
-    </div>
 
-    <div class="filter-group">
-      <div class="filter-label">Rodzaj diety</div>
-      <div class="chip-grid">
-        @for (diet of diets; track diet) {
-          <button
-            type="button"
-            class="filter-chip"
-            [class.is-active]="filterDiet.includes(diet)"
-            (click)="toggleItem(filterDiet, diet)"
-          >
-            {{ diet }}
-          </button>
-        }
+      <div class="filter-group">
+        <div class="filter-label">Choroba dietozależna</div>
+        <div class="check-list">
+          @for (cond of conditions; track cond) {
+            <label class="check-item">
+              <input
+                type="checkbox"
+                [checked]="filterCondition.includes(cond)"
+                (change)="toggleItem(filterCondition, cond)"
+              />
+              <span>{{ cond }}</span>
+            </label>
+          }
+        </div>
       </div>
-    </div>
+
+      <div class="filter-group">
+        <div class="filter-label">Rodzaj diety</div>
+        <div class="chip-grid">
+          @for (diet of diets; track diet) {
+            <button
+              type="button"
+              class="filter-chip"
+              [class.is-active]="filterDiet.includes(diet)"
+              (click)="toggleItem(filterDiet, diet)"
+            >
+              {{ diet }}
+            </button>
+          }
+        </div>
+      </div>
     </div>
   </aside>
 
@@ -192,7 +193,12 @@
       </div>
 
       <div class="topbar-right">
-        <mat-select class="app-select sort-select" [(ngModel)]="sortBy" name="desktopSort" aria-label="Sortuj przepisy">
+        <mat-select
+          class="app-select sort-select"
+          [(ngModel)]="sortBy"
+          name="desktopSort"
+          aria-label="Sortuj przepisy"
+        >
           <mat-option value="rating">Najwyżej oceniane</mat-option>
           <mat-option value="kcalAsc">Najmniej kcal</mat-option>
           <mat-option value="proteinDesc">Najwięcej białka</mat-option>
@@ -237,10 +243,7 @@
         </button>
       </div>
     } @else {
-      <div
-        class="recipes-grid"
-        [class.recipes-grid--list]="viewMode === 'list'"
-      >
+      <div class="recipes-grid" [class.recipes-grid--list]="viewMode === 'list'">
         @for (recipe of filteredRecipes; track recipe.uid) {
           <app-recipe-card
             [recipe]="recipe"

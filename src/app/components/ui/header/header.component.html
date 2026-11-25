@@ -1,6 +1,11 @@
 <header class="site-header" (document:click)="closeUserMenu()">
   <div class="container header-inner">
-    <a routerLink="/" class="brand-lockup" (click)="closeMobileNav()" aria-label="DietEtycznie — Strona główna">
+    <a
+      routerLink="/"
+      class="brand-lockup"
+      (click)="closeMobileNav()"
+      aria-label="DietEtycznie — Strona główna"
+    >
       <app-brand-logo size="md" surface="paper"></app-brand-logo>
     </a>
 
@@ -13,19 +18,11 @@
       >
         Start
       </a>
-      <a routerLink="/przepisy" routerLinkActive="is-active" class="nav-link">
-        Przepisy
-      </a>
-      <a routerLink="/choroby" routerLinkActive="is-active" class="nav-link">
-        Choroby
-      </a>
-      <a routerLink="/jadlospisy" routerLinkActive="is-active" class="nav-link">
-        Jadłospisy
-      </a>
+      <a routerLink="/przepisy" routerLinkActive="is-active" class="nav-link"> Przepisy </a>
+      <a routerLink="/choroby" routerLinkActive="is-active" class="nav-link"> Choroby </a>
+      <a routerLink="/jadlospisy" routerLinkActive="is-active" class="nav-link"> Jadłospisy </a>
       @if (isAdmin$ | async) {
-        <a routerLink="/admin" routerLinkActive="is-active" class="nav-link">
-          Admin
-        </a>
+        <a routerLink="/admin" routerLinkActive="is-active" class="nav-link"> Admin </a>
       }
     </nav>
 
@@ -37,14 +34,19 @@
         [class.is-dark]="(theme$ | async) === 'dark'"
         (click)="toggleTheme($event)"
         [attr.aria-label]="
-          (theme$ | async) === 'dark'
-            ? 'Przełącz na jasny motyw'
-            : 'Przełącz na ciemny motyw'
+          (theme$ | async) === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw'
         "
         title="Zmień motyw"
       >
         <span class="theme-icon theme-icon--sun" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <circle cx="12" cy="12" r="4.2" />
             <line x1="12" y1="2.5" x2="12" y2="4.8" />
             <line x1="12" y1="19.2" x2="12" y2="21.5" />
@@ -57,7 +59,14 @@
           </svg>
         </span>
         <span class="theme-icon theme-icon--moon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z" />
           </svg>
         </span>
@@ -96,7 +105,11 @@
                   </button>
                 }
                 <div class="dropdown-divider"></div>
-                <button type="button" class="dropdown-item dropdown-item--danger" (click)="logout()">
+                <button
+                  type="button"
+                  class="dropdown-item dropdown-item--danger"
+                  (click)="logout()"
+                >
                   Wyloguj się
                 </button>
               </div>
@@ -131,17 +144,37 @@
         >
           Start
         </a>
-        <a routerLink="/przepisy" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+        <a
+          routerLink="/przepisy"
+          routerLinkActive="is-active"
+          class="mobile-link"
+          (click)="closeMobileNav()"
+        >
           Przepisy
         </a>
-        <a routerLink="/choroby" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+        <a
+          routerLink="/choroby"
+          routerLinkActive="is-active"
+          class="mobile-link"
+          (click)="closeMobileNav()"
+        >
           Choroby dietozależne
         </a>
-        <a routerLink="/jadlospisy" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+        <a
+          routerLink="/jadlospisy"
+          routerLinkActive="is-active"
+          class="mobile-link"
+          (click)="closeMobileNav()"
+        >
           Jadłospisy
         </a>
         @if (isAdmin$ | async) {
-          <a routerLink="/admin" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+          <a
+            routerLink="/admin"
+            routerLinkActive="is-active"
+            class="mobile-link"
+            (click)="closeMobileNav()"
+          >
             Panel administratora
           </a>
         }
@@ -160,8 +193,12 @@
           </button>
         } @else {
           <div class="mobile-auth-btns">
-            <a routerLink="/logowanie" class="btn btn-secondary" (click)="closeMobileNav()">Zaloguj</a>
-            <a routerLink="/rejestracja" class="btn btn-primary" (click)="closeMobileNav()">Załóż konto</a>
+            <a routerLink="/logowanie" class="btn btn-secondary" (click)="closeMobileNav()"
+              >Zaloguj</a
+            >
+            <a routerLink="/rejestracja" class="btn btn-primary" (click)="closeMobileNav()"
+              >Załóż konto</a
+            >
           </div>
         }
       </div>

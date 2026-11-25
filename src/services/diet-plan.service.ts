@@ -81,9 +81,7 @@ export class DietPlanService {
     const q = query(plansRef, where("userId", "==", userId));
     return this.firebase.fromFirebase(getDocs(q)).pipe(
       map((snapshot) =>
-        snapshot.docs.map((d) =>
-          this.normalizePlan({ ...(d.data() as DietPlan), id: d.id }),
-        ),
+        snapshot.docs.map((d) => this.normalizePlan({ ...(d.data() as DietPlan), id: d.id })),
       ),
       catchError(() =>
         of(
@@ -98,21 +96,15 @@ export class DietPlanService {
 
   getDietPlans(): Observable<DietPlan[]> {
     if (this.firebase.isFallbackMode || !this.firebase.db) {
-      return of(
-        this.localStore.getDietPlans().map((p) => this.normalizePlan(p)),
-      );
+      return of(this.localStore.getDietPlans().map((p) => this.normalizePlan(p)));
     }
 
     const plansRef = collection(this.firebase.db, "dietPlans");
     return this.firebase.fromFirebase(getDocs(plansRef)).pipe(
       map((snapshot) =>
-        snapshot.docs.map((d) =>
-          this.normalizePlan({ ...(d.data() as DietPlan), id: d.id }),
-        ),
+        snapshot.docs.map((d) => this.normalizePlan({ ...(d.data() as DietPlan), id: d.id })),
       ),
-      catchError(() =>
-        of(this.localStore.getDietPlans().map((p) => this.normalizePlan(p))),
-      ),
+      catchError(() => of(this.localStore.getDietPlans().map((p) => this.normalizePlan(p)))),
     );
   }
 
@@ -125,9 +117,7 @@ export class DietPlanService {
     const planRef = doc(this.firebase.db, `dietPlans/${id}`);
     return this.firebase.fromFirebase(getDoc(planRef)).pipe(
       map((snap) =>
-        snap.exists()
-          ? this.normalizePlan({ ...(snap.data() as DietPlan), id: snap.id })
-          : null,
+        snap.exists() ? this.normalizePlan({ ...(snap.data() as DietPlan), id: snap.id }) : null,
       ),
       catchError(() => {
         const found = this.localStore.getDietPlans().find((p) => p.id === id);
@@ -172,9 +162,7 @@ export class DietPlanService {
     }
 
     const planRef = doc(this.firebase.db, `dietPlans/${id}`);
-    return this.firebase.fromFirebase(
-      updateDoc(planRef, this.firebase.cleanPayload(payload)),
-    );
+    return this.firebase.fromFirebase(updateDoc(planRef, this.firebase.cleanPayload(payload)));
   }
 
   deleteDietPlan(id: string): Observable<void> {
@@ -190,9 +178,7 @@ export class DietPlanService {
 
   async seedToFirestore(): Promise<number> {
     if (!this.firebase.db) {
-      this.localStore.saveDietPlans(
-        SEED_DIET_PLANS.map((p) => this.normalizePlan(p)),
-      );
+      this.localStore.saveDietPlans(SEED_DIET_PLANS.map((p) => this.normalizePlan(p)));
       return SEED_DIET_PLANS.length;
     }
     let count = 0;

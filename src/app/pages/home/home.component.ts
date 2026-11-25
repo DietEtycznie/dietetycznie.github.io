@@ -136,13 +136,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loadingRecipes = false;
     });
 
-    this.medicalConditionService
-      .getMedicalConditions()
-      .subscribe((conditions) => {
-        this.totalConditionsCount = conditions.length;
-        this.medicalConditions = conditions.slice(0, 4);
-        this.loadingConditions = false;
-      });
+    this.medicalConditionService.getMedicalConditions().subscribe((conditions) => {
+      this.totalConditionsCount = conditions.length;
+      this.medicalConditions = conditions.slice(0, 4);
+      this.loadingConditions = false;
+    });
 
     this.dietPlanService.getPublicDietPlans().subscribe((plans) => {
       this.totalReadyPlansCount = plans.length;
@@ -200,10 +198,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     el.style.setProperty("--stage-scale", scale.toFixed(4));
 
     const chapter = clamped < 0.34 ? 0 : clamped < 0.68 ? 1 : 2;
-    if (
-      chapter !== this.activeChapter ||
-      Math.abs(clamped - this.storyProgress) > 0.04
-    ) {
+    if (chapter !== this.activeChapter || Math.abs(clamped - this.storyProgress) > 0.04) {
       this.ngZone.run(() => {
         this.storyProgress = clamped;
         this.activeChapter = chapter;
@@ -216,8 +211,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!el) return;
     const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
     const targetProgress = chapterIdx === 0 ? 0.16 : chapterIdx === 1 ? 0.5 : 0.84;
-    const top =
-      window.scrollY + el.getBoundingClientRect().top + scrollable * targetProgress;
+    const top = window.scrollY + el.getBoundingClientRect().top + scrollable * targetProgress;
     window.scrollTo({ top, behavior: "smooth" });
   }
 
@@ -237,9 +231,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getRecipeCountForCondition(conditionName: string): number {
-    return this.allRecipes.filter((r) =>
-      r.suitableForConditions?.includes(conditionName),
-    ).length;
+    return this.allRecipes.filter((r) => r.suitableForConditions?.includes(conditionName)).length;
   }
 
   handleImageError(event: Event): void {

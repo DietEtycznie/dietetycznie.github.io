@@ -160,7 +160,9 @@ export class LocalStoreService {
     if (!user) {
       try {
         localStorage.removeItem(STORAGE_KEYS.demoUser);
-      } catch {}
+      } catch {
+        // Ignore storage errors in restricted environments
+      }
       return;
     }
     this.writeJson(STORAGE_KEYS.demoUser, user);
@@ -198,10 +200,7 @@ export class LocalStoreService {
         })),
       );
     }
-    if (
-      Array.isArray(payload.medicalConditions) &&
-      payload.medicalConditions.length
-    ) {
+    if (Array.isArray(payload.medicalConditions) && payload.medicalConditions.length) {
       this.saveConditions(payload.medicalConditions);
     }
     if (Array.isArray(payload.dietPlans) && payload.dietPlans.length) {

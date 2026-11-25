@@ -182,8 +182,7 @@ export class ImageCropperDialogComponent implements OnChanges {
       this.rotation = 0;
     };
     img.onerror = () => {
-      this.errorMessage =
-        "Nie udało się wczytać zdjęcia (sprawdź CORS lub wgraj plik z dysku).";
+      this.errorMessage = "Nie udało się wczytać zdjęcia (sprawdź CORS lub wgraj plik z dysku).";
     };
     img.src = url;
   }
