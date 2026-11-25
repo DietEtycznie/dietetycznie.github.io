@@ -1,4 +1,4 @@
-<header class="site-header" (document:click)="closeUserMenu()">
+<header class="site-header" (document:click)="closeAllMenus()">
   <div class="container header-inner">
     <a
       routerLink="/"
@@ -124,6 +124,7 @@
       <button
         type="button"
         class="mobile-toggle"
+        [class.is-open]="isMobileNavOpen"
         [attr.aria-label]="isMobileNavOpen ? 'Zamknij menu' : 'Otwórz menu'"
         [attr.aria-expanded]="isMobileNavOpen"
         (click)="toggleMobileNav(); $event.stopPropagation()"
@@ -133,8 +134,14 @@
     </div>
   </div>
 
-  @if (isMobileNavOpen) {
-    <div class="mobile-drawer" (click)="$event.stopPropagation()">
+  <div
+    class="mobile-drawer"
+    [class.is-open]="isMobileNavOpen"
+    [attr.aria-hidden]="!isMobileNavOpen"
+    [attr.inert]="isMobileNavOpen ? null : ''"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="mobile-drawer__clip">
       <div class="container mobile-drawer__inner">
         <a
           routerLink="/"
@@ -204,5 +211,5 @@
         }
       </div>
     </div>
-  }
+  </div>
 </header>

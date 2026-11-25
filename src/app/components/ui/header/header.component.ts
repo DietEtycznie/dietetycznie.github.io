@@ -50,6 +50,11 @@ export class HeaderComponent {
     this.isUserMenuOpen = false;
   }
 
+  closeAllMenus(): void {
+    this.isUserMenuOpen = false;
+    this.isMobileNavOpen = false;
+  }
+
   getFirstLetters(name: string | undefined): string {
     if (!name) return "U";
     const parts = name.trim().split(/\s+/);
