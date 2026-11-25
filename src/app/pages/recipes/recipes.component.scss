@@ -72,10 +72,10 @@
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
-    padding: 0.95rem 1.1rem 1.15rem;
+    padding: 1.15rem 1.15rem 1.4rem;
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 1.35rem;
   }
 }
 
@@ -112,15 +112,20 @@
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.7rem;
+
+  & + .filter-group {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-subtle);
+  }
 }
 
 .filter-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: $text-secondary-color;
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
 }
 
 .search-input-wrap {
@@ -190,7 +195,7 @@
 .number-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  gap: 0.65rem;
 }
 
 .mini-field {
@@ -225,13 +230,13 @@
 .check-list {
   display: flex;
   flex-direction: column;
-  gap: 0.42rem;
+  gap: 0.55rem;
 }
 
 .check-item {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.6rem;
   font-size: 0.86rem;
   color: var(--ink-primary);
   cursor: pointer;
@@ -240,7 +245,7 @@
 .chip-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.48rem;
 }
 
 .filter-chip {
