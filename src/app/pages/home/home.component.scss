@@ -279,27 +279,6 @@
   }
 }
 
-.notion-hero__visual {
-  position: relative;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #f0f3f7;
-  aspect-ratio: 4 / 3;
-
-  .hero-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 24% center;
-    display: block;
-    transition: transform 0.6s ease;
-  }
-
-  &:hover .hero-photo {
-    transform: scale(1.03);
-  }
-}
-
 .scroll-hint-bar {
   background: var(--bg-paper);
   padding: 0.25rem 1rem 2.5rem;
@@ -1021,10 +1000,6 @@
   justify-content: center;
   align-items: flex-end;
   min-height: 420px;
-}
-
-.portrait-accent {
-  display: none;
 }
 
 .dietitian-silhouette {
