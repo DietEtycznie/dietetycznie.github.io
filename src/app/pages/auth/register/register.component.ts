@@ -1,34 +1,42 @@
-import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { RouterLink, Router } from "@angular/router";
+import { Component, inject } from "@angular/core";
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from "@angular/forms";
+import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../../../services/auth.service";
+import { AuthShellComponent } from "../../../components/ui";
 
 @Component({
   selector: "app-register",
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    AuthShellComponent,
+  ],
   templateUrl: "./register.component.html",
   styleUrls: ["./register.component.scss"],
 })
 export class RegisterComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   registerForm: FormGroup;
   loading = false;
   error = "";
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-  ) {
-    this.registerForm = this.formBuilder.group(
+  constructor() {
+    this.registerForm = this.fb.group(
       {
-        displayName: ["", Validators.required],
+        displayName: ["", [Validators.required, Validators.minLength(2)]],
         email: ["", [Validators.required, Validators.email]],
         password: ["", [Validators.required, Validators.minLength(6)]],
         confirmPassword: ["", Validators.required],
@@ -37,40 +45,32 @@ export class RegisterComponent {
     );
   }
 
-  passwordMatchValidator(group: FormGroup) {
+  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get("password")?.value;
     const confirmPassword = group.get("confirmPassword")?.value;
-
-    if (password !== confirmPassword) {
+    if (password && confirmPassword && password !== confirmPassword) {
       group.get("confirmPassword")?.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
     }
-
     return null;
   }
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.registerForm.get(fieldName);
-    return !!field && field.invalid && (field.dirty || field.touched);
+    return Boolean(field && field.invalid && (field.dirty || field.touched));
   }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) {
-      return;
-    }
-
+    if (this.registerForm.invalid) return;
     this.loading = true;
     this.error = "";
 
     const { email, password, displayName } = this.registerForm.value;
-
     this.authService
       .signUp(email, password, displayName)
-      .then(() => {
-        this.router.navigate(["/"]);
-      })
-      .catch((error) => {
-        this.error = this.getErrorMessage(error);
+      .then(() => this.router.navigate(["/"]))
+      .catch((err) => {
+        this.error = this.getErrorMessage(err);
       })
       .finally(() => {
         this.loading = false;
@@ -80,14 +80,11 @@ export class RegisterComponent {
   registerWithGoogle(): void {
     this.loading = true;
     this.error = "";
-
     this.authService
       .signInWithGoogle()
-      .then(() => {
-        this.router.navigate(["/"]);
-      })
-      .catch((error) => {
-        this.error = this.getErrorMessage(error);
+      .then(() => this.router.navigate(["/"]))
+      .catch((err) => {
+        this.error = this.getErrorMessage(err);
       })
       .finally(() => {
         this.loading = false;
@@ -95,19 +92,19 @@ export class RegisterComponent {
   }
 
   private getErrorMessage(error: any): string {
-    switch (error.code) {
+    switch (error?.code) {
       case "auth/email-already-in-use":
-        return "The email address is already in use";
+        return "Ten adres email jest już zarejestrowany.";
       case "auth/invalid-email":
-        return "Please enter a valid email address";
+        return "Podaj poprawny adres email.";
       case "auth/operation-not-allowed":
-        return "Email/password accounts are not enabled";
+        return "Rejestracja przez email/hasło jest obecnie wyłączona.";
       case "auth/weak-password":
-        return "The password is too weak";
+        return "Hasło jest zbyt słabe — użyj co najmniej 6 znaków.";
       case "auth/popup-closed-by-user":
-        return "Google sign-in popup was closed before authentication completed";
+        return "Okno rejestracji Google zostało zamknięte przed zakończeniem.";
       default:
-        return error.message || "An unexpected error occurred";
+        return "Nie udało się utworzyć konta. Spróbuj ponownie.";
     }
   }
 }

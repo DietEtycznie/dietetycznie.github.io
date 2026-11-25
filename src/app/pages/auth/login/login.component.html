@@ -1,74 +1,109 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h1 class="auth-title">Logowanie</h1>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          class="form-control"
-          [ngClass]="{ invalid: isFieldInvalid('email') }"
-        />
-        <div *ngIf="isFieldInvalid('email')" class="error-message">
-          <span *ngIf="loginForm.get('email')?.errors?.['required']"
-            >Email jest wymagany</span
-          >
-          <span *ngIf="loginForm.get('email')?.errors?.['email']"
-            >Podaj poprawny adres email</span
-          >
+<app-auth-shell
+  asideTitle="Spokojne planowanie diety każdego dnia."
+  asideDescription="Wróć do zapisanych przepisów z pełnym makro, gotowych planów 7-dniowych oraz indywidualnych jadłospisów od dietetyka."
+  formTitle="Witaj ponownie"
+  formSubtitle="Zaloguj się na swoje konto DietEtycznie."
+>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <div class="field">
+      <label for="email">Adres email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="form-control"
+        placeholder="jan@kowalski.pl"
+        [class.is-invalid]="isFieldInvalid('email')"
+      />
+      @if (isFieldInvalid("email")) {
+        <div class="field-error">
+          @if (loginForm.get("email")?.errors?.["required"]) {
+            Email jest wymagany.
+          } @else if (loginForm.get("email")?.errors?.["email"]) {
+            Podaj poprawny adres email.
+          }
         </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Hasło</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="form-control"
-          [ngClass]="{ invalid: isFieldInvalid('password') }"
-        />
-        <div *ngIf="isFieldInvalid('password')" class="error-message">
-          <span *ngIf="loginForm.get('password')?.errors?.['required']"
-            >Hasło jest wymagane</span
-          >
-          <span *ngIf="loginForm.get('password')?.errors?.['minlength']"
-            >Hasło musi mieć co najmniej 6 znaków</span
-          >
-        </div>
-      </div>
-
-      <div *ngIf="error" class="auth-error">
-        {{ error }}
-      </div>
-
-      <button
-        class="btn btn-primary"
-        type="submit"
-        [disabled]="loginForm.invalid || loading"
-      >
-        {{ loading ? "Logowanie..." : "Zaloguj się" }}
-      </button>
-
-      <div class="auth-separator">
-        <span>lub</span>
-      </div>
-
-      <button
-        type="button"
-        class="btn-google"
-        (click)="loginWithGoogle()"
-        [disabled]="loading"
-      >
-        Zaloguj się przez Google
-      </button>
-    </form>
-
-    <div class="auth-footer">
-      <p>Nie masz konta? <a routerLink="/register">Zarejestruj się</a></p>
+      }
     </div>
+
+    <div class="field">
+      <label for="password">Hasło</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        class="form-control"
+        placeholder="Minimum 6 znaków"
+        [class.is-invalid]="isFieldInvalid('password')"
+      />
+      @if (isFieldInvalid("password")) {
+        <div class="field-error">
+          @if (loginForm.get("password")?.errors?.["required"]) {
+            Hasło jest wymagane.
+          } @else if (loginForm.get("password")?.errors?.["minlength"]) {
+            Hasło musi mieć co najmniej 6 znaków.
+          }
+        </div>
+      }
+    </div>
+
+    @if (error) {
+      <div class="auth-alert">{{ error }}</div>
+    }
+
+    <button
+      class="btn btn-primary auth-submit"
+      type="submit"
+      [disabled]="loginForm.invalid || loading"
+    >
+      {{ loading ? "Logowanie..." : "Zaloguj się" }}
+    </button>
+
+    <div class="auth-divider"><span>lub</span></div>
+
+    <button
+      type="button"
+      class="btn btn-secondary auth-submit"
+      (click)="loginWithGoogle()"
+      [disabled]="loading"
+    >
+      <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="#4285F4"
+          d="M23.49 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h6.45a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.56-5.17 3.56-8.65z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 24c3.24 0 5.95-1.07 7.93-2.9l-3.88-3c-1.07.72-2.45 1.14-4.05 1.14-3.12 0-5.77-2.1-6.72-4.93H1.27v3.1A12 12 0 0 0 12 24z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M5.28 14.31A7.2 7.2 0 0 1 4.9 12c0-.8.14-1.58.38-2.31V6.59H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.41l4.01-3.1z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 4.76c1.76 0 3.34.6 4.58 1.8l3.44-3.44C17.94 1.19 15.23 0 12 0A12 12 0 0 0 1.27 6.59l4.01 3.1c.95-2.83 3.6-4.93 6.72-4.93z"
+        />
+      </svg>
+      Kontynuuj przez Google
+    </button>
+
+    @if (isFallbackMode) {
+      <div class="demo-box">
+        <div class="demo-box__title">Szybki dostęp (Tryb lokalny / Demo)</div>
+        <div class="demo-box__btns">
+          <button type="button" class="btn btn-secondary" (click)="loginDemo(false)">
+            Konto Demo
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="loginDemo(true)">
+            Admin Demo
+          </button>
+        </div>
+      </div>
+    }
+  </form>
+
+  <div class="auth-footer">
+    Nie masz jeszcze konta? <a routerLink="/rejestracja">Zarejestruj się</a>
   </div>
-</div>
+</app-auth-shell>

@@ -1,31 +1,43 @@
-import { Component, OnInit, OnDestroy, inject } from "@angular/core";
-import { DietPlan } from "../../../models/diet-plan.model";
-import { Recipe } from "../../../models/recipe.model";
+import { CommonModule } from "@angular/common";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { Subscription } from "rxjs";
+import {
+  createEmptyMealPlan,
+  DayKey,
+  DietPlan,
+  normalizeMealPlan,
+  WEEK_DAYS,
+} from "../../../models/diet-plan.model";
+import {
+  FALLBACK_RECIPE_IMAGE,
+  MEAL_TYPES,
+  MEDICAL_CONDITIONS,
+  Recipe,
+  resolveRecipeImageUrl,
+} from "../../../models/recipe.model";
+import { AuthService } from "../../../services/auth.service";
 import { DietPlanService } from "../../../services/diet-plan.service";
 import { RecipeService } from "../../../services/recipe.service";
-import { AuthService } from "../../../services/auth.service";
-import { FormsModule } from "@angular/forms";
-import { AsyncPipe, NgForOf, NgIf } from "@angular/common";
-import { RecipeCardComponent } from "../../components/ui/recipe-card/recipe-card.component";
-import { Router } from "@angular/router";
-import { Subscription, take, shareReplay } from "rxjs";
-import { MatButtonToggleModule } from "@angular/material/button-toggle";
-import { MatButtonModule } from "@angular/material/button";
-import { MatDialogModule, MatDialog } from "@angular/material/dialog";
+import {
+  FilterStripComponent,
+  FilterStripItem,
+  PresentationHeaderComponent,
+  PrintHeaderComponent,
+  RecipeCardComponent,
+} from "../../components/ui";
 import { AddDietPlanDialogComponent } from "./add-diet-plan-dialog/add-diet-plan-dialog.component";
-import { MatExpansionModule } from "@angular/material/expansion";
-import { MatIconModule } from "@angular/material/icon";
-import { FiltersComponent } from "../../components/ui/filters/filters.component";
-import { RecipeListElementComponent } from "../../components/ui/recipe-list-element/recipe-list-element.component";
-import { PresentationHeaderComponent } from "../../components/ui/presentation-header/presentation-header.component";
 
-export const MEAL_TYPES = [
-  "Śniadanie",
-  "Obiad",
-  "Podwieczorek",
-  "Kolacja",
-  "Przekąska",
-];
+export interface ShoppingItem {
+  name: string;
+  count: number;
+  checked: boolean;
+}
 
 @Component({
   selector: "app-diet-plans",
@@ -33,398 +45,500 @@ export const MEAL_TYPES = [
   styleUrls: ["./diet-plans.component.scss"],
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
-    NgForOf,
-    NgIf,
-    RecipeCardComponent,
-    MatButtonToggleModule,
-    MatButtonModule,
+    RouterLink,
     MatDialogModule,
-    MatExpansionModule,
     MatIconModule,
-    FiltersComponent,
-    RecipeListElementComponent,
-    AsyncPipe,
+    MatMenuModule,
+    MatSelectModule,
+    RecipeCardComponent,
     PresentationHeaderComponent,
+    FilterStripComponent,
+    PrintHeaderComponent,
   ],
 })
 export class DietPlansComponent implements OnInit, OnDestroy {
+  private dietPlanService = inject(DietPlanService);
+  private recipeService = inject(RecipeService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
+  private sub = new Subscription();
+
   readyPlans: DietPlan[] = [];
   myPlans: DietPlan[] = [];
+  personalizedPlans: DietPlan[] = [];
   allRecipes: Recipe[] = [];
-  selectedConditions: string[] = [];
+  savedRecipeIds: string[] = [];
+
   currentUserId: string | null = null;
-  activeSection = "readyPlans";
-  editModes: { [key: string]: boolean } = {};
-  private subscriptions = new Subscription();
-  private originalPlans: { [key: string]: DietPlan } = {};
+  activeSection: "readyPlans" | "myPlans" | "personalized" = "readyPlans";
+  filterCondition = "";
+  toastMessage = "";
 
-  weekDays = [
-    { key: "monday", label: "Poniedziałek" },
-    { key: "tuesday", label: "Wtorek" },
-    { key: "wednesday", label: "Środa" },
-    { key: "thursday", label: "Czwartek" },
-    { key: "friday", label: "Piątek" },
-    { key: "saturday", label: "Sobota" },
-    { key: "sunday", label: "Niedziela" },
-  ];
+  // Per-plan view state
+  selectedDayByPlan: Record<string, DayKey> = {};
+  showFullWeekByPlan: Record<string, boolean> = {};
+  editModes: Record<string, boolean> = {};
+  private originalPlans: Record<string, DietPlan> = {};
 
+  weekDays = WEEK_DAYS;
   meals = MEAL_TYPES;
+  allConditions = MEDICAL_CONDITIONS;
 
+  // Picker modal state
   pickerOpen = false;
-  pickerFilter = "";
-  filteredRecipes: Recipe[] = [];
   pickerPlanIdx = 0;
-  pickerDay = "";
+  pickerDay: DayKey = "monday";
   pickerMealIdx = 0;
+  pickerSearch = "";
+  pickerMealFilter = "";
+  pickerConditionFilter = "";
+  pickerMaxKcal: number | null = null;
+  pickerOnlyLiked = false;
 
-  pickerFilterType: string[] = [];
-  pickerFilterLiked: boolean = false;
-  pickerFilterMaxKcal: number | null = null;
-  pickerFilterCondition: string[] = [];
+  // Shopping list modal state
+  shoppingModalOpen = false;
+  shoppingPlan: DietPlan | null = null;
+  shoppingScope: "week" | "day" = "week";
+  shoppingDay: DayKey = "monday";
+  shoppingItems: ShoppingItem[] = [];
+  copiedShopping = false;
 
-  dietPlanService = inject(DietPlanService);
-  recipeService = inject(RecipeService);
-  authService = inject(AuthService);
-  router = inject(Router);
-  dialog = inject(MatDialog);
+  // Dedicated single-plan print state
+  printingPlan: DietPlan | null = null;
 
-  user$ = this.authService.user$.pipe(take(1), shareReplay(1));
+  user$ = this.authService.user$;
 
-  ngOnInit() {
-    this.loadRecipes();
+  ngOnInit(): void {
+    this.sub.add(
+      this.recipeService.getRecipes().subscribe((recipes) => {
+        this.allRecipes = recipes;
+      }),
+    );
 
-    this.router.routerState.root.queryParams.subscribe((params) => {
-      if (params["section"] === "myPlans") {
-        this.activeSection = "myPlans";
-      } else {
-        this.activeSection = "readyPlans";
-      }
-    });
+    this.sub.add(
+      this.route.queryParamMap.subscribe((params) => {
+        const sec = params.get("section");
+        if (sec === "myPlans") {
+          this.activeSection = "myPlans";
+        } else if (sec === "personalized") {
+          this.activeSection = "personalized";
+        } else {
+          this.activeSection = "readyPlans";
+        }
+        const cond = params.get("condition");
+        if (cond) {
+          this.filterCondition = cond;
+        }
+      }),
+    );
 
-    this.subscriptions.add(
-      this.user$.subscribe((user) => {
-        this.currentUserId = user?.uid || null;
+    this.sub.add(
+      this.authService.user$.subscribe((user) => {
+        this.currentUserId = user?.uid ?? null;
+        this.savedRecipeIds = user?.savedRecipes ?? [];
         this.loadReadyPlans();
         this.loadMyPlans();
       }),
     );
   }
 
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
-  loadReadyPlans() {
-    this.subscriptions.add(
-      this.dietPlanService.getPublicDietPlans().subscribe((plans) => {
-        this.readyPlans = plans;
-      }),
+  get conditionFilterItems(): FilterStripItem[] {
+    return [
+      { value: "", label: "Wszystkie" },
+      ...this.allConditions.map((c) => ({ value: c, label: c })),
+    ];
+  }
+
+  get filteredReadyPlans(): DietPlan[] {
+    if (!this.filterCondition) return this.readyPlans;
+    return this.readyPlans.filter((p) =>
+      p.suitableForConditions?.includes(this.filterCondition),
     );
   }
 
-  loadMyPlans() {
-    if (this.currentUserId) {
-      this.subscriptions.add(
-        this.dietPlanService
-          .getUserDietPlans(this.currentUserId)
-          .subscribe((plans) => {
-            this.myPlans = plans;
-          }),
-      );
-    } else {
+  get pickerFilteredRecipes(): Recipe[] {
+    const q = this.pickerSearch.trim().toLowerCase();
+    return this.allRecipes.filter((r) => {
+      if (q) {
+        const hit =
+          r.name.toLowerCase().includes(q) ||
+          r.ingredients?.some((i) => i.toLowerCase().includes(q));
+        if (!hit) return false;
+      }
+      if (
+        this.pickerMealFilter &&
+        !r.mealType?.includes(this.pickerMealFilter)
+      ) {
+        return false;
+      }
+      if (
+        this.pickerConditionFilter &&
+        !r.suitableForConditions?.includes(this.pickerConditionFilter)
+      ) {
+        return false;
+      }
+      if (this.pickerMaxKcal != null && r.calories > this.pickerMaxKcal) {
+        return false;
+      }
+      if (this.pickerOnlyLiked && !this.savedRecipeIds.includes(r.uid)) {
+        return false;
+      }
+      return true;
+    });
+  }
+
+  loadReadyPlans(): void {
+    this.dietPlanService.getPublicDietPlans().subscribe((plans) => {
+      this.readyPlans = plans.map((p) => ({
+        ...p,
+        mealPlan: normalizeMealPlan(p.mealPlan),
+      }));
+    });
+  }
+
+  loadMyPlans(): void {
+    if (!this.currentUserId) {
       this.myPlans = [];
+      this.personalizedPlans = [];
+      if (this.activeSection === "personalized") {
+        this.activeSection = "readyPlans";
+      }
+      return;
     }
+    this.dietPlanService
+      .getUserDietPlans(this.currentUserId)
+      .subscribe((plans) => {
+        const normalized = plans.map((p) => ({
+          ...p,
+          mealPlan: normalizeMealPlan(p.mealPlan),
+        }));
+        this.personalizedPlans = normalized.filter((p) => Boolean(p.isPersonalized));
+        this.myPlans = normalized.filter((p) => !p.isPersonalized);
+        if (
+          this.activeSection === "personalized" &&
+          this.personalizedPlans.length === 0
+        ) {
+          this.activeSection = "readyPlans";
+        }
+      });
   }
 
-  loadRecipes() {
-    this.subscriptions.add(
-      this.recipeService.getRecipes().subscribe((recipes) => {
-        this.allRecipes = recipes;
-      }),
-    );
+  getPlanKey(plan: DietPlan, index: number): string {
+    return plan.id || `plan-${index}`;
   }
 
-  getRecipeName(id: string): string {
-    if (!id) return "";
-    const recipe = this.allRecipes.find((r) => r.uid === id);
-    return recipe ? recipe.name : "Przepis niedostępny";
+  getSelectedDay(planKey: string): DayKey {
+    return this.selectedDayByPlan[planKey] ?? "monday";
+  }
+
+  selectDay(planKey: string, day: DayKey): void {
+    this.selectedDayByPlan[planKey] = day;
+  }
+
+  toggleFullWeek(planKey: string): void {
+    this.showFullWeekByPlan[planKey] = !this.showFullWeekByPlan[planKey];
+  }
+
+  printPlan(plan: DietPlan): void {
+    this.printingPlan = plan;
+    const clearAfterPrint = () => {
+      this.printingPlan = null;
+      window.removeEventListener("afterprint", clearAfterPrint);
+    };
+    window.addEventListener("afterprint", clearAfterPrint);
+    setTimeout(() => {
+      window.print();
+    }, 60);
   }
 
   getRecipeById(id: string): Recipe | null {
     if (!id) return null;
-    const recipe = this.allRecipes.find((r) => r.uid === id);
-    return recipe || null;
+    return this.allRecipes.find((r) => r.uid === id) ?? null;
   }
 
-  toggleEditMode(planKey: string | number) {
-    const planIndex =
-      typeof planKey === "number"
-        ? planKey
-        : this.myPlans.findIndex((p) => p.id === planKey);
-    if (planIndex !== -1) {
+  getRecipeImage(recipe: Recipe): string {
+    return resolveRecipeImageUrl(recipe.imageUrl);
+  }
+
+  handleImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = FALLBACK_RECIPE_IMAGE;
+  }
+
+  getDayMacros(plan: DietPlan, day: DayKey) {
+    const ids = plan.mealPlan?.[day] ?? [];
+    return ids.reduce(
+      (acc, id) => {
+        const r = this.getRecipeById(id);
+        if (!r) return acc;
+        acc.calories += r.calories || 0;
+        acc.protein += r.protein || 0;
+        acc.carbs += r.carbs || 0;
+        acc.fat += r.fat || 0;
+        return acc;
+      },
+      { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    );
+  }
+
+  getWeeklyAverageMacros(plan: DietPlan) {
+    let calories = 0;
+    let protein = 0;
+    let carbs = 0;
+    let fat = 0;
+    let filledDays = 0;
+
+    for (const d of this.weekDays) {
+      const m = this.getDayMacros(plan, d.key);
+      if (m.calories > 0) filledDays++;
+      calories += m.calories;
+      protein += m.protein;
+      carbs += m.carbs;
+      fat += m.fat;
+    }
+
+    const div = filledDays || 1;
+    return {
+      totalCalories: calories,
+      avgCalories: Math.round(calories / div),
+      avgProtein: Math.round(protein / div),
+      avgCarbs: Math.round(carbs / div),
+      avgFat: Math.round(fat / div),
+    };
+  }
+
+  copyReadyPlanToMyPlans(plan: DietPlan): void {
+    if (!this.currentUserId) {
+      this.router.navigate(["/logowanie"], {
+        queryParams: { returnUrl: "/jadlospisy" },
+      });
+      return;
+    }
+
+    const clone: Omit<DietPlan, "id"> = {
+      name: `${plan.name} (Moja kopia)`,
+      description: plan.description,
+      suitableForConditions: [...(plan.suitableForConditions ?? [])],
+      tags: [...(plan.tags ?? [])],
+      targetCalories: plan.targetCalories,
+      isPersonalized: false,
+      mealPlan: normalizeMealPlan(JSON.parse(JSON.stringify(plan.mealPlan))),
+      userId: this.currentUserId,
+    };
+
+    this.dietPlanService.addDietPlan(clone).subscribe((newId) => {
+      this.myPlans.unshift({ ...clone, id: newId });
+      this.activeSection = "myPlans";
+      this.showToast(
+        plan.isPersonalized
+          ? `Skopiowano plan indywidualny do „Moje” — możesz go teraz edytować.`
+          : `Zapisano „${plan.name}” w Twoich jadłospisach!`,
+      );
+    });
+  }
+
+  openAddDietPlanDialog(): void {
+    if (!this.currentUserId) {
+      this.router.navigate(["/logowanie"], {
+        queryParams: { returnUrl: "/jadlospisy?section=myPlans" },
+      });
+      return;
+    }
+
+    const dialogRef = this.dialog.open(AddDietPlanDialogComponent, {
+      width: "520px",
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      const newPlan: Omit<DietPlan, "id"> = {
+        name: result.name,
+        description: result.description || "",
+        suitableForConditions: result.suitableForConditions || [],
+        mealPlan: createEmptyMealPlan(),
+        userId: this.currentUserId,
+      };
+
+      this.dietPlanService.addDietPlan(newPlan).subscribe((id) => {
+        const created: DietPlan = { ...newPlan, id };
+        this.myPlans.unshift(created);
+        this.toggleEditMode(created.id);
+        this.showToast(`Utworzono plan „${created.name}” — dodaj teraz posiłki.`);
+      });
+    });
+  }
+
+  toggleEditMode(planKey: string): void {
+    const idx = this.myPlans.findIndex(
+      (p, i) => this.getPlanKey(p, i) === planKey,
+    );
+    if (idx !== -1) {
       this.originalPlans[planKey] = JSON.parse(
-        JSON.stringify(this.myPlans[planIndex]),
+        JSON.stringify(this.myPlans[idx]),
       );
     }
     this.editModes[planKey] = true;
   }
 
-  savePlanAndExitEditMode(plan: DietPlan, planIndex: number) {
-    this.savePlan(plan);
-    const planKey = plan.id || planIndex;
-    delete this.originalPlans[planKey];
-    this.editModes[planKey] = false;
-  }
-
-  cancelEditMode(planKey: string | number) {
-    const planIndex =
-      typeof planKey === "number"
-        ? planKey
-        : this.myPlans.findIndex((p) => p.id === planKey);
-    if (planIndex !== -1 && this.originalPlans[planKey]) {
-      this.myPlans[planIndex] = this.originalPlans[planKey];
-    }
-    delete this.originalPlans[planKey];
-    this.editModes[planKey] = false;
-  }
-
-  openAddDietPlanDialog(): void {
-    const dialogRef = this.dialog.open(AddDietPlanDialogComponent, {
-      width: "500px",
-      panelClass: "diet-plan-dialog",
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        const newPlan: DietPlan = {
-          ...(result as DietPlan),
-          id: "",
-          userId: this.currentUserId,
-          mealPlan: {
-            monday: ["", "", "", ""],
-            tuesday: ["", "", "", ""],
-            wednesday: ["", "", "", ""],
-            thursday: ["", "", "", ""],
-            friday: ["", "", "", ""],
-            saturday: ["", "", "", ""],
-            sunday: ["", "", "", ""],
-          },
-        };
-
-        this.myPlans.push(newPlan);
-        this.savePlan(newPlan);
-
-        setTimeout(() => {
-          const planIndex = this.myPlans.length - 1;
-          this.toggleEditMode(planIndex);
-        }, 100);
-      }
-    });
-  }
-
-  addNewPlan() {
-    const emptyPlan: DietPlan = {
-      id: "",
-      name: "Nowy jadłospis",
-      description: "",
-      suitableForConditions: [],
-      mealPlan: {
-        monday: ["", "", "", ""],
-        tuesday: ["", "", "", ""],
-        wednesday: ["", "", "", ""],
-        thursday: ["", "", "", ""],
-        friday: ["", "", "", ""],
-        saturday: ["", "", "", ""],
-        sunday: ["", "", "", ""],
-      },
-      userId: this.currentUserId,
-    };
-
-    this.myPlans.push(emptyPlan);
-  }
-
-  openRecipePicker(planIdx: number, day: string, mealIdx: number) {
-    this.pickerOpen = true;
-    this.pickerPlanIdx = planIdx;
-    this.pickerDay = day;
-    this.pickerMealIdx = mealIdx;
-    this.pickerFilter = "";
-    this.pickerFilterType = [this.meals[mealIdx]];
-    this.pickerFilterLiked = false;
-    this.pickerFilterMaxKcal = null;
-    this.pickerFilterCondition = [];
-
-    const mealName = this.meals[mealIdx];
-    this.filteredRecipes = this.allRecipes.filter((recipe) => {
-      if (!recipe || !recipe.mealType) return false;
-      if (Array.isArray(recipe.mealType)) {
-        return (
-          recipe.mealType.includes(mealName) || recipe.mealType.includes("any")
-        );
-      } else if (typeof recipe.mealType === "string") {
-        return recipe.mealType === mealName || recipe.mealType === "any";
-      }
-      return false;
-    });
-  }
-
-  onPickerFilterChange(type: string, value: any) {
-    switch (type) {
-      case "name":
-        this.pickerFilter = value;
-        break;
-      case "type":
-        this.pickerFilterType = value;
-        break;
-      case "liked":
-        this.pickerFilterLiked = value;
-        break;
-      case "maxKcal":
-        this.pickerFilterMaxKcal = value;
-        break;
-      case "condition":
-        this.pickerFilterCondition = value;
-        break;
-    }
-    this.applyPickerFilters();
-  }
-
-  applyPickerFilters() {
-    let results = this.allRecipes;
-    if (this.pickerFilterType && this.pickerFilterType.length > 0) {
-      results = results.filter((recipe) => {
-        if (!recipe.mealType) return false;
-        if (Array.isArray(recipe.mealType)) {
-          return this.pickerFilterType.some(
-            (type) =>
-              recipe.mealType.includes(type) || recipe.mealType.includes("any"),
-          );
-        } else {
-          return (
-            this.pickerFilterType.includes(recipe.mealType) ||
-            recipe.mealType === "any"
-          );
-        }
-      });
-    }
-    if (this.pickerFilter) {
-      results = results.filter((recipe) =>
-        recipe.name.toLowerCase().includes(this.pickerFilter.toLowerCase()),
-      );
-    }
-    if (this.pickerFilterLiked) {
-    }
-    if (this.pickerFilterMaxKcal !== null) {
-      results = results.filter(
-        (recipe) => recipe.calories <= this.pickerFilterMaxKcal!,
-      );
-    }
-    if (this.pickerFilterCondition && this.pickerFilterCondition.length > 0) {
-      results = results.filter((recipe) =>
-        this.pickerFilterCondition.every((condition) =>
-          recipe.suitableForConditions?.includes(condition),
-        ),
-      );
-    }
-    this.filteredRecipes = results;
-  }
-
-  previewRecipe(recipe: Recipe) {
-    const url = this.router.createUrlTree(["/recipes", recipe.uid]);
-    window.open(url.toString(), "_blank");
-  }
-
-  selectRecipe(recipe: Recipe) {
-    if (!this.myPlans[this.pickerPlanIdx].mealPlan) {
-      this.myPlans[this.pickerPlanIdx].mealPlan = {
-        monday: ["", "", "", ""],
-        tuesday: ["", "", "", ""],
-        wednesday: ["", "", "", ""],
-        thursday: ["", "", "", ""],
-        friday: ["", "", "", ""],
-        saturday: ["", "", "", ""],
-        sunday: ["", "", "", ""],
-      };
-    }
-
-    if (!this.myPlans[this.pickerPlanIdx].mealPlan[this.pickerDay]) {
-      this.myPlans[this.pickerPlanIdx].mealPlan[this.pickerDay] = [
-        "",
-        "",
-        "",
-        "",
-      ];
-    }
-
-    this.myPlans[this.pickerPlanIdx].mealPlan[this.pickerDay][
-      this.pickerMealIdx
-    ] = recipe.uid;
-    this.closePicker();
-  }
-
-  closePicker() {
-    this.pickerOpen = false;
-    this.selectedConditions = [];
-  }
-
-  getDayLabel(dayKey: string): string {
-    const day = this.weekDays.find((d) => d.key === dayKey);
-    return day ? day.label : "";
-  }
-
-  removeMeal(planIdx: number, day: string, mealIdx: number) {
-    if (this.myPlans[planIdx]?.mealPlan?.[day]) {
-      this.myPlans[planIdx].mealPlan[day][mealIdx] = "";
-    }
-  }
-
-  savePlan(plan: DietPlan) {
+  savePlanAndExitEditMode(plan: DietPlan, planIndex: number): void {
+    const planKey = this.getPlanKey(plan, planIndex);
     plan.userId = this.currentUserId;
+    plan.mealPlan = normalizeMealPlan(plan.mealPlan);
 
     if (plan.id) {
       this.dietPlanService.updateDietPlan(plan.id, plan).subscribe(() => {
-        console.log("Plan zaktualizowany");
+        this.showToast("Zapisano zmiany w jadłospisie.");
       });
     } else {
-      const { id, ...planToSave } = plan;
-      this.dietPlanService.addDietPlan(planToSave).subscribe((id) => {
+      const { id: _id, ...payload } = plan;
+      this.dietPlanService.addDietPlan(payload).subscribe((id) => {
         plan.id = id;
-        console.log("Plan zapisany");
+        this.showToast("Zapisano nowy jadłospis.");
       });
     }
+
+    delete this.originalPlans[planKey];
+    this.editModes[planKey] = false;
   }
 
-  removePlan(idx: number) {
+  cancelEditMode(planKey: string): void {
+    const idx = this.myPlans.findIndex(
+      (p, i) => this.getPlanKey(p, i) === planKey,
+    );
+    if (idx !== -1 && this.originalPlans[planKey]) {
+      this.myPlans[idx] = this.originalPlans[planKey];
+    }
+    delete this.originalPlans[planKey];
+    this.editModes[planKey] = false;
+  }
+
+  removePlan(idx: number): void {
     const plan = this.myPlans[idx];
+    if (!confirm(`Czy na pewno chcesz usunąć jadłospis „${plan.name}”?`)) {
+      return;
+    }
     if (plan.id) {
       this.dietPlanService.deleteDietPlan(plan.id).subscribe(() => {
         this.myPlans.splice(idx, 1);
-        console.log("Plan usunięty");
+        this.showToast("Usunięto jadłospis.");
       });
     } else {
       this.myPlans.splice(idx, 1);
     }
   }
 
-  getDayCalories(plan: DietPlan, day: string): number {
-    if (!plan?.mealPlan?.[day]) return 0;
-
-    return plan.mealPlan[day].reduce((sum: number, recipeId: string) => {
-      if (!recipeId) return sum;
-      const recipe = this.allRecipes.find((r) => r.uid === recipeId);
-      return sum + (recipe?.calories || 0);
-    }, 0);
+  duplicateDayToNext(planIdx: number, day: DayKey): void {
+    const dayPos = this.weekDays.findIndex((d) => d.key === day);
+    const nextDay = this.weekDays[(dayPos + 1) % this.weekDays.length];
+    const plan = this.myPlans[planIdx];
+    plan.mealPlan[nextDay.key] = [...(plan.mealPlan[day] ?? ["", "", "", "", ""])];
+    this.showToast(`Skopiowano posiłki na: ${nextDay.label}.`);
   }
 
-  getTotalCalories(plan: DietPlan): number {
-    if (!plan?.mealPlan) return 0;
+  openRecipePicker(planIdx: number, day: DayKey, mealIdx: number): void {
+    this.pickerOpen = true;
+    this.pickerPlanIdx = planIdx;
+    this.pickerDay = day;
+    this.pickerMealIdx = mealIdx;
+    this.pickerSearch = "";
+    this.pickerMealFilter = this.meals[mealIdx] || "";
+    this.pickerConditionFilter = "";
+    this.pickerMaxKcal = null;
+    this.pickerOnlyLiked = false;
+  }
 
-    return this.weekDays.reduce(
-      (sum: number, day: { key: string; label: string }) => {
-        return sum + this.getDayCalories(plan, day.key);
-      },
-      0,
+  selectRecipeForSlot(recipe: Recipe): void {
+    const plan = this.myPlans[this.pickerPlanIdx];
+    plan.mealPlan = normalizeMealPlan(plan.mealPlan);
+    plan.mealPlan[this.pickerDay][this.pickerMealIdx] = recipe.uid;
+    this.pickerOpen = false;
+  }
+
+  removeMeal(planIdx: number, day: DayKey, mealIdx: number): void {
+    const plan = this.myPlans[planIdx];
+    if (plan?.mealPlan?.[day]) {
+      plan.mealPlan[day][mealIdx] = "";
+    }
+  }
+
+  previewRecipe(recipe: Recipe): void {
+    const url = this.router.createUrlTree(["/przepisy", recipe.uid]);
+    window.open(url.toString(), "_blank");
+  }
+
+  // Shopping List Generator
+  openShoppingList(plan: DietPlan, activeDay: DayKey): void {
+    this.shoppingPlan = plan;
+    this.shoppingDay = activeDay;
+    this.shoppingScope = "week";
+    this.copiedShopping = false;
+    this.rebuildShoppingList();
+    this.shoppingModalOpen = true;
+  }
+
+  rebuildShoppingList(): void {
+    if (!this.shoppingPlan) return;
+    const days =
+      this.shoppingScope === "week"
+        ? this.weekDays.map((d) => d.key)
+        : [this.shoppingDay];
+
+    const counts = new Map<string, { label: string; count: number }>();
+
+    for (const dayKey of days) {
+      const ids = this.shoppingPlan.mealPlan?.[dayKey] ?? [];
+      for (const id of ids) {
+        const recipe = this.getRecipeById(id);
+        if (!recipe) continue;
+        for (const ing of recipe.ingredients ?? []) {
+          const clean = ing.trim();
+          const key = clean.toLowerCase();
+          const existing = counts.get(key);
+          if (existing) {
+            existing.count += 1;
+          } else {
+            counts.set(key, { label: clean, count: 1 });
+          }
+        }
+      }
+    }
+
+    this.shoppingItems = Array.from(counts.values())
+      .sort((a, b) => a.label.localeCompare(b.label, "pl"))
+      .map((item) => ({
+        name: item.label,
+        count: item.count,
+        checked: false,
+      }));
+  }
+
+  copyShoppingListToClipboard(): void {
+    const lines = this.shoppingItems.map((i) =>
+      i.count > 1 ? `- ${i.name} (×${i.count})` : `- ${i.name}`,
     );
+    const header = `Lista zakupów — ${this.shoppingPlan?.name ?? "DietEtycznie"}\n`;
+    navigator.clipboard?.writeText(header + lines.join("\n"));
+    this.copiedShopping = true;
+    setTimeout(() => (this.copiedShopping = false), 2500);
+  }
+
+  getDayLabel(dayKey: DayKey): string {
+    return this.weekDays.find((d) => d.key === dayKey)?.label ?? "";
+  }
+
+  private showToast(msg: string): void {
+    this.toastMessage = msg;
+    setTimeout(() => {
+      if (this.toastMessage === msg) {
+        this.toastMessage = "";
+      }
+    }, 4000);
   }
 }

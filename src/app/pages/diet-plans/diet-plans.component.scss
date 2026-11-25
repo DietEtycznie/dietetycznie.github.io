@@ -1,649 +1,820 @@
-@import "../../../vars.scss";
+@use "../../../vars" as *;
 
-.diet-plans {
-  padding: 20px;
-  max-width: 100%;
-  margin: 0 auto;
-  font-family: "Roboto", sans-serif;
-  overflow-x: hidden;
+.section-tabs {
+  display: inline-flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
 
-  &__header {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
+.section-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0 0.65rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  cursor: pointer;
 
-    .section-toggle {
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      border: none;
-      display: flex;
-      align-items: center;
-      min-height: 44px;
+  &:hover {
+    color: var(--ink-primary);
+  }
 
-      ::ng-deep .mat-button-toggle-button {
-        height: 44px;
-        line-height: 44px;
-        font-size: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 20px;
-      }
+  &.is-active {
+    color: var(--ink-primary);
+    font-weight: 700;
 
-      ::ng-deep .mat-button-toggle {
-        --mat-button-toggle-height: 44px;
-        --mat-button-toggle-label-padding: 0 20px;
-        --mat-button-toggle-label-line-height: 44px;
-        --mat-button-toggle-label-font-size: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: white;
-        color: $text-secondary-color;
-        transition: all 0.2s ease;
-        border-right: 1px solid rgba(0, 0, 0, 0.05);
-        min-width: 120px;
-        font-weight: 500;
-
-        &:last-child {
-          border-right: none;
-        }
-
-        &.mat-button-toggle-checked {
-          background-color: $primary-color;
-          color: white;
-        }
-
-        &[disabled] {
-          opacity: 0.5;
-          pointer-events: none;
-        }
-      }
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--accent-primary);
     }
   }
+}
 
-  .header-flex {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 32px;
-    margin-bottom: 32px;
+.plans-page {
+  padding-top: 2rem;
+  padding-bottom: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.toast-banner {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.my-plans-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    font-size: 0.92rem;
+  }
+}
+
+.plans-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.plan-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  &.is-editing {
+    border-color: var(--accent-primary);
+  }
+}
+
+.plan-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.plan-card__meta {
+  flex: 1;
+  min-width: 260px;
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0.2rem 0 0.4rem;
   }
 
-  .section-intro {
-    flex: 1 1 0;
+  p {
+    font-size: 0.9rem;
+    margin: 0 0 0.7rem;
+    max-width: 660px;
+  }
+}
+
+.plan-kicker {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  letter-spacing: 0.01em;
+}
+
+.plan-inline-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.84rem;
+  color: var(--ink-secondary);
+
+  strong {
+    color: var(--ink-primary);
+  }
+}
+
+.plan-edit-meta {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.plan-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn--danger {
+  color: $warn-color;
+}
+
+.day-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.1rem;
+}
+
+.day-tabs {
+  display: flex;
+  gap: 1.35rem;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.day-tab {
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 0.55rem 0 0.7rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--ink-primary);
+  }
+
+  &.is-active {
+    color: var(--ink-primary);
+    font-weight: 700;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      background: var(--accent-primary);
+    }
+  }
+}
+
+.day-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--ink-secondary);
+  padding-bottom: 0.55rem;
+
+  strong {
+    color: var(--ink-primary);
+  }
+}
+
+.copy-day-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $primary-dark;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.meals-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.meal-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+
+  &__label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.slot-filled {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  height: 100%;
+}
+
+.slot-edit-bar {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.slot-mini-btn {
+  flex: 1;
+  padding: 0.36rem 0.5rem;
+  border-radius: 8px;
+  border: 1px solid #dce5e0;
+  background: #fff;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: $text-color;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-dark;
+  }
+
+  &--danger {
+    color: $warn-color;
+    &:hover {
+      border-color: $warn-color;
+      color: $warn-color;
+    }
+  }
+}
+
+.add-meal-btn {
+  min-height: 150px;
+  border-radius: 10px;
+  border: 1px dashed #c8d6cf;
+  background: #fafcfb;
+  color: $text-secondary-color;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-dark;
+    background: $primary-soft;
+  }
+}
+
+.empty-slot {
+  min-height: 130px;
+  border-radius: 10px;
+  border: 1px dashed #e2eae5;
+  color: $text-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.full-week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.week-day-block {
+  padding-top: 1rem;
+  border-top: 1px solid #ecefed;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+
+    h4 {
+      margin: 0;
+      font-size: 0.96rem;
+    }
+
+    span {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: $text-secondary-color;
+    }
+  }
+}
+
+.empty-plans-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  .empty-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+}
+
+// Modals
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 12, 9, 0.65);
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-shell {
+  width: 100%;
+  max-width: 820px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: $shadow-lg;
+
+  &--narrow {
+    max-width: 640px;
+  }
+}
+
+.modal-head {
+  padding: 1.15rem 1.4rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  h3 {
+    margin: 0 0 0.15rem;
+    font-size: 1.15rem;
+  }
+  p {
+    margin: 0;
+    font-size: 0.82rem;
+  }
+}
+
+.icon-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--ink-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.picker-filters-row {
+  padding: 0.85rem 1.4rem;
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 0.75fr auto;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.picker-liked-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--ink-primary);
+  white-space: nowrap;
+  cursor: pointer;
+  input {
+    accent-color: var(--accent-primary);
+  }
+}
+
+.picker-list {
+  padding: 1rem 1.4rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+
+  img {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: var(--bg-subtle);
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 0;
-    flex-wrap: wrap;
+    strong {
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+    }
+    span {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+  }
 
-    h2 {
-      margin: 0 0 4px 0;
-      font-size: 2.2rem;
+  &__actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-shrink: 0;
+  }
+}
+
+.picker-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--ink-muted);
+}
+
+.shopping-controls {
+  padding: 0.85rem 1.4rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.scope-tabs {
+  display: inline-flex;
+  gap: 1rem;
+
+  button {
+    border: none;
+    background: transparent;
+    padding: 0.25rem 0;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    cursor: pointer;
+
+    &.is-active {
+      color: var(--accent-dark);
       font-weight: 700;
-      position: relative;
-      color: $text-color;
-      display: inline-block;
-    }
-
-    .section-underline {
-      display: block;
-      height: 4px;
-      background: $primary-color;
-      border-radius: 2px;
-      margin: 0 0 16px 0;
-    }
-
-    .section-description {
-      margin: 0 0 12px 0;
-      color: #666;
-      font-size: 1.1rem;
-      line-height: 1.5;
+      border-bottom: 2px solid var(--accent-primary);
     }
   }
+}
 
-  .section-toggle {
-    margin-left: 32px;
-    background: #fff;
+.shopping-list-grid {
+  padding: 1.15rem 1.4rem;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.shopping-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-subtle);
+  color: var(--ink-primary);
+  font-size: 0.86rem;
+  cursor: pointer;
+
+  input {
+    accent-color: var(--accent-primary);
   }
 
-  .diet-plans-list {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+  span {
+    flex: 1;
   }
 
-  .diet-plan {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+  .qty-pill {
+    font-size: 0.74rem;
+    color: var(--accent-dark);
   }
 
-  .diet-plan-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 24px;
-    background-color: #f9f9f9;
-    border-bottom: 1px solid #eaeaea;
+  &.is-checked {
+    opacity: 0.5;
+    text-decoration: line-through;
+    background: var(--bg-surface);
+  }
+}
 
-    .diet-plan-info {
-      flex: 1;
+.plan-card--personalized {
+  border-color: var(--accent-soft-border);
+}
 
-      h3 {
-        color: $text-color;
-        margin: 0 0 8px;
-        font-size: 1.6rem;
-        font-weight: 500;
-      }
+.personalized-kicker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+}
 
-      p {
-        color: $text-secondary-color;
-        margin: 0 0 16px;
-        font-size: 15px;
-        line-height: 1.5;
-        max-width: 70%;
-      }
+.verified-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: 0.74rem;
+  font-weight: 700;
 
-      @media (max-width: 900px) {
-        p {
-          max-width: 100%;
-        }
-      }
-    }
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+  }
+}
 
-    .diet-plan-info-edit {
-      flex: 1;
+.assigned-by {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
 
-      .plan-name-input {
-        width: 100%;
-        font-size: 1.6rem;
-        font-weight: 500;
-        color: $text-color;
-        border: none;
-        border-bottom: 2px solid rgba($primary-color, 0.2);
-        padding: 0 0 8px;
-        margin-bottom: 16px;
-        background-color: transparent;
+.dietitian-note-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
 
-        &:focus {
-          outline: none;
-          border-bottom-color: $primary-color;
-        }
-      }
-
-      .plan-description-input {
-        width: 100%;
-        resize: vertical;
-        min-height: 80px;
-        border: 1px solid #eaeaea;
-        border-radius: 8px;
-        padding: 12px;
-        font-size: 15px;
-        line-height: 1.5;
-        color: $text-secondary-color;
-      }
-    }
-
-    .diet-plan-actions {
-      display: flex;
-      gap: 10px;
-      margin-left: 20px;
-    }
-
-    .diet-plan-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-
-      .diet-plan-tag {
-        background-color: rgba($primary-color, 0.1);
-        color: $primary-color;
-        font-size: 12px;
-        padding: 4px 10px;
-        border-radius: 14px;
-      }
-    }
-
-    .diet-plan-calories {
-      margin-top: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
-      border-radius: 20px;
-      font-weight: 500;
-      font-size: 14px;
-
-      .calories-icon {
-        font-size: 16px;
-      }
-    }
+  mat-icon {
+    font-size: 19px;
+    width: 19px;
+    height: 19px;
+    color: var(--accent-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
   }
 
-  .diet-plan-days-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background-color: #eaeaea;
-    overflow-x: auto;
-
-    @media (max-width: 1200px) {
-      grid-template-columns: repeat(7, minmax(180px, 1fr));
-    }
-
-    .day-column {
-      background-color: white;
-      padding: 16px;
-
-      .day-header {
-        font-size: 16px;
-        font-weight: 600;
-        color: $text-color;
-        margin: 0 0 5px;
-        text-align: center;
-        border-bottom: 2px solid $primary-color;
-        padding-bottom: 8px;
-      }
-
-      .day-calories {
-        text-align: center;
-        color: $primary-color;
-        font-weight: 500;
-        font-size: 14px;
-        margin-bottom: 16px;
-      }
-    }
+  strong {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin-bottom: 0.15rem;
   }
 
-  .meal-container {
-    margin-bottom: 16px;
+  p {
+    margin: 0;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--ink-secondary);
+  }
+}
 
-    &:last-child {
-      margin-bottom: 0;
-    }
+.icon-menu-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--ink-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background-color 0.15s ease;
 
-    .meal-label {
-      font-weight: 500;
-      color: $text-color;
-      margin-bottom: 8px;
-      font-size: 14px;
-      background-color: #f5f5f5;
-      padding: 6px 10px;
-      border-radius: 4px;
-    }
-
-    .recipe-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 8px;
-      overflow: hidden;
-
-      ::ng-deep app-recipe-card {
-        .recipe-card {
-          border: none !important;
-          box-shadow: none !important;
-          margin: 0 !important;
-        }
-      }
-    }
-
-    .empty-recipe {
-      padding: 16px;
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      text-align: center;
-      color: $text-secondary-color;
-      font-style: italic;
-      font-size: 14px;
-      border: 1px dashed #e0e0e0;
-    }
-
-    .recipe-edit-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-
-      .recipe-preview {
-        position: relative;
-
-        .remove-recipe-btn {
-          position: absolute;
-          top: 16px;
-          right: 16px;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background-color: rgba(255, 0, 0, 0.1);
-          color: red;
-          border: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          z-index: 10;
-          transition: all 0.2s ease;
-
-          .material-icons {
-            font-size: 16px;
-          }
-
-          &:hover {
-            background-color: red;
-            color: white;
-          }
-        }
-      }
-
-      .add-recipe-btn {
-        width: 100%;
-        padding: 12px;
-        border: 2px dashed #e0e0e0;
-        border-radius: 8px;
-        background-color: #f9f9f9;
-        color: $primary-color;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-
-        .material-icons {
-          font-size: 18px;
-        }
-
-        &:hover {
-          background-color: rgba($primary-color, 0.05);
-          border-color: $primary-color;
-        }
-      }
-    }
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
   }
 
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    color: $text-secondary-color;
+  &:hover {
+    border-color: var(--accent-primary);
+    color: var(--ink-primary);
+    background: var(--nav-hover);
+  }
+}
 
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
+.plan-print-sheet {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .meals-grid-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 780px) {
+  .plan-card {
+    padding: 1.25rem;
+  }
+  .meals-grid-5 {
+    grid-template-columns: 1fr;
+  }
+  .picker-filters-row {
+    grid-template-columns: 1fr;
+  }
+  .shopping-list-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  app-presentation-header,
+  .plans-page {
+    display: none !important;
+  }
+
+  .plan-print-sheet {
+    display: table !important;
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    color: #111111;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .plan-print-page-head {
+    padding: 12mm 12mm 6mm;
+  }
+
+  .plan-print-body {
+    padding: 0 12mm;
+  }
+
+  .plan-print-page-foot {
+    height: 10mm;
+  }
+
+  .plan-print-head {
+    padding-bottom: 5mm;
+    margin-bottom: 5mm;
+    border-bottom: 1px solid #e5ece8;
+
+    .plan-print-kicker {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #15875f;
+      margin-bottom: 0.25rem;
+    }
+
+    h1 {
+      margin: 0 0 0.3rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #111111;
     }
 
     p {
-      font-size: 18px;
-      margin-bottom: 8px;
+      margin: 0 0 0.45rem;
+      font-size: 0.86rem;
+      color: #4b5d55;
+      line-height: 1.45;
     }
 
-    .empty-state-subtext {
-      font-size: 14px;
-      opacity: 0.8;
+    .plan-print-avg {
+      font-size: 0.82rem;
+      color: #374841;
     }
   }
 
-  .picker-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
+  .plan-print-days {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    overflow: auto;
-    padding: 20px;
+    flex-direction: column;
+    gap: 4mm;
+  }
 
-    .picker-content {
-      width: 90%;
-      max-width: 1200px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-      padding-bottom: 24px;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      max-height: 90vh;
+  .plan-print-day {
+    break-inside: avoid;
+    border: 1px solid #e5ece8;
+    border-radius: 8px;
+    padding: 3.2mm 4mm;
+  }
 
-      .picker-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 24px;
-        border-bottom: 1px solid #eaeaea;
+  .plan-print-day__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 2mm;
+    margin-bottom: 2mm;
+    border-bottom: 1px solid #eef3f0;
 
-        h3 {
-          color: $text-color;
-          margin: 0;
-          font-size: 1.4rem;
-          font-weight: 500;
+    strong {
+      font-size: 0.9rem;
+      color: #111111;
+    }
 
-          .meal-type {
-            color: $primary-color;
-            font-weight: 600;
-          }
-        }
-
-        .close-btn {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          border: none;
-          background-color: #f0f0f0;
-          color: $text-secondary-color;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s ease;
-
-          .material-icons {
-            font-size: 20px;
-          }
-
-          &:hover {
-            background-color: #e0e0e0;
-            color: $text-color;
-          }
-        }
-      }
-
-      .picker-flex-row {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 0;
-        flex: 1;
-        overflow: hidden;
-        padding: 12px;
-      }
-
-      .picker-filters {
-        width: 280px;
-        flex-shrink: 0;
-        background-color: white;
-        padding: 20px;
-        overflow-y: auto;
-        max-height: calc(90vh - 110px);
-      }
-
-      .recipe-list {
-        flex: 1;
-        overflow-y: auto;
-        max-height: calc(90vh - 110px);
-        padding: 16px;
-        background-color: $background-secondary;
-      }
-
-      .recipe-item {
-        background: white;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-      }
-
-      @media (max-width: 900px) {
-        .picker-content {
-          width: 100vw;
-          min-width: 0;
-          border-radius: 0;
-          margin: 0;
-        }
-
-        .picker-flex-row {
-          flex-direction: column;
-          gap: 0;
-        }
-
-        .picker-filters {
-          max-width: 100vw;
-          border-radius: 0;
-          box-shadow: none;
-          padding: 18px 8px 8px 8px;
-        }
-      }
-
-      @media (max-width: 767px) {
-        .picker-flex-row {
-          flex-direction: column;
-        }
-
-        .picker-filters {
-          width: 100%;
-          max-height: initial;
-        }
-
-        .recipe-list {
-          max-height: 400px;
-        }
-      }
+    span {
+      font-size: 0.74rem;
+      color: #5a6d65;
     }
   }
 
-  &__custom {
-    .header-flex {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 32px;
-      margin-bottom: 32px;
-    }
+  .plan-print-meals {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3mm;
+  }
 
-    .section-intro {
-      flex: 1 1 0;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 0;
-      flex-wrap: wrap;
-    }
+  .plan-print-meal {
+    display: grid;
+    grid-template-columns: 112px 1fr auto;
+    gap: 0.85rem;
+    align-items: baseline;
+    font-size: 0.8rem;
 
-    .section-intro h2 {
-      margin: 0 0 4px 0;
-      font-size: 2.2rem;
+    .ppm-slot {
+      font-size: 0.72rem;
       font-weight: 700;
-      position: relative;
-      color: $text-color;
-      display: inline-block;
+      text-transform: uppercase;
+      color: #15875f;
     }
 
-    .section-intro .section-underline {
-      display: block;
-      height: 4px;
-      background: $primary-color;
-      border-radius: 2px;
-      margin: 0 0 16px 0;
+    .ppm-name {
+      color: #111111;
+      font-weight: 500;
     }
 
-    .section-description {
-      margin: 0 0 12px 0;
-      color: #666;
-      font-size: 1.1rem;
-      line-height: 1.5;
-    }
-  }
-
-  .add-plan-btn-row {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-    margin-top: 24px;
-    margin-bottom: 16px;
-
-    .add-plan-btn {
-      padding: 24px;
-    }
-
-    @media (max-width: 700px) {
-      justify-content: stretch;
-
-      .add-plan-btn {
-        width: 100%;
-      }
-    }
-  }
-
-  .plan-action-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 6px !important;
-    margin: 0 2px;
-    background: $primary-color;
-    color: #fff !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba($primary-color, 0.1);
-    transition:
-      background 0.2s,
-      color 0.2s;
-    font-size: 20px;
-
-    &:hover {
-      background: darken($primary-color, 10%);
-      color: #fff;
-    }
-
-    &[color="warn"] {
-      background: $warn-color;
-      color: #fff !important;
-      &:hover {
-        background: darken($warn-color, 10%);
-        color: #fff;
-      }
-    }
-
-    &[mattooltip="Anuluj"],
-    &[mattooltip="anuluj"] {
-      background: #e0e0e0;
-      color: #444 !important;
-      &:hover {
-        background: #bdbdbd;
-        color: #222 !important;
-      }
+    .ppm-kcal {
+      color: #5a6d65;
+      font-size: 0.74rem;
+      white-space: nowrap;
     }
   }
 }

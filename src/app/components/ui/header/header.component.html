@@ -1,149 +1,170 @@
-<nav class="header" (document:click)="closeUserMenu()">
-  <div class="container">
-    <div class="header-content">
-      <a routerLink="/">
-        <div class="logo"></div>
+<header class="site-header" (document:click)="closeUserMenu()">
+  <div class="container header-inner">
+    <a routerLink="/" class="brand-lockup" (click)="closeMobileNav()" aria-label="DietEtycznie — Strona główna">
+      <app-brand-logo size="md" surface="paper"></app-brand-logo>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Nawigacja główna">
+      <a
+        routerLink="/"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-link"
+      >
+        Start
       </a>
+      <a routerLink="/przepisy" routerLinkActive="is-active" class="nav-link">
+        Przepisy
+      </a>
+      <a routerLink="/choroby" routerLinkActive="is-active" class="nav-link">
+        Choroby
+      </a>
+      <a routerLink="/jadlospisy" routerLinkActive="is-active" class="nav-link">
+        Jadłospisy
+      </a>
+      @if (isAdmin$ | async) {
+        <a routerLink="/admin" routerLinkActive="is-active" class="nav-link">
+          Admin
+        </a>
+      }
+    </nav>
+
+    <div class="header-right">
+      <!-- Rotating Sun / Moon button -->
+      <button
+        type="button"
+        class="theme-btn"
+        [class.is-dark]="(theme$ | async) === 'dark'"
+        (click)="toggleTheme($event)"
+        [attr.aria-label]="
+          (theme$ | async) === 'dark'
+            ? 'Przełącz na jasny motyw'
+            : 'Przełącz na ciemny motyw'
+        "
+        title="Zmień motyw"
+      >
+        <span class="theme-icon theme-icon--sun" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.2" />
+            <line x1="12" y1="2.5" x2="12" y2="4.8" />
+            <line x1="12" y1="19.2" x2="12" y2="21.5" />
+            <line x1="4.93" y1="4.93" x2="6.55" y2="6.55" />
+            <line x1="17.45" y1="17.45" x2="19.07" y2="19.07" />
+            <line x1="2.5" y1="12" x2="4.8" y2="12" />
+            <line x1="19.2" y1="12" x2="21.5" y2="12" />
+            <line x1="4.93" y1="19.07" x2="6.55" y2="17.45" />
+            <line x1="17.45" y1="6.55" x2="19.07" y2="4.93" />
+          </svg>
+        </span>
+        <span class="theme-icon theme-icon--moon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z" />
+          </svg>
+        </span>
+      </button>
+
+      <span class="header-sep" aria-hidden="true"></span>
+
+      <div class="desktop-actions">
+        @if (user$ | async; as user) {
+          <div class="user-menu">
+            <button
+              type="button"
+              class="user-trigger"
+              (click)="toggleUserMenu($event)"
+              [attr.aria-expanded]="isUserMenuOpen"
+              [attr.aria-label]="'Menu konta ' + (user.displayName || user.email)"
+            >
+              <span class="user-avatar">{{ getFirstLetters(user.displayName || user.email) }}</span>
+            </button>
+
+            @if (isUserMenuOpen) {
+              <div class="user-dropdown" (click)="$event.stopPropagation()">
+                <div class="user-dropdown__header">
+                  <strong>{{ user.displayName || "Użytkownik" }}</strong>
+                  <span>{{ user.email }}</span>
+                </div>
+                <button type="button" class="dropdown-item" (click)="goToLikedRecipes()">
+                  Polubione przepisy
+                </button>
+                <button type="button" class="dropdown-item" (click)="goToMyDietPlans()">
+                  Moje jadłospisy
+                </button>
+                @if (isAdmin$ | async) {
+                  <button type="button" class="dropdown-item" (click)="goToAdmin()">
+                    Panel administratora
+                  </button>
+                }
+                <div class="dropdown-divider"></div>
+                <button type="button" class="dropdown-item dropdown-item--danger" (click)="logout()">
+                  Wyloguj się
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a routerLink="/logowanie" class="auth-link">Zaloguj</a>
+          <a routerLink="/rejestracja" class="auth-cta">Załóż konto</a>
+        }
+      </div>
 
       <button
-        mat-icon-button
-        class="hamburger"
         type="button"
+        class="mobile-toggle"
         aria-label="Otwórz menu"
         (click)="toggleMobileNav(); $event.stopPropagation()"
       >
-        <span class="material-icons">menu</span>
+        <mat-icon>{{ isMobileNavOpen ? "close" : "menu" }}</mat-icon>
       </button>
-
-      <nav class="main-nav desktop-nav">
-        <ul class="nav-items">
-          <li>
-            <a
-              routerLink="/"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }"
-              >Strona główna</a
-            >
-          </li>
-          <li>
-            <a routerLink="/recipes" routerLinkActive="active">Przepisy</a>
-          </li>
-          <li>
-            <a routerLink="/conditions" routerLinkActive="active"
-              >Choroby dietozależne</a
-            >
-          </li>
-          <li>
-            <a routerLink="/diet-plans" routerLinkActive="active">Jadłospisy</a>
-          </li>
-        </ul>
-      </nav>
-
-      <div class="auth-nav desktop-auth">
-        <ng-container *ngIf="user$ | async as user; else loginButtons">
-          <div class="user-menu">
-            <span class="user-greeting">Witaj,</span>
-            <div
-              class="user-bubble"
-              tabindex="0"
-              (click)="toggleUserMenu($event)"
-              (keydown.enter)="toggleUserMenu($event)"
-            >
-              {{ getFirstLetters(user.displayName) }}
-            </div>
-            <div
-              class="user-dropdown"
-              *ngIf="isUserMenuOpen"
-              (click)="$event.stopPropagation()"
-            >
-              <div class="user-menu-item" (click)="goToLikedRecipes()">
-                Polubione przepisy
-              </div>
-              <div class="user-menu-item" (click)="goToMyDietPlans()">
-                Moje jadłospisy
-              </div>
-              <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
-            </div>
-          </div>
-        </ng-container>
-        <ng-template #loginButtons>
-          <button class="btn btn-login" routerLink="/login">Logowanie</button>
-          <button class="btn btn-register" routerLink="/register">
-            Rejestracja
-          </button>
-        </ng-template>
-      </div>
     </div>
   </div>
 
-  <div class="mobile-dropdown" *ngIf="isMobileNavOpen">
-    <ul class="nav-items">
-      <li>
+  @if (isMobileNavOpen) {
+    <div class="mobile-drawer" (click)="$event.stopPropagation()">
+      <div class="container mobile-drawer__inner">
         <a
           routerLink="/"
-          routerLinkActive="active"
+          routerLinkActive="is-active"
           [routerLinkActiveOptions]="{ exact: true }"
-          (click)="closeMobileNav()"
-          >Strona główna</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/recipes"
-          routerLinkActive="active"
-          (click)="closeMobileNav()"
-          >Przepisy</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/conditions"
-          routerLinkActive="active"
-          (click)="closeMobileNav()"
-          >Choroby dietozależne</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/diet-plans"
-          routerLinkActive="active"
-          (click)="closeMobileNav()"
-          >Jadłospisy</a
-        >
-      </li>
-    </ul>
-    <div class="mobile-auth">
-      <ng-container *ngIf="user$ | async as user; else mobileLoginButtons">
-        <div
-          class="user-menu-item"
-          (click)="goToLikedRecipes(); closeMobileNav()"
-        >
-          Polubione przepisy
-        </div>
-        <div
-          class="user-menu-item"
-          (click)="goToMyDietPlans(); closeMobileNav()"
-        >
-          Moje jadłospisy
-        </div>
-        <button class="btn btn-logout" (click)="logout()">Wyloguj</button>
-      </ng-container>
-      <ng-template #mobileLoginButtons>
-        <button
-          class="btn btn-login"
-          routerLink="/login"
+          class="mobile-link"
           (click)="closeMobileNav()"
         >
-          Logowanie
-        </button>
-        <button
-          class="btn btn-register"
-          routerLink="/register"
-          (click)="closeMobileNav()"
-        >
-          Rejestracja
-        </button>
-      </ng-template>
+          Start
+        </a>
+        <a routerLink="/przepisy" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+          Przepisy
+        </a>
+        <a routerLink="/choroby" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+          Choroby dietozależne
+        </a>
+        <a routerLink="/jadlospisy" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+          Jadłospisy
+        </a>
+        @if (isAdmin$ | async) {
+          <a routerLink="/admin" routerLinkActive="is-active" class="mobile-link" (click)="closeMobileNav()">
+            Panel administratora
+          </a>
+        }
+
+        <div class="mobile-divider"></div>
+
+        @if (user$ | async; as user) {
+          <button type="button" class="mobile-link" (click)="goToLikedRecipes()">
+            Polubione przepisy
+          </button>
+          <button type="button" class="mobile-link" (click)="goToMyDietPlans()">
+            Moje jadłospisy
+          </button>
+          <button type="button" class="mobile-link mobile-link--danger" (click)="logout()">
+            Wyloguj ({{ user.displayName || user.email }})
+          </button>
+        } @else {
+          <div class="mobile-auth-btns">
+            <a routerLink="/logowanie" class="btn btn-secondary" (click)="closeMobileNav()">Zaloguj</a>
+            <a routerLink="/rejestracja" class="btn btn-primary" (click)="closeMobileNav()">Załóż konto</a>
+          </div>
+        }
+      </div>
     </div>
-  </div>
-</nav>
+  }
+</header>

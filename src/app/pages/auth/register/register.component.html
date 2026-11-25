@@ -1,113 +1,113 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h1 class="auth-title">Rejestracja</h1>
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
-      <div class="form-group">
-        <label for="displayName">Imię i nazwisko</label>
-        <input
-          type="text"
-          id="displayName"
-          formControlName="displayName"
-          class="form-control"
-          [ngClass]="{ invalid: isFieldInvalid('displayName') }"
-        />
-        <div *ngIf="isFieldInvalid('displayName')" class="error-message">
-          <span *ngIf="registerForm.get('displayName')?.errors?.['required']"
-            >Imię i nazwisko jest wymagane</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          class="form-control"
-          [ngClass]="{ invalid: isFieldInvalid('email') }"
-        />
-        <div *ngIf="isFieldInvalid('email')" class="error-message">
-          <span *ngIf="registerForm.get('email')?.errors?.['required']"
-            >Email jest wymagany</span
-          >
-          <span *ngIf="registerForm.get('email')?.errors?.['email']"
-            >Podaj poprawny adres email</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Hasło</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="form-control"
-          [ngClass]="{ invalid: isFieldInvalid('password') }"
-        />
-        <div *ngIf="isFieldInvalid('password')" class="error-message">
-          <span *ngIf="registerForm.get('password')?.errors?.['required']"
-            >Hasło jest wymagane</span
-          >
-          <span *ngIf="registerForm.get('password')?.errors?.['minlength']"
-            >Hasło musi mieć co najmniej 6 znaków</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="confirmPassword">Potwierdź hasło</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          formControlName="confirmPassword"
-          class="form-control"
-          [ngClass]="{ invalid: isFieldInvalid('confirmPassword') }"
-        />
-        <div *ngIf="isFieldInvalid('confirmPassword')" class="error-message">
-          <span
-            *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
-            >Potwierdzenie hasła jest wymagane</span
-          >
-          <span
-            *ngIf="
-              registerForm.get('confirmPassword')?.errors?.['passwordMismatch']
-            "
-            >Hasła nie są takie same</span
-          >
-        </div>
-      </div>
-
-      <div *ngIf="error" class="auth-error">
-        {{ error }}
-      </div>
-
-      <button
-        type="submit"
-        class="btn-primary"
-        [disabled]="registerForm.invalid || loading"
-      >
-        {{ loading ? "Tworzenie konta..." : "Utwórz konto" }}
-      </button>
-
-      <div class="auth-separator">
-        <span>lub</span>
-      </div>
-
-      <button
-        type="button"
-        class="btn-google"
-        (click)="registerWithGoogle()"
-        [disabled]="loading"
-      >
-        Zarejestruj się przez Google
-      </button>
-    </form>
-
-    <div class="auth-footer">
-      <p>Masz już konto? <a routerLink="/login">Zaloguj się tutaj</a></p>
+<app-auth-shell
+  asideTitle="Zacznij układać jadłospis pod swoje zdrowie."
+  asideDescription="Twórz własne plany 7-dniowe, przeliczaj porcje jednym kliknięciem i korzystaj z przepisów dopasowanych do chorób dietozależnych."
+  formTitle="Załóż darmowe konto"
+  formSubtitle="Zapisuj ulubione przepisy i buduj własne jadłospisy."
+>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <div class="field">
+      <label for="displayName">Imię i nazwisko</label>
+      <input
+        type="text"
+        id="displayName"
+        formControlName="displayName"
+        class="form-control"
+        placeholder="np. Anna Nowak"
+        [class.is-invalid]="isFieldInvalid('displayName')"
+      />
+      @if (isFieldInvalid("displayName")) {
+        <div class="field-error">Podaj swoje imię (min. 2 znaki).</div>
+      }
     </div>
+
+    <div class="field">
+      <label for="email">Adres email</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="form-control"
+        placeholder="anna@nowak.pl"
+        [class.is-invalid]="isFieldInvalid('email')"
+      />
+      @if (isFieldInvalid("email")) {
+        <div class="field-error">Podaj poprawny adres email.</div>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Hasło</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        class="form-control"
+        placeholder="Minimum 6 znaków"
+        [class.is-invalid]="isFieldInvalid('password')"
+      />
+      @if (isFieldInvalid("password")) {
+        <div class="field-error">Hasło musi mieć co najmniej 6 znaków.</div>
+      }
+    </div>
+
+    <div class="field">
+      <label for="confirmPassword">Potwierdź hasło</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        class="form-control"
+        placeholder="Powtórz hasło"
+        [class.is-invalid]="isFieldInvalid('confirmPassword')"
+      />
+      @if (isFieldInvalid("confirmPassword")) {
+        <div class="field-error">Hasła muszą być takie same.</div>
+      }
+    </div>
+
+    @if (error) {
+      <div class="auth-alert">{{ error }}</div>
+    }
+
+    <button
+      type="submit"
+      class="btn btn-primary auth-submit"
+      [disabled]="registerForm.invalid || loading"
+    >
+      {{ loading ? "Tworzenie konta..." : "Utwórz konto" }}
+    </button>
+
+    <div class="auth-divider"><span>lub</span></div>
+
+    <button
+      type="button"
+      class="btn btn-secondary auth-submit"
+      (click)="registerWithGoogle()"
+      [disabled]="loading"
+    >
+      <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          fill="#4285F4"
+          d="M23.49 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h6.45a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.56-5.17 3.56-8.65z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 24c3.24 0 5.95-1.07 7.93-2.9l-3.88-3c-1.07.72-2.45 1.14-4.05 1.14-3.12 0-5.77-2.1-6.72-4.93H1.27v3.1A12 12 0 0 0 12 24z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M5.28 14.31A7.2 7.2 0 0 1 4.9 12c0-.8.14-1.58.38-2.31V6.59H1.27A12 12 0 0 0 0 12c0 1.94.46 3.77 1.27 5.41l4.01-3.1z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 4.76c1.76 0 3.34.6 4.58 1.8l3.44-3.44C17.94 1.19 15.23 0 12 0A12 12 0 0 0 1.27 6.59l4.01 3.1c.95-2.83 3.6-4.93 6.72-4.93z"
+        />
+      </svg>
+      Zarejestruj się przez Google
+    </button>
+  </form>
+
+  <div class="auth-footer">
+    Masz już konto? <a routerLink="/logowanie">Zaloguj się</a>
   </div>
-</div>
+</app-auth-shell>

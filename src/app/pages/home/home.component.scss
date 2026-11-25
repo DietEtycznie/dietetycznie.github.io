@@ -1,360 +1,1175 @@
-@import "../../../vars";
+@use "../../../vars" as *;
 
-.hero {
-  background-image: url("../../../assets/home_banner.png");
-  color: white;
-  padding: 5rem 0;
-  text-align: center;
-  background-size: cover;
-  background-position: center;
-  min-height: 50vh;
+.home-page {
+  background: var(--bg-paper);
+  color: var(--ink-primary);
+}
+
+// ==========================================
+// 1. FULL-BLEED EDITORIAL PHOTO HERO
+// ==========================================
+.hero-screen {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg-paper);
+}
+
+.notion-hero {
+  position: relative;
+  flex: 1 0 auto;
+  min-height: 540px;
   display: flex;
   align-items: center;
-}
+  background-color: #ebeef3;
+  background-image: url("../../../assets/home_banner.png");
+  background-size: cover;
+  background-position: 22% center;
+  background-repeat: no-repeat;
+  overflow: hidden;
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.hero-content {
-  position: relative;
-  max-width: 1000px;
-  margin-left: 50%;
-  padding: 2rem;
-  border-radius: 8px;
-  z-index: 1;
-
-  &::before {
+  &::after {
     content: "";
     position: absolute;
-    top: 70%;
-    left: 50%;
-    width: 150%;
-    height: 130%;
-    background-color: rgba(0, 0, 0, 0.18);
-    border-radius: 50%;
-    filter: blur(120px);
-    transform: translate(-50%, -50%) scale(1.18);
-    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+      radial-gradient(
+        380px 140px at 92% 0%,
+        rgba(32, 178, 127, 0.13) 0%,
+        rgba(32, 178, 127, 0.045) 48%,
+        transparent 74%
+      ),
+      linear-gradient(
+        180deg,
+        #fffefc 0%,
+        rgba(255, 254, 252, 0.72) 7%,
+        rgba(255, 254, 252, 0) 20%,
+        rgba(255, 254, 252, 0) 70%,
+        rgba(255, 254, 252, 0.75) 89%,
+        #fffefc 100%
+      );
+  }
+}
+
+.notion-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1360px;
+  padding: 4.5rem 2rem 5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.notion-hero__copy {
+  width: 100%;
+  max-width: 565px;
+
+  h1 {
+    font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+    font-size: clamp(2.5rem, 4.6vw, 4rem);
+    line-height: 1.07;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #111111;
+    margin: 0 0 1.2rem;
+  }
+}
+
+.notion-hero__lead {
+  font-size: 1.12rem;
+  line-height: 1.6;
+  color: #55524b;
+  max-width: 490px;
+  margin: 0 0 2rem;
+}
+
+.notion-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid rgba(17, 24, 20, 0.14);
+  border-radius: 10px;
+  padding: 0.35rem 0.35rem 0.35rem 0.9rem;
+  max-width: 490px;
+  margin-bottom: 1.35rem;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+
+  &:focus-within {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(32, 178, 127, 0.14);
   }
 
-  @media (max-width: 768px) {
-    &::before {
-      width: 100vw;
-      left: 50%;
-      min-width: 100%;
-      max-width: 100vw;
-      height: 100vw;
-      top: 80%;
-      filter: blur(60px);
-      transform: translate(-50%, -50%) scale(1);
+  mat-icon {
+    color: #8b8780;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  input {
+    border: none;
+    outline: none;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.94rem;
+    font-family: inherit;
+    color: #111;
+    background: transparent;
+
+    &::placeholder {
+      color: #9b9790;
     }
   }
 }
 
-.hero-content h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  font-weight: 700;
+.notion-hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
 }
 
-.hero-content p {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+.notion-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  word-spacing: 0.14em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.16s ease;
+  text-decoration: none;
+
+  &--primary {
+    background: $primary-color;
+    color: #fff;
+
+    &:hover {
+      background: $primary-dark;
+      color: #fff;
+    }
+  }
+
+  &--dark {
+    background: #111111;
+    color: #fff;
+
+    &:hover {
+      background: #2b2b2b;
+      color: #fff;
+    }
+  }
 }
 
-.hero-buttons {
+.notion-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: var(--accent-dark);
+  }
+}
+
+:host-context([data-theme="dark"]) {
+  .notion-hero {
+    background-color: #0e1613;
+    background-image: url("../../../assets/home_banner_dark.jpg");
+    background-size: cover;
+    background-position: 22% center;
+
+    &::after {
+      background:
+        radial-gradient(
+          380px 140px at 92% 0%,
+          rgba(32, 178, 127, 0.16) 0%,
+          rgba(32, 178, 127, 0.05) 48%,
+          transparent 74%
+        ),
+        linear-gradient(
+          180deg,
+          #0e1613 0%,
+          rgba(14, 22, 19, 0.88) 9%,
+          rgba(14, 22, 19, 0) 24%,
+          rgba(14, 22, 19, 0) 64%,
+          rgba(14, 22, 19, 0.85) 86%,
+          #0e1613 100%
+        );
+    }
+  }
+
+  .notion-hero__copy h1 {
+    color: #f3f7f5;
+  }
+
+  .notion-hero__lead {
+    color: #a8bcb3;
+  }
+
+  .notion-search {
+    background: #131e1a;
+    border-color: rgba(255, 255, 255, 0.14);
+
+    input {
+      color: #f1f6f3;
+      &::placeholder {
+        color: #72887e;
+      }
+    }
+  }
+
+  .notion-btn--dark {
+    background: #f1f6f3;
+    color: #0b1210;
+
+    &:hover {
+      background: #ffffff;
+      color: #0b1210;
+    }
+  }
+
+  .magic-track {
+    background: color-mix(
+      in srgb,
+      #102c22 calc(var(--wave-p) * 100%),
+      #0e1613
+    );
+  }
+
+  .chapter-dot__bar {
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  .chapter-dot__label,
+  .chapter-slide h2 {
+    color: #f1f6f3;
+  }
+
+  .chapter-slide p {
+    color: #a4b8af;
+  }
+
+  .bento-tile {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f1f6f3;
+  }
+
+  .bento-pill,
+  .portion-switcher button {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .macro-ring .ring-bg {
+    stroke: rgba(255, 255, 255, 0.12);
+  }
+
+  .macro-line {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.notion-hero__visual {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f0f3f7;
+  aspect-ratio: 4 / 3;
+
+  .hero-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 24% center;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+
+  &:hover .hero-photo {
+    transform: scale(1.03);
+  }
+}
+
+.scroll-hint-bar {
+  background: var(--bg-paper);
+  padding: 0.25rem 1rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.12s linear;
+}
+
+.scroll-hint-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-muted);
+  transition: color 0.18s ease;
+
+  &:hover {
+    color: var(--ink-primary);
+  }
+
+  mat-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    animation: gentleBounce 2.2s infinite ease-in-out;
+  }
+}
+
+@keyframes gentleBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+// ==========================================
+// 2. FULL-BLEED 100VH SCROLL + INTERACTIVE BENTO
+// ==========================================
+.magic-track {
+  --story-p: 0;
+  --wave-p: 0;
+  --stage-scale: 0.94;
+  position: relative;
+  height: 250vh;
+  background: color-mix(
+    in srgb,
+    #0e241c calc(var(--wave-p) * 100%),
+    #fffefc
+  );
+}
+
+.magic-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.magic-ambient-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at calc(20% + var(--story-p) * 60%) 50%,
+    rgba(32, 178, 127, calc(var(--wave-p) * 0.34)),
+    transparent 56%
+  );
+  will-change: background;
+}
+
+.magic-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 0.78fr 1.25fr;
+  gap: 4rem;
+  align-items: stretch;
+}
+
+.magic-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+}
+
+.chapter-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.chapter-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  opacity: 0.48;
+  transition: opacity 0.25s ease;
+
+  &__bar {
+    width: 24px;
+    height: 2px;
+    border-radius: 2px;
+    background: color-mix(
+      in srgb,
+      rgba(255, 255, 255, 0.75) calc(var(--wave-p) * 100%),
+      #111111
+    );
+    transition: width 0.28s ease, background-color 0.28s ease;
+  }
+
+  &__label {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: color-mix(
+      in srgb,
+      #ffffff calc(var(--wave-p) * 100%),
+      #111111
+    );
+  }
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &.is-active {
+    opacity: 1;
+    .chapter-dot__bar {
+      width: 46px;
+      background: $primary-color;
+    }
+  }
+}
+
+.chapter-text-wrap {
+  position: relative;
+  min-height: 220px;
+}
+
+.chapter-slide {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition:
+    opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 2.7vw, 2.35rem);
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: color-mix(
+      in srgb,
+      #ffffff calc(var(--wave-p) * 100%),
+      #111111
+    );
+    margin: 0 0 1.35rem;
+  }
+
+  p {
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: color-mix(
+      in srgb,
+      rgba(255, 255, 255, 0.8) calc(var(--wave-p) * 100%),
+      #55524b
+    );
+    margin: 0;
+    max-width: 410px;
+  }
+}
+
+.magic-stage {
   display: flex;
   justify-content: center;
+}
+
+.bento-stage {
+  width: 100%;
+  max-width: 680px;
+  transform: scale(var(--stage-scale));
+  transition: transform 0.1s linear;
+  will-change: transform;
+}
+
+.bento-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
-.btn-primary {
+.bento-tile {
+  background: color-mix(
+    in srgb,
+    rgba(255, 255, 255, 0.08) calc(var(--wave-p) * 100%),
+    #ffffff
+  );
+  border: 1px solid
+    color-mix(
+      in srgb,
+      rgba(255, 255, 255, 0.14) calc(var(--wave-p) * 100%),
+      rgba(17, 24, 20, 0.09)
+    );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 18px;
+  padding: 1.55rem 1.65rem;
+  color: color-mix(
+    in srgb,
+    #ffffff calc(var(--wave-p) * 100%),
+    #111111
+  );
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  &--cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.65rem;
+    font-size: 0.94rem;
+    text-decoration: none;
+    transition: border-color 0.18s ease, background-color 0.18s ease;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+
+    .cta-count {
+      font-weight: 700;
+      color: $primary-color;
+      white-space: nowrap;
+    }
+  }
+}
+
+.bento-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.bento-pill {
+  border: 1px solid
+    color-mix(
+      in srgb,
+      rgba(255, 255, 255, 0.16) calc(var(--wave-p) * 100%),
+      rgba(17, 24, 20, 0.12)
+    );
+  background: transparent;
+  color: inherit;
+  padding: 0.34rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+
+  &.is-active {
+    background: $primary-color;
+    border-color: $primary-color;
+    color: #fff;
+  }
+}
+
+.bento-focus-line {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.tile-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
   display: inline-block;
-  background-color: $primary-color;
-  color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.3s;
+
+  &--good {
+    color: $primary-color;
+  }
+  &--avoid {
+    color: #f87171;
+  }
 }
 
-.btn-primary:hover {
-  background-color: $primary-hover;
+.tile-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  font-size: 0.92rem;
+  opacity: 0.92;
 }
 
-.btn-secondary {
-  display: inline-block;
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 0.75rem 1.25rem;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.3s;
+// Chapter 1: Dish + Ring + Macro Numbers
+.dish-header-tile {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
 }
 
-.btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+.dish-thumb {
+  width: 112px;
+  height: 112px;
+  border-radius: 14px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.25));
+  flex-shrink: 0;
 }
 
-.section {
-  padding: 4rem 0;
+.dish-header-meta {
+  flex: 1;
+  min-width: 0;
+
+  h3 {
+    margin: 0.2rem 0 0.75rem;
+    font-size: 1.22rem;
+    color: inherit;
+  }
 }
 
-.section-title {
-  font-size: 2rem;
+.portion-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+
+  span {
+    opacity: 0.72;
+    margin-right: 0.2rem;
+  }
+
+  button {
+    border: 1px solid
+      color-mix(
+        in srgb,
+        rgba(255, 255, 255, 0.2) calc(var(--wave-p) * 100%),
+        rgba(17, 24, 20, 0.14)
+      );
+    background: transparent;
+    color: inherit;
+    padding: 0.28rem 0.72rem;
+    border-radius: 7px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+
+    &.is-active {
+      background: $primary-color;
+      border-color: $primary-color;
+      color: #fff;
+    }
+  }
+}
+
+.macro-ring-tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 215px;
+}
+
+.macro-ring {
+  width: 148px;
+  height: 148px;
+  transform: rotate(-90deg);
+
+  circle {
+    fill: none;
+    stroke-width: 9;
+    stroke-linecap: round;
+  }
+
+  .ring-bg {
+    stroke: color-mix(
+      in srgb,
+      rgba(255, 255, 255, 0.12) calc(var(--wave-p) * 100%),
+      #e8eeea
+    );
+  }
+  .ring-p {
+    stroke: $primary-color;
+  }
+  .ring-f {
+    stroke: #f59e0b;
+  }
+}
+
+.ring-center {
+  position: absolute;
   text-align: center;
-  margin-bottom: 0.5rem;
-  color: #333;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+
+  strong {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+  }
+
+  span {
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
 }
 
-.section-subtitle {
-  font-size: 1.1rem;
-  text-align: center;
-  margin-bottom: 3rem;
-  color: #666;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+.macro-numbers-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.9rem;
 }
 
-.conditions-section {
-  background-color: $background-secondary;
+.macro-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.92rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid
+    color-mix(
+      in srgb,
+      rgba(255, 255, 255, 0.1) calc(var(--wave-p) * 100%),
+      rgba(17, 24, 20, 0.07)
+    );
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  span {
+    opacity: 0.74;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+// Chapter 2: Day Plan + Interactive Shopping List
+.tile-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.05rem;
+
+  .tile-label {
+    margin-bottom: 0;
+  }
+
+  .day-kcal {
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .shop-hint {
+    font-size: 0.76rem;
+    opacity: 0.65;
+  }
+}
+
+.mini-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.mini-meal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  font-size: 0.92rem;
+  line-height: 1.3;
+
+  span {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.mini-shopping {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.mini-shop-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.92rem;
+  cursor: pointer;
+
+  input {
+    accent-color: $primary-color;
+    width: 16px;
+    height: 16px;
+  }
+
+  &.is-checked span {
+    opacity: 0.5;
+    text-decoration: line-through;
+  }
+}
+
+.fade-stage {
+  animation: stageEnter 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes stageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ==========================================
+// 3. CLEAN CONTENT SECTIONS
+// ==========================================
+.clean-section {
+  background: var(--bg-surface);
+  padding: 5rem 0;
+  border-top: 1px solid var(--border-subtle);
+
+  &--paper {
+    background: var(--bg-paper);
+  }
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.25rem;
+  flex-wrap: wrap;
+
+  h2 {
+    font-size: clamp(1.5rem, 2.5vw, 1.95rem);
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin: 0 0 0.3rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--ink-secondary);
+  }
 }
 
 .conditions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
 }
 
 .condition-card {
-  background-color: white;
-  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.3s,
-    box-shadow 0.3s;
-  text-decoration: none;
-  color: inherit;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  gap: 0.6rem;
+  transition: border-color 0.18s ease, transform 0.18s ease;
+
+  &:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+  }
+
+  h3 {
+    font-size: 1.04rem;
+    font-weight: 700;
+    color: var(--ink-primary);
+    margin: 0;
+  }
+
+  p {
+    font-size: 0.87rem;
+    line-height: 1.55;
+    color: var(--ink-secondary);
+    margin: 0;
+    flex: 1;
+  }
+
+  &__meta {
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+  }
 }
 
-.condition-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.condition-icon {
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e6f7f6;
-  border-radius: 50%;
-  margin-bottom: 1rem;
-}
-
-.icon-placeholder {
-  width: 40px;
-  height: 40px;
-  background-color: $primary-color;
-  border-radius: 50%;
-}
-
-.condition-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.condition-card p {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.recipes-grid {
+.featured-recipes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
 }
 
-.recipe-card {
-  background-color: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.3s,
-    box-shadow 0.3s;
-  text-decoration: none;
-  color: inherit;
-}
-
-.recipe-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.recipe-image {
-  height: 200px;
-}
-
-.recipe-img {
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  margin: 0 auto;
-}
-
-.recipe-content {
-  padding: 1.5rem;
-}
-
-.recipe-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.recipe-card p {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-.recipe-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  color: #888;
-}
-
-.how-it-works-section {
-  background-color: $background-secondary;
-}
-
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.step-card {
-  background-color: white;
-  border-radius: 8px;
-  padding: 2rem 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  text-align: center;
+// ==========================================
+// 4. DIETITIAN CUTOUT SPOTLIGHT
+// ==========================================
+.dietitian-section {
   position: relative;
+  background:
+    radial-gradient(
+      520px 340px at 75% 100%,
+      rgba(32, 178, 127, 0.15) 0%,
+      rgba(32, 178, 127, 0.055) 48%,
+      transparent 76%
+    ),
+    radial-gradient(
+      420px 280px at 18% 20%,
+      rgba(32, 178, 127, 0.055) 0%,
+      transparent 70%
+    ),
+    var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  padding: 4.5rem 0 0;
+  overflow: hidden;
 }
 
-.step-number {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  background-color: $primary-color;
-  color: white;
-  border-radius: 50%;
+.dietitian-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3rem;
+  align-items: end;
+}
+
+.dietitian-copy {
+  padding-bottom: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.dietitian-kicker {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-dark);
+}
+
+.dietitian-copy h2 {
+  font-size: clamp(1.85rem, 3.2vw, 2.55rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink-primary);
+  margin: 0;
+}
+
+.dietitian-role {
+  font-size: 0.94rem;
+  color: var(--ink-muted);
+  margin: 0 0 0.5rem;
+}
+
+.dietitian-bio {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.15rem;
+  border-left: 3px solid var(--accent-primary);
+  font-size: 1.04rem;
+  line-height: 1.68;
+  color: var(--ink-secondary);
+  max-width: 560px;
+
+  strong {
+    color: var(--ink-primary);
+    font-weight: 700;
+  }
+}
+
+.dietitian-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+
+  span {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-secondary);
+    background: var(--bg-subtle);
+    padding: 0.3rem 0.72rem;
+    border-radius: 6px;
+  }
+}
+
+.dietitian-actions {
   display: flex;
   align-items: center;
+  gap: 1.35rem;
+  flex-wrap: wrap;
+}
+
+.dietitian-portrait-col {
+  position: relative;
+  display: flex;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
+  align-items: flex-end;
+  min-height: 420px;
 }
 
-.step-card h3 {
-  margin: 1rem 0 0.5rem;
-  color: #333;
-  font-size: 1.25rem;
+.portrait-accent {
+  display: none;
 }
 
-.step-card p {
-  color: #666;
-  font-size: 0.9rem;
+.dietitian-silhouette {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 390px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: bottom center;
 }
 
-.cta-container {
-  text-align: center;
-}
+@media (max-width: 980px) {
+  .notion-hero {
+    min-height: 440px;
+    background-position: 10% center;
 
-.view-all {
-  text-align: center;
-}
-
-.btn-text {
-  color: $primary-color;
-  text-decoration: none;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  transition: all 0.3s;
-}
-
-.btn-text:hover {
-  color: $primary-hover;
-}
-
-.arrow {
-  margin-left: 0.5rem;
-  transition: transform 0.3s;
-}
-
-.btn-text:hover .arrow {
-  transform: translateX(5px);
-}
-
-.loading {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 2rem;
-  color: #666;
-}
-
-@media (max-width: 768px) {
-  .hero {
-    background-position: 35% center;
-  }
-  .hero-content {
-    margin-left: 0;
-
-    h1 {
-      font-size: 2rem;
-    }
-
-    p {
-      font-size: 1rem;
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 254, 252, 0.8);
+      z-index: 1;
     }
   }
 
-  .hero-buttons {
-    flex-direction: column;
-    gap: 0.75rem;
+  .notion-hero__inner {
+    justify-content: flex-start;
   }
 
-  .section-title {
-    font-size: 1.75rem;
+  .magic-grid,
+  .dietitian-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
-  .recipes-grid,
+  .magic-track {
+    height: auto;
+    background: #0e241c;
+    padding: 4rem 0;
+  }
+
+  .magic-sticky {
+    position: static;
+    height: auto;
+  }
+
+  .chapter-text-wrap {
+    min-height: 170px;
+  }
+
+  .chapter-slide h2 {
+    color: #fff;
+  }
+
+  .chapter-slide p {
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .chapter-dot__label {
+    color: #fff;
+  }
+
+  .chapter-dot__bar {
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .bento-stage {
+    transform: none;
+  }
+
+  .bento-tile {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #fff;
+  }
+
   .conditions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .featured-recipes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dietitian-copy {
+    padding-bottom: 1rem;
+  }
+
+  .dietitian-portrait-col {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 600px) {
+  .notion-hero {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .notion-search {
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    button {
+      width: 100%;
+    }
+  }
+
+  .conditions-grid,
+  .featured-recipes-grid,
+  .bento-layout {
     grid-template-columns: 1fr;
   }
 }

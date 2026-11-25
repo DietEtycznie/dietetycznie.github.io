@@ -1,40 +1,31 @@
-import { Component, Input } from "@angular/core";
-import { MedicalCondition } from "../../../../models/medical-condition.model";
 import { CommonModule } from "@angular/common";
+import { Component, inject, Input } from "@angular/core";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatIconModule } from "@angular/material/icon";
-import {
-  MatCard,
-  MatCardActions,
-  MatCardContent,
-  MatCardHeader,
-  MatCardTitle,
-} from "@angular/material/card";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
+import { MedicalCondition } from "../../../../models/medical-condition.model";
 
 @Component({
   selector: "app-medical-condition-card",
   standalone: true,
-  imports: [
-    CommonModule,
-    MatExpansionModule,
-    MatIconModule,
-    MatCardContent,
-    MatCardTitle,
-    MatCardHeader,
-    MatCard,
-    MatCardActions,
-    RouterLink,
-  ],
+  imports: [CommonModule, MatExpansionModule, MatIconModule],
   templateUrl: "./medical-condition-card.component.html",
   styleUrls: ["./medical-condition-card.component.scss"],
 })
 export class MedicalConditionCardComponent {
-  @Input() condition!: MedicalCondition;
-  constructor(private router: Router) {}
+  @Input({ required: true }) condition!: MedicalCondition;
+  @Input() expandedByDefault = false;
 
-  goToRecipesWithCondition() {
-    this.router.navigate(["/recipes"], {
+  private router = inject(Router);
+
+  goToRecipesWithCondition(): void {
+    this.router.navigate(["/przepisy"], {
+      queryParams: { condition: this.condition.name },
+    });
+  }
+
+  goToDietPlans(): void {
+    this.router.navigate(["/jadlospisy"], {
       queryParams: { condition: this.condition.name },
     });
   }

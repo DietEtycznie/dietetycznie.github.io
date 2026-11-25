@@ -1,96 +1,60 @@
-<div
-  [ngClass]="{
-    card: cardStyle === 'normal',
-    'card-wide': cardStyle === 'wide',
-  }"
-  (click)="withOpen ? open() : null"
+<article
+  class="recipe-card"
+  [class.recipe-card--wide]="cardStyle === 'wide'"
+  [class.recipe-card--compact]="cardStyle === 'compact'"
+  [class.recipe-card--clickable]="withOpen"
+  (click)="open()"
 >
-  <div
-    [ngClass]="{
-      'card-photo': cardStyle === 'normal',
-      'card-photo-wide': cardStyle === 'wide',
-      'card-photo-wide-stars': starsVisible && cardStyle === 'wide',
-    }"
-  >
+  <div class="recipe-card__media">
     <img
-      class="card-img"
-      [src]="recipe.imageUrl"
+      [src]="resolvedImageUrl"
       (error)="handleImageError($event)"
-      alt="Zdjęcie przepisu"
+      [alt]="recipe.name"
+      loading="lazy"
     />
-    <div class="card-stars" *ngIf="starsVisible">
-      <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
-        <i
-          class="bi"
-          [ngClass]="
-            recipe.stars && i < recipe.stars ? 'bi-star-fill' : 'bi-star'
-          "
-        ></i>
-      </ng-container>
-    </div>
-  </div>
-  <div class="card-title" *ngIf="cardStyle === 'normal'">
-    {{ recipe.name }}
-  </div>
-  <div class="card-time">
-    {{ recipe.prepTimeMinutes }}
-    <span>min</span>
-  </div>
-  <div
-    [ngClass]="{
-      'card-hover': cardStyle === 'normal' && withOpen,
-      'card-hover-wide': cardStyle === 'wide' && withOpen,
-    }"
-  >
-    <div class="card-title" *ngIf="cardStyle === 'wide'">
-      {{ recipe.name }}
-    </div>
-    <span class="card-values">Wartości odżywcze:</span>
-    <div class="flex-centered card-values-box-container">
-      <div class="card-values-box">
-        {{ recipe.calories }}
-        <span>Kcal</span>
-      </div>
-      <div class="card-values-box">
-        {{ recipe.protein }} g
-        <span>Białka</span>
-      </div>
-      <div class="card-values-box">
-        {{ recipe.fat }} g
-        <span>Tłuszczu</span>
-      </div>
-      <div class="card-values-box" *ngIf="cardStyle === 'normal'">
-        {{ recipe.carbs }} g
-        <span>Węgl</span>
-      </div>
-    </div>
-    <div
-      class="flex-centered"
-      style="margin-top: -20px"
-      *ngIf="cardStyle === 'wide'"
-    >
-      <div class="card-values-box">
-        {{ recipe.carbs }} g
-        <span>Węg</span>
-      </div>
-      <div class="card-values-box">
-        {{ recipe.carbs }} g
-        <span>Sodu</span>
-      </div>
-      <div class="card-values-box">
-        {{ recipe.carbs }} g
-        <span>Błonnika</span>
-      </div>
-    </div>
-    <div
-      class="card-like"
-      (click)="toggleLike()"
-      *ngIf="withLike && (this.user$ | async)"
-    >
-      <mat-icon *ngIf="!like" style="cursor: pointer">favorite_border</mat-icon>
-      <mat-icon *ngIf="like" class="red" style="cursor: pointer"
-        >favorite</mat-icon
+
+    @if (withLike && (user$ | async)) {
+      <button
+        type="button"
+        class="like-btn"
+        [class.is-liked]="like"
+        (click)="toggleLike($event)"
+        [attr.aria-label]="like ? 'Usuń z polubionych' : 'Dodaj do polubionych'"
       >
-    </div>
+        <mat-icon>{{ like ? "favorite" : "favorite_border" }}</mat-icon>
+      </button>
+    }
   </div>
-</div>
+
+  <div class="recipe-card__body">
+    <h3 class="recipe-card__title">{{ recipe.name }}</h3>
+
+    <div class="recipe-card__meta">
+      <span class="meta-kcal">{{ recipe.calories }} kcal</span>
+      <span class="sep">·</span>
+      <span>{{ recipe.prepTimeMinutes }} min</span>
+      @if (cardStyle !== "compact") {
+        <span class="sep">·</span>
+        <span>B {{ recipe.protein }}g</span>
+        <span class="sep">·</span>
+        <span>W {{ recipe.carbs }}g</span>
+        <span class="sep">·</span>
+        <span>T {{ recipe.fat }}g</span>
+      }
+      @if (cardStyle === "wide") {
+        <span class="sep">·</span>
+        <span>Sód {{ recipe.sodium }}mg</span>
+        <span class="sep">·</span>
+        <span>Błonnik {{ recipe.fiber }}g</span>
+      }
+    </div>
+
+    @if (cardStyle !== "compact" && recipe.suitableForConditions.length > 0) {
+      <div class="recipe-card__tags">
+        @for (cond of recipe.suitableForConditions.slice(0, 2); track cond) {
+          <span class="tag">{{ cond }}</span>
+        }
+      </div>
+    }
+  </div>
+</article>

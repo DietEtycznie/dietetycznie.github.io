@@ -1,103 +1,128 @@
+@use "../../../../vars" as *;
+
 .presentation-header {
   position: relative;
   width: 100%;
-  min-height: 200px;
-  max-width: 100%;
-  margin: 0;
-  padding: 0;
+  min-height: 176px;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  background: url("/assets/presentation-header.png") center/cover no-repeat;
+  align-items: center;
+  background:
+    radial-gradient(
+      380px 160px at 92% 0%,
+      rgba(32, 178, 127, 0.12) 0%,
+      rgba(32, 178, 127, 0.04) 48%,
+      transparent 74%
+    ),
+    var(--bg-paper);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
 }
 
-.presentation-header-content {
-  width: 100%;
-  margin: 0;
-  padding: 2.5rem 5% 2.5rem 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  position: relative;
-}
-
-.presentation-header-blur {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: rgba(30, 30, 30, 0.12);
-  border-radius: 0 0 0 0;
-}
-
-.presentation-header-content > * {
+.presentation-header__inner {
   position: relative;
   z-index: 2;
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 1.35rem;
+  padding-bottom: 1.35rem;
 }
 
-.presentation-header-top {
-  width: 100%;
+.presentation-header__art {
+  position: relative;
+  height: 156px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
 }
 
-.presentation-header-title {
-  font-size: 2.3rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin: 0;
-  letter-spacing: -1px;
-  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
+.presentation-header__glow {
+  position: absolute;
+  inset: -80px -140px;
+  background: radial-gradient(
+    ellipse 62% 72% at 50% 52%,
+    rgba(95, 105, 103, 0.24) 0%,
+    rgba(95, 105, 103, 0.11) 44%,
+    transparent 74%
+  );
+  pointer-events: none;
 }
 
-.presentation-header-actions {
+:host-context([data-theme="dark"]) {
+  .presentation-header__glow {
+    background: radial-gradient(
+      ellipse 62% 72% at 50% 52%,
+      rgba(215, 222, 220, 0.15) 0%,
+      rgba(215, 222, 220, 0.06) 44%,
+      transparent 74%
+    );
+  }
+
+  .presentation-header__img {
+    filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.55));
+  }
+}
+
+.presentation-header__img {
+  position: relative;
+  z-index: 1;
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 12px 22px rgba(15, 23, 20, 0.14));
+}
+
+.presentation-header__copy {
+  max-width: 600px;
+
+  h1 {
+    font-size: clamp(1.7rem, 2.8vw, 2.2rem);
+    font-weight: 800;
+    color: var(--ink-primary);
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    margin: 0 0 0.45rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--ink-secondary);
+    margin: 0;
+  }
+}
+
+.presentation-header__actions {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  min-width: 220px;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  align-self: flex-end;
 }
 
-.section-description {
-  font-size: 1.13rem;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
-  margin-top: 0;
-  max-width: 1200px;
-  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
-}
+@media (max-width: 960px) {
+  .presentation-header {
+    min-height: auto;
+  }
 
-@media (max-width: 900px) {
-  .presentation-header-content {
-    padding: 1.2rem 0.7rem 1.5rem 0.7rem;
-    width: 100%;
-    max-width: 100%;
-  }
-  .presentation-header-title {
-    font-size: 2rem;
-  }
-  .section-description {
-    font-size: 1rem;
-    max-width: 98vw;
-  }
-  .presentation-header-top {
-    flex-direction: column;
-    align-items: flex-start;
+  .presentation-header__inner {
+    grid-template-columns: 1fr;
     gap: 1rem;
+    padding-top: 1.75rem;
+    padding-bottom: 1.65rem;
   }
-  .presentation-header-actions {
-    width: 100%;
-    min-width: unset;
-    justify-content: flex-start;
-    margin-top: 0.5rem;
 
-    mat-button-toggle-group {
-      width: 100%;
-    }
+  .presentation-header__art {
+    display: none;
+  }
+
+  .presentation-header__actions {
+    align-self: flex-start;
   }
 }

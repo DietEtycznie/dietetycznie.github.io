@@ -1,187 +1,258 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Component, inject, OnDestroy, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSelectModule } from "@angular/material/select";
+import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
 import {
-  MEDICAL_CONDITIONS,
   DIET_TAGS,
   MEAL_TYPES,
+  MEDICAL_CONDITIONS,
   Recipe,
 } from "../../../models/recipe.model";
-import { RecipeCardComponent } from "../../components/ui/recipe-card/recipe-card.component";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatInputModule } from "@angular/material/input";
-import { MatSelectModule } from "@angular/material/select";
-import { MatCheckboxModule } from "@angular/material/checkbox";
-import { InputTextComponent } from "../../components/ui/input-text/input-text.component";
-import { InputNumberComponent } from "../../components/ui/input-number/input-number.component";
-import { CheckboxGroupComponent } from "../../components/ui/checkbox-group/checkbox-group.component";
-import { RecipeService } from "../../../services/recipe.service";
 import { AuthService } from "../../../services/auth.service";
-import { user } from "@angular/fire/auth";
-import { MatIcon } from "@angular/material/icon";
-import { MatSlideToggle } from "@angular/material/slide-toggle";
-import { ActivatedRoute } from "@angular/router";
+import { RecipeService } from "../../../services/recipe.service";
+import {
+  PresentationHeaderComponent,
+  RecipeCardComponent,
+} from "../../components/ui";
+
+type SortMode = "rating" | "kcalAsc" | "proteinDesc" | "timeAsc" | "nameAsc";
 
 @Component({
   selector: "app-recipes",
   standalone: true,
   imports: [
-    RecipeCardComponent,
     CommonModule,
     FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
+    MatIconModule,
     MatSelectModule,
-    MatCheckboxModule,
-    InputTextComponent,
-    InputNumberComponent,
-    CheckboxGroupComponent,
-    MatIcon,
-    MatSlideToggle,
+    RecipeCardComponent,
+    PresentationHeaderComponent,
   ],
   templateUrl: "./recipes.component.html",
   styleUrls: ["./recipes.component.scss"],
 })
-export class RecipesComponent implements OnInit {
+export class RecipesComponent implements OnInit, OnDestroy {
   private recipeService = inject(RecipeService);
   private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private sub = new Subscription();
 
   recipes: Recipe[] = [];
   savedRecipes: string[] = [];
+  isLoggedIn = false;
 
   filterName = "";
   filterCondition: string[] = [];
   filterDiet: string[] = [];
-  filterMaxKcal: number | null = null;
   filterType: string[] = [];
-  filterLiked: boolean = false;
-  filterMaxProtein: number | null = null;
-  filterMaxCarbs: number | null = null;
-  filterMaxFat: number | null = null;
+  filterLiked = false;
+  filterMaxKcal: number | null = null;
+  filterMinProtein: number | null = null;
+  filterMaxTime: number | null = null;
   filterMaxSodium: number | null = null;
-  filterMaxFiber: number | null = null;
+  sortBy: SortMode = "rating";
+  viewMode: "grid" | "list" = "grid";
 
   conditions = MEDICAL_CONDITIONS;
   diets = DIET_TAGS;
   mealTypes = MEAL_TYPES;
 
-  showFilters = false;
-  isMobile = false;
+  mobileFiltersOpen = false;
 
-  constructor(private route: ActivatedRoute) {}
+  ngOnInit(): void {
+    this.sub.add(
+      this.recipeService.getRecipes().subscribe((recipes) => {
+        this.recipes = recipes;
+      }),
+    );
 
-  ngOnInit() {
-    this.recipeService.getRecipes().subscribe((recipes) => {
-      this.recipes = recipes;
-    });
+    this.sub.add(
+      this.authService.user$.subscribe((user) => {
+        this.isLoggedIn = Boolean(user);
+        this.savedRecipes = user?.savedRecipes ?? [];
+      }),
+    );
 
-    this.authService.user$.subscribe((user) => {
-      if (user) {
-        this.savedRecipes = user.savedRecipes || [];
-      }
-    });
+    this.sub.add(
+      this.route.queryParamMap.subscribe((params) => {
+        const q = params.get("q");
+        if (q) this.filterName = q;
 
-    this.checkMobile();
-    window.addEventListener("resize", this.checkMobile.bind(this));
-
-    this.route.queryParamMap.subscribe((params) => {
-      if (params.get("liked") === "1") {
-        this.filterLiked = true;
-      }
-      const condition = params.get("condition");
-      if (condition) {
-        this.filterCondition = [condition];
-      }
-    });
+        if (params.get("liked") === "1") {
+          this.filterLiked = true;
+        }
+        const condition = params.get("condition");
+        if (condition) {
+          this.filterCondition = [condition];
+        }
+        const diet = params.get("diet");
+        if (diet) {
+          this.filterDiet = [diet];
+        }
+        const meal = params.get("meal");
+        if (meal) {
+          this.filterType = [meal];
+        }
+      }),
+    );
   }
 
-  ngOnDestroy() {
-    window.removeEventListener("resize", this.checkMobile.bind(this));
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
-  checkMobile() {
-    this.isMobile = window.innerWidth <= 900;
-    if (!this.isMobile) {
-      this.showFilters = false;
-    }
+  get activeFiltersCount(): number {
+    let count = 0;
+    if (this.filterName.trim()) count++;
+    if (this.filterLiked) count++;
+    count += this.filterCondition.length;
+    count += this.filterDiet.length;
+    count += this.filterType.length;
+    if (this.filterMaxKcal != null) count++;
+    if (this.filterMinProtein != null) count++;
+    if (this.filterMaxTime != null) count++;
+    if (this.filterMaxSodium != null) count++;
+    return count;
+  }
+
+  private normalizePL(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/ł/g, "l")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  private matchesPolishQuery(haystack: string, rawQuery: string): boolean {
+    const normHay = this.normalizePL(haystack);
+    const tokens = this.normalizePL(rawQuery).split(/\s+/).filter(Boolean);
+    return tokens.every((token) => {
+      if (normHay.includes(token)) return true;
+      if (token.length >= 5) {
+        const stem = token.slice(0, Math.max(4, token.length - 2));
+        return normHay.includes(stem);
+      }
+      return false;
+    });
   }
 
   get filteredRecipes(): Recipe[] {
-    let filtered = this.recipes;
-    if (this.filterName) {
-      filtered = filtered.filter((recipe) =>
-        recipe.name.toLowerCase().includes(this.filterName.toLowerCase()),
-      );
-    }
-    if (this.filterCondition.length > 0) {
-      filtered = filtered.filter((recipe) =>
-        this.filterCondition.some((cond) =>
-          recipe.suitableForConditions.includes(cond),
-        ),
-      );
-    }
-    if (this.filterDiet.length > 0) {
-      filtered = filtered.filter((recipe) =>
-        this.filterDiet.some((diet) => recipe.dietTags.includes(diet)),
-      );
-    }
-    if (typeof this.filterMaxKcal === "number") {
-      filtered = filtered.filter(
-        (recipe) =>
-          this.filterMaxKcal != null && recipe.calories <= this.filterMaxKcal,
-      );
-    }
-    if (typeof this.filterMaxProtein === "number") {
-      filtered = filtered.filter(
-        (recipe) =>
-          this.filterMaxProtein != null &&
-          recipe.protein <= this.filterMaxProtein,
-      );
-    }
-    if (typeof this.filterMaxCarbs === "number") {
-      filtered = filtered.filter(
-        (recipe) =>
-          this.filterMaxCarbs != null && recipe.carbs <= this.filterMaxCarbs,
-      );
-    }
-    if (typeof this.filterMaxFat === "number") {
-      filtered = filtered.filter(
-        (recipe) =>
-          this.filterMaxFat != null && recipe.fat <= this.filterMaxFat,
-      );
-    }
-    if (typeof this.filterMaxSodium === "number") {
-      filtered = filtered.filter(
-        (recipe) =>
-          this.filterMaxSodium != null && recipe.sodium <= this.filterMaxSodium,
-      );
-    }
-    if (typeof this.filterMaxFiber === "number") {
-      filtered = filtered.filter(
-        (recipe) =>
-          this.filterMaxFiber != null && recipe.fiber <= this.filterMaxFiber,
-      );
-    }
-    if (this.filterType.length > 0) {
-      filtered = filtered.filter((recipe) =>
-        this.filterType.some((type) => recipe.mealType.includes(type)),
-      );
-    }
-    if (this.filterLiked) {
-      filtered = filtered.filter((recipe) =>
-        this.savedRecipes.includes(recipe.uid),
-      );
-    }
-    return filtered;
+    const search = this.filterName.trim();
+
+    let list = this.recipes.filter((recipe) => {
+      if (search) {
+        const combined = [
+          recipe.name,
+          recipe.description ?? "",
+          ...(recipe.ingredients ?? []),
+          ...(recipe.dietTags ?? []),
+          ...(recipe.suitableForConditions ?? []),
+        ].join(" ");
+        if (!this.matchesPolishQuery(combined, search)) return false;
+      }
+
+      if (this.filterLiked && !this.savedRecipes.includes(recipe.uid)) {
+        return false;
+      }
+
+      if (
+        this.filterType.length > 0 &&
+        !this.filterType.some((t) => recipe.mealType?.includes(t))
+      ) {
+        return false;
+      }
+
+      if (
+        this.filterCondition.length > 0 &&
+        !this.filterCondition.some((c) =>
+          recipe.suitableForConditions?.includes(c),
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        this.filterDiet.length > 0 &&
+        !this.filterDiet.every((d) => recipe.dietTags?.includes(d))
+      ) {
+        return false;
+      }
+
+      if (
+        this.filterMaxKcal != null &&
+        recipe.calories > this.filterMaxKcal
+      ) {
+        return false;
+      }
+
+      if (
+        this.filterMinProtein != null &&
+        recipe.protein < this.filterMinProtein
+      ) {
+        return false;
+      }
+
+      if (
+        this.filterMaxTime != null &&
+        recipe.prepTimeMinutes > this.filterMaxTime
+      ) {
+        return false;
+      }
+
+      if (
+        this.filterMaxSodium != null &&
+        recipe.sodium > this.filterMaxSodium
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    list = [...list].sort((a, b) => {
+      switch (this.sortBy) {
+        case "kcalAsc":
+          return a.calories - b.calories;
+        case "proteinDesc":
+          return b.protein - a.protein;
+        case "timeAsc":
+          return a.prepTimeMinutes - b.prepTimeMinutes;
+        case "nameAsc":
+          return a.name.localeCompare(b.name, "pl");
+        case "rating":
+        default:
+          return (b.stars ?? 0) - (a.stars ?? 0);
+      }
+    });
+
+    return list;
   }
 
-  onTypeChange(type: string, checked: boolean) {
-    if (checked) {
-      this.filterType.push(type);
+  toggleItem(arr: string[], item: string): void {
+    const idx = arr.indexOf(item);
+    if (idx >= 0) {
+      arr.splice(idx, 1);
     } else {
-      this.filterType = this.filterType.filter((t) => t !== type);
+      arr.push(item);
     }
   }
 
-  protected readonly user = user;
+  selectQuickMeal(meal: string | null): void {
+    this.filterType = meal ? [meal] : [];
+  }
+
+  clearFilters(): void {
+    this.filterName = "";
+    this.filterCondition = [];
+    this.filterDiet = [];
+    this.filterType = [];
+    this.filterLiked = false;
+    this.filterMaxKcal = null;
+    this.filterMinProtein = null;
+    this.filterMaxTime = null;
+    this.filterMaxSodium = null;
+  }
 }

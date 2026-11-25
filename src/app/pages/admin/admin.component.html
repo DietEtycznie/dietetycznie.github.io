@@ -1,201 +1,1409 @@
-<div class="admin-container">
-  <div class="admin-columns">
-    <div class="admin-section">
-      <h2>Dodaj przepis</h2>
-      <form (ngSubmit)="addRecipe()" #recipeForm="ngForm" class="admin-form">
-        <mat-form-field appearance="outline">
-          <mat-label>Nazwa</mat-label>
-          <input matInput required [(ngModel)]="recipe.name" name="name" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Opis</mat-label>
-          <textarea
-            matInput
-            required
-            [(ngModel)]="recipe.description"
-            name="description"
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Typ posiłku (multi)</mat-label>
-          <mat-select [(ngModel)]="recipe.mealType" name="mealType" multiple>
-            <mat-option *ngFor="let cond of allMealTypes" [value]="cond">{{
-              cond
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Składniki (po przecinku)</mat-label>
-          <input matInput [(ngModel)]="recipe.ingredients" name="ingredients" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Instrukcje (po przecinku)</mat-label>
-          <input
-            matInput
-            [(ngModel)]="recipe.instructions"
-            name="instructions"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Czas przygotowania (min)</mat-label>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="recipe.prepTimeMinutes"
-            name="prepTimeMinutes"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Ilość porcji</mat-label>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="recipe.servings"
-            name="servings"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Kcal</mat-label>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="recipe.calories"
-            name="calories"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Białko (g)</mat-label>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="recipe.protein"
-            name="protein"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Węglowodany (g)</mat-label>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="recipe.carbs"
-            name="carbs"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Tłuszcz (g)</mat-label>
-          <input matInput type="number" [(ngModel)]="recipe.fat" name="fat" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Sód (mg)</mat-label>
-          <input
-            matInput
-            type="number"
-            [(ngModel)]="recipe.sodium"
-            name="sodium"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Błonnik (g)</mat-label>
-          <input matInput type="number" [(ngModel)]="recipe.fiber" name="fat" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Link do zdjęcia (imageUrl)</mat-label>
-          <input matInput [(ngModel)]="recipe.imageUrl" name="imageUrl" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Choroby (multi)</mat-label>
-          <mat-select
-            [(ngModel)]="recipe.suitableForConditions"
-            name="suitableForConditions"
-            multiple
-          >
-            <mat-option *ngFor="let cond of allConditions" [value]="cond">{{
-              cond
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Diety (multi)</mat-label>
-          <mat-select [(ngModel)]="recipe.dietTags" name="dietTags" multiple>
-            <mat-option *ngFor="let tag of allDietTags" [value]="tag">{{
-              tag
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">
-          Dodaj przepis
+<main class="admin-page">
+  <!-- Clean Header Bar -->
+  <section class="admin-head">
+    <div class="container admin-head__inner">
+      <div>
+        <div class="admin-status-row">
+          <span class="status-pill" [class.is-live]="!isFallbackMode">
+            <span class="status-dot"></span>
+            {{ isFallbackMode ? "Tryb lokalny (seed)" : "Firebase Firestore" }}
+          </span>
+        </div>
+        <h1>Panel administratora</h1>
+        <p>Zarządzaj bazą przepisów, chorób dietozależnych, gotowych jadłospisów oraz kopiami zapasowymi.</p>
+      </div>
+
+      <div class="admin-head__actions">
+        <button type="button" class="btn btn-secondary" (click)="exportBackupJson()">
+          <mat-icon>download</mat-icon>
+          Backup JSON
         </button>
-      </form>
+        <button type="button" class="btn btn-primary" (click)="openNewRecipe()">
+          <mat-icon>add</mat-icon>
+          Nowy przepis
+        </button>
+      </div>
     </div>
-    <div class="admin-section">
-      <h2>Dodaj jednostkę chorobową</h2>
-      <form
-        (ngSubmit)="addMedicalCondition()"
-        #conditionForm="ngForm"
-        class="admin-form"
-      >
-        <mat-form-field appearance="outline">
-          <mat-label>Nazwa</mat-label>
-          <input
-            matInput
-            required
-            [(ngModel)]="medicalCondition.name"
-            name="mc_name"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Opis</mat-label>
-          <textarea
-            matInput
-            required
-            [(ngModel)]="medicalCondition.description"
-            name="mc_description"
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Zalecenia żywieniowe (po przecinku)</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="medicalCondition.dietaryRecommendations"
-            name="mc_dietaryRecommendations"
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Zalecenia dotyczące stylu życia (po przecinku)</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="medicalCondition.lifestyleRecommendations"
-            name="mc_lifestyleRecommendations"
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Produkty zalecane (po przecinku)</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="medicalCondition.foodsToEat"
-            name="mc_foodsToEat"
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Produkty niewskazane (po przecinku)</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="medicalCondition.foodsToAvoid"
-            name="mc_foodsToAvoid"
-          ></textarea>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Ostrzeżenia (po przecinku, opcjonalnie)</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="medicalCondition.warnings"
-            name="mc_warnings"
-          ></textarea>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">
-          Dodaj jednostkę chorobową
+
+    <!-- Tabs -->
+    <div class="container">
+      <nav class="admin-tabs" aria-label="Sekcje panelu">
+        <button
+          type="button"
+          class="admin-tab"
+          [class.is-active]="activeTab === 'recipes'"
+          (click)="activeTab = 'recipes'"
+        >
+          Przepisy
+          <span class="tab-count">{{ recipes.length }}</span>
         </button>
-      </form>
+        <button
+          type="button"
+          class="admin-tab"
+          [class.is-active]="activeTab === 'conditions'"
+          (click)="activeTab = 'conditions'"
+        >
+          Choroby
+          <span class="tab-count">{{ conditions.length }}</span>
+        </button>
+        <button
+          type="button"
+          class="admin-tab"
+          [class.is-active]="activeTab === 'plans'"
+          (click)="activeTab = 'plans'"
+        >
+          Jadłospisy
+          <span class="tab-count">{{ publicPlans.length + personalizedPlans.length }}</span>
+        </button>
+        <button
+          type="button"
+          class="admin-tab"
+          [class.is-active]="activeTab === 'users'"
+          (click)="activeTab = 'users'"
+        >
+          Użytkownicy
+          <span class="tab-count">{{ users.length }}</span>
+        </button>
+        <button
+          type="button"
+          class="admin-tab"
+          [class.is-active]="activeTab === 'overview'"
+          (click)="activeTab = 'overview'"
+        >
+          Baza i seed
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Toast -->
+  @if (toastMessage) {
+    <div class="container">
+      <div class="admin-toast" [class.is-error]="toastType === 'error'" role="status">
+        <mat-icon>{{ toastType === "error" ? "error_outline" : "check_circle" }}</mat-icon>
+        <span>{{ toastMessage }}</span>
+      </div>
+    </div>
+  }
+
+  <div class="container admin-body">
+    <!-- ==================== TAB: RECIPES ==================== -->
+    @if (activeTab === "recipes") {
+      <div class="panel-toolbar">
+        <app-search-input
+          class="admin-search"
+          [(value)]="recipeSearch"
+          placeholder="Szukaj przepisu po nazwie, chorobie lub tagu..."
+        ></app-search-input>
+
+        <div class="toolbar-right">
+          <mat-select class="app-select select-input" [(ngModel)]="recipeMealFilter" aria-label="Filtruj posiłki">
+            <mat-option value="">Wszystkie posiłki</mat-option>
+            @for (m of allMealTypes; track m) {
+              <mat-option [value]="m">{{ m }}</mat-option>
+            }
+          </mat-select>
+
+          <button type="button" class="btn btn-primary" (click)="openNewRecipe()">
+            <mat-icon>add</mat-icon>
+            Dodaj przepis
+          </button>
+        </div>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Przepis</th>
+              <th>Posiłek</th>
+              <th>Makro (porcja)</th>
+              <th>Czas</th>
+              <th>Choroby</th>
+              <th class="col-actions">Akcje</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of filteredRecipes; track r.uid) {
+              <tr>
+                <td>
+                  <div class="recipe-cell">
+                    <div class="recipe-thumb">
+                      <img
+                        [src]="resolveImage(r.imageUrl)"
+                        [alt]="r.name"
+                        (error)="onImgError($event)"
+                      />
+                    </div>
+                    <div class="recipe-cell__info">
+                      <strong>{{ r.name }}</strong>
+                      <span>{{ r.dietTags.slice(0, 3).join(" · ") || "Brak tagów" }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="pill-wrap">
+                    @for (m of r.mealType; track m) {
+                      <span class="mini-pill">{{ m }}</span>
+                    }
+                  </div>
+                </td>
+                <td class="mono-cell">
+                  <strong>{{ r.calories }} kcal</strong>
+                  <span>B {{ r.protein }}g · W {{ r.carbs }}g · T {{ r.fat }}g</span>
+                </td>
+                <td class="muted-cell">{{ r.prepTimeMinutes }} min</td>
+                <td class="muted-cell">{{ r.suitableForConditions.length }}</td>
+                <td class="col-actions">
+                  @if (confirmDeleteType === "recipe" && confirmDeleteId === r.uid) {
+                    <div class="inline-confirm">
+                      <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
+                        Usuń
+                      </button>
+                      <button type="button" class="act-btn" (click)="cancelDelete()">
+                        Anuluj
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="icon-btn"
+                        title="Edytuj"
+                        (click)="openEditRecipe(r)"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        class="icon-btn"
+                        title="Duplikuj"
+                        (click)="duplicateRecipe(r)"
+                      >
+                        <mat-icon>content_copy</mat-icon>
+                      </button>
+                      <button
+                        type="button"
+                        class="icon-btn icon-btn--danger"
+                        title="Usuń"
+                        (click)="requestDelete('recipe', r.uid)"
+                      >
+                        <mat-icon>delete_outline</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-cell">
+                  Brak przepisów pasujących do filtra.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- ==================== TAB: CONDITIONS ==================== -->
+    @if (activeTab === "conditions") {
+      <div class="panel-toolbar">
+        <app-search-input
+          class="admin-search"
+          [(value)]="conditionSearch"
+          placeholder="Szukaj jednostki chorobowej..."
+        ></app-search-input>
+        <button type="button" class="btn btn-primary" (click)="openNewCondition()">
+          <mat-icon>add</mat-icon>
+          Dodaj chorobę
+        </button>
+      </div>
+
+      <div class="cards-grid">
+        @for (c of filteredConditions; track c.id) {
+          <article class="entity-card">
+            <div class="entity-card__top">
+              <span class="entity-icon">
+                <mat-icon>{{ c.icon || "health_and_safety" }}</mat-icon>
+              </span>
+              <div class="entity-card__title">
+                <h3>{{ c.name }}</h3>
+                <span>
+                  {{ c.dietaryRecommendations.length }} zaleceń ·
+                  {{ c.foodsToEat.length }} polecanych ·
+                  {{ c.foodsToAvoid.length }} przeciwwskazanych
+                </span>
+              </div>
+            </div>
+
+            <p class="entity-card__desc">
+              {{ c.shortSummary || c.description }}
+            </p>
+
+            <div class="entity-card__foot">
+              @if (c.pdfURL) {
+                <a [href]="c.pdfURL" target="_blank" rel="noopener" class="pdf-link">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                  PDF NCEŻ
+                </a>
+              } @else {
+                <span class="muted-cell">Brak PDF</span>
+              }
+
+              @if (confirmDeleteType === "condition" && confirmDeleteId === c.id) {
+                <div class="inline-confirm">
+                  <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
+                    Potwierdź
+                  </button>
+                  <button type="button" class="act-btn" (click)="cancelDelete()">
+                    Anuluj
+                  </button>
+                </div>
+              } @else {
+                <div class="row-actions">
+                  <button type="button" class="act-btn" (click)="openEditCondition(c)">
+                    Edytuj
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn icon-btn--danger"
+                    title="Usuń"
+                    (click)="requestDelete('condition', c.id)"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+    <!-- ==================== TAB: DIET PLANS ==================== -->
+    @if (activeTab === "plans") {
+      <div class="panel-toolbar">
+        <div class="scope-pills">
+          <button
+            type="button"
+            class="sel-chip"
+            [class.is-active]="planScopeFilter === 'all'"
+            (click)="planScopeFilter = 'all'"
+          >
+            Wszystkie
+            <span class="count-pill">{{ publicPlans.length + personalizedPlans.length }}</span>
+          </button>
+          <button
+            type="button"
+            class="sel-chip"
+            [class.is-active]="planScopeFilter === 'public'"
+            (click)="planScopeFilter = 'public'"
+          >
+            Publiczne
+            <span class="count-pill">{{ publicPlans.length }}</span>
+          </button>
+          <button
+            type="button"
+            class="sel-chip"
+            [class.is-active]="planScopeFilter === 'personalized'"
+            (click)="planScopeFilter = 'personalized'"
+          >
+            Indywidualne
+            <span class="count-pill">{{ personalizedPlans.length }}</span>
+          </button>
+        </div>
+
+        <button type="button" class="btn btn-primary" (click)="openNewPlan()">
+          <mat-icon>add</mat-icon>
+          Nowy jadłospis
+        </button>
+      </div>
+
+      <div class="cards-grid">
+        @for (p of managedPlans; track p.id) {
+          <article class="entity-card">
+            <div class="entity-card__top">
+              <div class="entity-card__title">
+                <div class="title-with-badge">
+                  <h3>{{ p.name }}</h3>
+                  @if (p.isPersonalized) {
+                    <span class="pro-tag pro-tag--vip">Indywidualny</span>
+                  } @else if (p.isPremium) {
+                    <span class="pro-tag">PRO</span>
+                  }
+                </div>
+                <span>
+                  ~{{ getPlanAverageCalories(p) }} kcal/dzień ·
+                  {{ getPlanFilledMealsCount(p) }} / 35 posiłków
+                  @if (p.isPersonalized && p.userId) {
+                    · Dla: <strong>{{ getUserNameById(p.userId) }}</strong>
+                  }
+                </span>
+              </div>
+            </div>
+
+            <p class="entity-card__desc">{{ p.description }}</p>
+
+            @if (p.suitableForConditions.length) {
+              <div class="pill-wrap">
+                @for (cond of p.suitableForConditions; track cond) {
+                  <span class="mini-pill">{{ cond }}</span>
+                }
+              </div>
+            }
+
+            <div class="entity-card__foot">
+              <span class="muted-cell">
+                {{ p.isPersonalized ? (p.assignedBy || "mgr Maja Harkot") : "Publiczny · 7 dni" }}
+              </span>
+              @if (confirmDeleteType === "plan" && confirmDeleteId === p.id) {
+                <div class="inline-confirm">
+                  <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
+                    Potwierdź
+                  </button>
+                  <button type="button" class="act-btn" (click)="cancelDelete()">
+                    Anuluj
+                  </button>
+                </div>
+              } @else {
+                <div class="row-actions">
+                  <button type="button" class="act-btn" (click)="openEditPlan(p)">
+                    Edytuj posiłki
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn icon-btn--danger"
+                    title="Usuń"
+                    (click)="requestDelete('plan', p.id)"
+                  >
+                    <mat-icon>delete_outline</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-inline-card">
+            Brak jadłospisów w wybranej kategorii.
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ==================== TAB: USERS ==================== -->
+    @if (activeTab === "users") {
+      <div class="panel-toolbar">
+        <app-search-input
+          class="admin-search"
+          [(value)]="userSearch"
+          placeholder="Szukaj użytkownika po imieniu, e-mailu lub chorobie..."
+        ></app-search-input>
+        <button type="button" class="btn btn-primary" (click)="openNewUser()">
+          <mat-icon>person_add</mat-icon>
+          Dodaj użytkownika
+        </button>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Użytkownik</th>
+              <th>Rola</th>
+              <th>Pakiet</th>
+              <th>Choroby</th>
+              <th>Indywidualne plany</th>
+              <th class="col-actions">Akcje</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of filteredUsers; track u.uid) {
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <span class="user-avatar-sm">{{ getUserInitials(u) }}</span>
+                    <div class="recipe-cell__info">
+                      <strong>{{ u.displayName || "Użytkownik" }}</strong>
+                      <span>{{ u.email }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="mini-pill" [class.mini-pill--accent]="u.role === 'admin'">
+                    {{ u.role === "admin" ? "Admin" : "Użytkownik" }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    class="mini-pill"
+                    [class.mini-pill--accent]="u.subscription?.tier && u.subscription?.tier !== 'free'"
+                  >
+                    {{ getTierLabel(u.subscription?.tier) }}
+                  </span>
+                </td>
+                <td>
+                  <div class="pill-wrap">
+                    @for (c of (u.medicalConditions ?? []).slice(0, 2); track c) {
+                      <span class="mini-pill">{{ c }}</span>
+                    } @empty {
+                      <span class="muted-cell">—</span>
+                    }
+                  </div>
+                </td>
+                <td class="mono-cell">
+                  <strong>{{ getUserPersonalizedPlansCount(u.uid) }}</strong>
+                </td>
+                <td class="col-actions">
+                  @if (confirmDeleteType === "user" && confirmDeleteId === u.uid) {
+                    <div class="inline-confirm">
+                      <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
+                        Usuń
+                      </button>
+                      <button type="button" class="act-btn" (click)="cancelDelete()">
+                        Anuluj
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="act-btn act-btn--primary"
+                        (click)="openNewPlanForUser(u)"
+                      >
+                        Ułóż jadłospis
+                      </button>
+                      @if (u.uid !== currentAdminUid) {
+                        <button
+                          type="button"
+                          class="act-btn"
+                          (click)="toggleUserAdminRole(u)"
+                        >
+                          {{ u.role === "admin" ? "Odbierz admina" : "Nadaj admina" }}
+                        </button>
+                      }
+                      <button
+                        type="button"
+                        class="icon-btn"
+                        title="Edytuj użytkownika"
+                        (click)="openEditUser(u)"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      @if (u.uid !== currentAdminUid) {
+                        <button
+                          type="button"
+                          class="icon-btn icon-btn--danger"
+                          title="Usuń użytkownika"
+                          (click)="requestDelete('user', u.uid)"
+                        >
+                          <mat-icon>delete_outline</mat-icon>
+                        </button>
+                      }
+                    </div>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-cell">Brak pasujących użytkowników.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- ==================== TAB: OVERVIEW & SEED ==================== -->
+    @if (activeTab === "overview") {
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Przepisy w bazie</span>
+          <strong class="kpi-value">{{ recipes.length }}</strong>
+          <span class="kpi-meta">{{ allAssetImages.length }} gotowych grafik talerzy</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Choroby dietozależne</span>
+          <strong class="kpi-value">{{ conditions.length }}</strong>
+          <span class="kpi-meta">Z linkami do zaleceń NCEŻ</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Gotowe jadłospisy</span>
+          <strong class="kpi-value">{{ publicPlans.length }}</strong>
+          <span class="kpi-meta">Publiczne plany 7-dniowe</span>
+        </div>
+      </div>
+
+      <div class="tools-grid">
+        <section class="tool-card">
+          <h3>Zasil bazę danymi początkowymi (Seed)</h3>
+          <p>
+            Wgrywa pełny zestaw startowy (39 przepisów, 8 chorób, 5 jadłospisów)
+            {{ isFallbackMode ? "do pamięci lokalnej." : "do kolekcji Firestore (merge)." }}
+          </p>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isSeeding"
+            (click)="runSeedAll()"
+          >
+            <mat-icon>cloud_upload</mat-icon>
+            {{ isSeeding ? "Zasilanie..." : "Uruchom Seed" }}
+          </button>
+        </section>
+
+        <section class="tool-card">
+          <h3>Eksport i import JSON</h3>
+          <p>
+            Pobierz pełną kopię zapasową albo zaimportuj plik JSON (pełny backup lub tablicę samych przepisów).
+          </p>
+          <div class="tool-actions">
+            <button type="button" class="btn btn-secondary" (click)="exportBackupJson()">
+              <mat-icon>download</mat-icon>
+              Eksportuj JSON
+            </button>
+            <label class="btn btn-secondary file-btn">
+              <mat-icon>upload_file</mat-icon>
+              Importuj JSON
+              <input
+                type="file"
+                accept="application/json"
+                (change)="onImportBackupFile($event)"
+              />
+            </label>
+          </div>
+        </section>
+
+        @if (isFallbackMode) {
+          <section class="tool-card">
+            <h3>Reset lokalnego stanu demo</h3>
+            <p>
+              Przywraca dane w <code>localStorage</code> do stanu początkowego, usuwając lokalne zmiany testowe.
+            </p>
+            <button type="button" class="btn btn-secondary" (click)="resetLocalSeed()">
+              <mat-icon>restart_alt</mat-icon>
+              Przywróć domyślny seed
+            </button>
+          </section>
+        }
+      </div>
+    }
+  </div>
+</main>
+
+<!-- ==================== MODAL: RECIPE EDITOR ==================== -->
+@if (isRecipeModalOpen) {
+  <div class="modal-backdrop" (click)="closeRecipeModal()">
+    <div
+      class="editor-modal editor-modal--wide"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="recipeModalTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-head">
+        <div>
+          <h2 id="recipeModalTitle">
+            {{ recipeForm.uid ? "Edytuj przepis" : "Dodaj nowy przepis" }}
+          </h2>
+          <p>Uzupełnij dane dania, przytnij zdjęcie i dodaj składniki w osobnych wierszach.</p>
+        </div>
+        <button type="button" class="icon-btn" (click)="closeRecipeModal()" aria-label="Zamknij">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Photo section with Cropper + Asset Picker -->
+        <div class="photo-editor-box">
+          <div class="photo-preview-frame">
+            <img
+              [src]="resolveImage(recipeForm.imageUrl)"
+              [alt]="recipeForm.name || 'Podgląd'"
+              (error)="onImgError($event)"
+            />
+          </div>
+
+          <div class="photo-editor-controls">
+            <div class="photo-editor-title">Zdjęcie potrawy</div>
+            <p class="photo-editor-hint">
+              Wgraj własne zdjęcie i przytnij je w kółko lub kwadrat z płynnym zaokrągleniem rogów, albo wybierz gotowy talerz z biblioteki.
+            </p>
+
+            <div class="photo-btn-row">
+              <button
+                type="button"
+                class="btn btn-primary btn--sm"
+                (click)="openImageCropper(false)"
+              >
+                <mat-icon>crop</mat-icon>
+                Wgraj i przytnij zdjęcie
+              </button>
+
+              @if (recipeForm.imageUrl) {
+                <button
+                  type="button"
+                  class="btn btn-secondary btn--sm"
+                  (click)="openImageCropper(true)"
+                >
+                  <mat-icon>tune</mat-icon>
+                  Przytnij obecne
+                </button>
+              }
+
+              <button
+                type="button"
+                class="btn btn-secondary btn--sm"
+                (click)="showAssetPicker = !showAssetPicker"
+              >
+                <mat-icon>photo_library</mat-icon>
+                Biblioteka
+                <span class="count-pill">{{ allAssetImages.length }}</span>
+              </button>
+            </div>
+
+            <div class="url-inline">
+              <input
+                type="text"
+                [(ngModel)]="recipeForm.imageUrl"
+                placeholder="Nazwa pliku z assets/recipes/, adres https://... lub wynik przycinania"
+              />
+              @if (recipeForm.imageUrl) {
+                <button
+                  type="button"
+                  class="mini-clear"
+                  (click)="recipeForm.imageUrl = ''"
+                  title="Wyczyść zdjęcie"
+                >
+                  Wyczyść
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        @if (showAssetPicker) {
+          <div class="asset-picker">
+            <div class="asset-picker__head">
+              <input
+                type="text"
+                [(ngModel)]="assetSearch"
+                placeholder="Filtruj bibliotekę (np. owsianka, kurczak, omlet)..."
+              />
+              <button type="button" class="act-btn" (click)="showAssetPicker = false">
+                Zamknij
+              </button>
+            </div>
+            <div class="asset-grid">
+              @for (asset of filteredAssetImages; track asset) {
+                <button
+                  type="button"
+                  class="asset-item"
+                  [class.is-selected]="
+                    recipeForm.imageUrl === asset ||
+                    recipeForm.imageUrl === 'assets/recipes/' + asset
+                  "
+                  (click)="selectAssetImage(asset)"
+                >
+                  <img [src]="'assets/recipes/' + asset" [alt]="asset" loading="lazy" />
+                  <span>{{ asset.replace(".png", "") }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Basic fields -->
+        <div class="form-grid-2">
+          <label class="field field--full">
+            <span>Nazwa przepisu *</span>
+            <input
+              type="text"
+              [(ngModel)]="recipeForm.name"
+              placeholder="np. Łosoś pieczony z kaszą pęczak i brokułami"
+            />
+          </label>
+
+          <label class="field field--full">
+            <span>Krótki opis</span>
+            <textarea
+              rows="2"
+              [(ngModel)]="recipeForm.description"
+              placeholder="Zwięzły opis walorów smakowych i zdrowotnych dania..."
+            ></textarea>
+          </label>
+        </div>
+
+        <!-- Numbers & Macros -->
+        <div class="section-divider">
+          <span>Wartości odżywcze (na 1 porcję)</span>
+          <small class="macro-check">
+            Z makro: ~{{ estimatedMacroKcal }} kcal
+          </small>
+        </div>
+
+        <div class="form-grid-4">
+          <label class="field">
+            <span>Kalorie (kcal)</span>
+            <input type="number" min="0" [(ngModel)]="recipeForm.calories" />
+          </label>
+          <label class="field">
+            <span>Białko (g)</span>
+            <input type="number" min="0" [(ngModel)]="recipeForm.protein" />
+          </label>
+          <label class="field">
+            <span>Węglowodany (g)</span>
+            <input type="number" min="0" [(ngModel)]="recipeForm.carbs" />
+          </label>
+          <label class="field">
+            <span>Tłuszcz (g)</span>
+            <input type="number" min="0" [(ngModel)]="recipeForm.fat" />
+          </label>
+          <label class="field">
+            <span>Błonnik (g)</span>
+            <input type="number" min="0" [(ngModel)]="recipeForm.fiber" />
+          </label>
+          <label class="field">
+            <span>Sód (mg)</span>
+            <input type="number" min="0" [(ngModel)]="recipeForm.sodium" />
+          </label>
+          <label class="field">
+            <span>Czas (min)</span>
+            <input type="number" min="1" [(ngModel)]="recipeForm.prepTimeMinutes" />
+          </label>
+          <label class="field">
+            <span>Porcje</span>
+            <input type="number" min="1" [(ngModel)]="recipeForm.servings" />
+          </label>
+        </div>
+
+        <!-- Chips selectors -->
+        <div class="chips-section">
+          <span class="field-caption">Pora posiłku</span>
+          <div class="chip-row">
+            @for (m of allMealTypes; track m) {
+              <button
+                type="button"
+                class="sel-chip"
+                [class.is-active]="recipeForm.mealType.includes(m)"
+                (click)="toggleTag(recipeForm.mealType, m)"
+              >
+                {{ m }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="chips-section">
+          <span class="field-caption">Odpowiedni dla chorób</span>
+          <div class="chip-row">
+            @for (cond of availableConditionNames; track cond) {
+              <button
+                type="button"
+                class="sel-chip"
+                [class.is-active]="recipeForm.suitableForConditions.includes(cond)"
+                (click)="toggleTag(recipeForm.suitableForConditions, cond)"
+              >
+                {{ cond }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="chips-section">
+          <span class="field-caption">Tagi dietetyczne</span>
+          <div class="chip-row">
+            @for (tag of allDietTags; track tag) {
+              <button
+                type="button"
+                class="sel-chip"
+                [class.is-active]="recipeForm.dietTags.includes(tag)"
+                (click)="toggleTag(recipeForm.dietTags, tag)"
+              >
+                {{ tag }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Dynamic Ingredients -->
+        <div class="list-editor">
+          <div class="list-editor__head">
+            <span class="field-caption">Składniki <span class="count-pill">{{ recipeForm.ingredients.length }}</span></span>
+            <div class="list-editor__btns">
+              <button
+                type="button"
+                class="text-link-btn"
+                (click)="showBulkIngredients = !showBulkIngredients"
+              >
+                Wklej listę
+              </button>
+              <button
+                type="button"
+                class="text-link-btn"
+                (click)="addListRow(recipeForm.ingredients)"
+              >
+                + Dodaj składnik
+              </button>
+            </div>
+          </div>
+
+          @if (showBulkIngredients) {
+            <div class="bulk-box">
+              <textarea
+                rows="4"
+                [(ngModel)]="bulkIngredientsText"
+                placeholder="Wklej składniki — każdy w nowej linii, np.&#10;150 g filetu z łososia&#10;50 g kaszy pęczak&#10;1 łyżka oliwy z oliwek"
+              ></textarea>
+              <button type="button" class="btn btn-secondary btn--sm" (click)="applyBulkIngredients()">
+                Zamień na wiersze
+              </button>
+            </div>
+          }
+
+          @for (ing of recipeForm.ingredients; track trackByIndex($index); let i = $index) {
+            <div class="list-row">
+              <span class="row-num">{{ i + 1 }}</span>
+              <input
+                type="text"
+                [(ngModel)]="recipeForm.ingredients[i]"
+                (keydown.enter)="$event.preventDefault(); addListRow(recipeForm.ingredients)"
+                placeholder="np. 60 g płatków owsianych górskich"
+              />
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="removeListRow(recipeForm.ingredients, i)"
+                aria-label="Usuń składnik"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Dynamic Instructions -->
+        <div class="list-editor">
+          <div class="list-editor__head">
+            <span class="field-caption">Przygotowanie krok po kroku <span class="count-pill">{{ recipeForm.instructions.length }}</span></span>
+            <div class="list-editor__btns">
+              <button
+                type="button"
+                class="text-link-btn"
+                (click)="showBulkInstructions = !showBulkInstructions"
+              >
+                Wklej kroki
+              </button>
+              <button
+                type="button"
+                class="text-link-btn"
+                (click)="addListRow(recipeForm.instructions)"
+              >
+                + Dodaj krok
+              </button>
+            </div>
+          </div>
+
+          @if (showBulkInstructions) {
+            <div class="bulk-box">
+              <textarea
+                rows="4"
+                [(ngModel)]="bulkInstructionsText"
+                placeholder="Wklej kroki — każdy w nowej linii..."
+              ></textarea>
+              <button type="button" class="btn btn-secondary btn--sm" (click)="applyBulkInstructions()">
+                Zamień na kroki
+              </button>
+            </div>
+          }
+
+          @for (step of recipeForm.instructions; track trackByIndex($index); let i = $index) {
+            <div class="list-row">
+              <span class="row-num">{{ i + 1 }}</span>
+              <input
+                type="text"
+                [(ngModel)]="recipeForm.instructions[i]"
+                (keydown.enter)="$event.preventDefault(); addListRow(recipeForm.instructions)"
+                placeholder="Opisz krok przygotowania..."
+              />
+              <button
+                type="button"
+                class="icon-btn"
+                [disabled]="i === 0"
+                (click)="moveListRow(recipeForm.instructions, i, -1)"
+                aria-label="Przesuń w górę"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                [disabled]="i === recipeForm.instructions.length - 1"
+                (click)="moveListRow(recipeForm.instructions, i, 1)"
+                aria-label="Przesuń w dół"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="removeListRow(recipeForm.instructions, i)"
+                aria-label="Usuń krok"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" (click)="closeRecipeModal()">
+          Anuluj
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isSaving"
+          (click)="saveRecipe()"
+        >
+          <mat-icon>save</mat-icon>
+          {{ isSaving ? "Zapisywanie..." : recipeForm.uid ? "Zapisz zmiany" : "Dodaj przepis" }}
+        </button>
+      </div>
     </div>
   </div>
-</div>
+}
+
+<!-- ==================== MODAL: CONDITION EDITOR ==================== -->
+@if (isConditionModalOpen) {
+  <div class="modal-backdrop" (click)="closeConditionModal()">
+    <div
+      class="editor-modal editor-modal--wide"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="condModalTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-head">
+        <div>
+          <h2 id="condModalTitle">
+            {{ conditionForm.id ? "Edytuj chorobę dietozależną" : "Nowa jednostka chorobowa" }}
+          </h2>
+          <p>Dodaj zalecenia żywieniowe, produkty wskazane/przeciwwskazane oraz link do zaleceń NCEŻ.</p>
+        </div>
+        <button type="button" class="icon-btn" (click)="closeConditionModal()" aria-label="Zamknij">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <label class="field">
+            <span>Nazwa choroby *</span>
+            <input type="text" [(ngModel)]="conditionForm.name" placeholder="np. Insulinooporność" />
+          </label>
+          <label class="field">
+            <span>Link do PDF (NCEŻ)</span>
+            <input type="url" [(ngModel)]="conditionForm.pdfURL" placeholder="https://ncez.pzh.gov.pl/..." />
+          </label>
+          <label class="field field--full">
+            <span>Krótkie podsumowanie</span>
+            <input type="text" [(ngModel)]="conditionForm.shortSummary" placeholder="Jedno zdanie widoczne na karcie..." />
+          </label>
+          <label class="field field--full">
+            <span>Opis szczegółowy</span>
+            <textarea rows="3" [(ngModel)]="conditionForm.description"></textarea>
+          </label>
+        </div>
+
+        <div class="chips-section">
+          <span class="field-caption">Ikona</span>
+          <div class="chip-row">
+            @for (ic of conditionIconChoices; track ic) {
+              <button
+                type="button"
+                class="sel-chip sel-chip--icon"
+                [class.is-active]="conditionForm.icon === ic"
+                (click)="conditionForm.icon = ic"
+              >
+                <mat-icon>{{ ic }}</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="list-editor">
+          <div class="list-editor__head">
+            <span class="field-caption">Zalecenia żywieniowe</span>
+            <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.dietaryRecommendations)">
+              + Dodaj
+            </button>
+          </div>
+          @for (item of conditionForm.dietaryRecommendations; track trackByIndex($index); let i = $index) {
+            <div class="list-row">
+              <input type="text" [(ngModel)]="conditionForm.dietaryRecommendations[i]" placeholder="np. Wybieraj produkty o niskim indeksie glikemicznym" />
+              <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.dietaryRecommendations, i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="form-grid-2">
+          <div class="list-editor">
+            <div class="list-editor__head">
+              <span class="field-caption">Produkty zalecane</span>
+              <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.foodsToEat)">
+                + Dodaj
+              </button>
+            </div>
+            @for (item of conditionForm.foodsToEat; track trackByIndex($index); let i = $index) {
+              <div class="list-row">
+                <input type="text" [(ngModel)]="conditionForm.foodsToEat[i]" placeholder="np. Kasza gryczana, warzywa nieskrobiowe" />
+                <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.foodsToEat, i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+
+          <div class="list-editor">
+            <div class="list-editor__head">
+              <span class="field-caption">Produkty niewskazane</span>
+              <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.foodsToAvoid)">
+                + Dodaj
+              </button>
+            </div>
+            @for (item of conditionForm.foodsToAvoid; track trackByIndex($index); let i = $index) {
+              <div class="list-row">
+                <input type="text" [(ngModel)]="conditionForm.foodsToAvoid[i]" placeholder="np. Słodycze, białe pieczywo" />
+                <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.foodsToAvoid, i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="list-editor">
+          <div class="list-editor__head">
+            <span class="field-caption">Styl życia i nawyki</span>
+            <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.lifestyleRecommendations)">
+              + Dodaj
+            </button>
+          </div>
+          @for (item of conditionForm.lifestyleRecommendations; track trackByIndex($index); let i = $index) {
+            <div class="list-row">
+              <input type="text" [(ngModel)]="conditionForm.lifestyleRecommendations[i]" placeholder="np. Regularny ruch 30 min dziennie" />
+              <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.lifestyleRecommendations, i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="list-editor">
+          <div class="list-editor__head">
+            <span class="field-caption">Ważne ostrzeżenia</span>
+            <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.warnings)">
+              + Dodaj
+            </button>
+          </div>
+          @for (item of conditionForm.warnings; track trackByIndex($index); let i = $index) {
+            <div class="list-row">
+              <input type="text" [(ngModel)]="conditionForm.warnings[i]" placeholder="Opcjonalne ostrzeżenie medyczne..." />
+              <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.warnings, i)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" (click)="closeConditionModal()">
+          Anuluj
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="saveCondition()">
+          <mat-icon>save</mat-icon>
+          {{ isSaving ? "Zapisywanie..." : "Zapisz chorobę" }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ==================== MODAL: DIET PLAN EDITOR ==================== -->
+@if (isPlanModalOpen) {
+  <div class="modal-backdrop" (click)="closePlanModal()">
+    <div
+      class="editor-modal editor-modal--wide"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="planModalTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-head">
+        <div>
+          <h2 id="planModalTitle">
+            {{
+              planForm.id
+                ? "Edytuj jadłospis"
+                : planForm.isPersonalized
+                  ? "Nowy jadłospis indywidualny dla pacjenta"
+                  : "Nowy gotowy jadłospis"
+            }}
+          </h2>
+          <p>Ułóż 7-dniowy plan po 5 posiłków dziennie — publiczny albo spersonalizowany dla konkretnego użytkownika.</p>
+        </div>
+        <button type="button" class="icon-btn" (click)="closePlanModal()" aria-label="Zamknij">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Scope switcher: Public vs Personalized for User -->
+        <div class="scope-switch-row">
+          <button
+            type="button"
+            class="scope-switch-btn"
+            [class.is-active]="!planForm.isPersonalized"
+            (click)="onPlanScopeToggle(false)"
+          >
+            <mat-icon>public</mat-icon>
+            Publiczny (Gotowy dla wszystkich)
+          </button>
+          <button
+            type="button"
+            class="scope-switch-btn"
+            [class.is-active]="planForm.isPersonalized"
+            (click)="onPlanScopeToggle(true)"
+          >
+            <mat-icon>person_pin</mat-icon>
+            Indywidualny (Płatny · dla użytkownika)
+          </button>
+        </div>
+
+        @if (planForm.isPersonalized) {
+          <div class="personalized-assign-box">
+            <div class="form-grid-2">
+              <div class="field">
+                <span>Przypisz do użytkownika *</span>
+                <mat-select class="app-select" [(ngModel)]="planForm.userId" placeholder="Wybierz użytkownika">
+                  @for (u of users; track u.uid) {
+                    <mat-option [value]="u.uid">
+                      {{ u.displayName || u.email }} ({{ u.email }})
+                    </mat-option>
+                  }
+                </mat-select>
+              </div>
+              <label class="field">
+                <span>Dietetyk prowadzący</span>
+                <input type="text" [(ngModel)]="planForm.assignedBy" placeholder="np. mgr Maja Harkot" />
+              </label>
+              <label class="field field--full">
+                <span>Zalecenia indywidualne dietetyka (widoczne w zakładce Indywidualne)</span>
+                <textarea
+                  rows="2"
+                  [(ngModel)]="planForm.dietitianNotes"
+                  placeholder="np. Pij min. 2 l wody dziennie, odstęp między posiłkami 3–4h..."
+                ></textarea>
+              </label>
+            </div>
+          </div>
+        }
+
+        <div class="form-grid-2">
+          <label class="field">
+            <span>Nazwa jadłospisu *</span>
+            <input type="text" [(ngModel)]="planForm.name" placeholder="np. Plan DASH 1800 kcal" />
+          </label>
+          <label class="field">
+            <span>Docelowe kalorie (kcal/dzień)</span>
+            <input type="number" min="800" max="4500" [(ngModel)]="planForm.targetCalories" />
+          </label>
+          <label class="field field--full">
+            <span>Opis</span>
+            <textarea rows="2" [(ngModel)]="planForm.description"></textarea>
+          </label>
+        </div>
+
+        @if (!planForm.isPersonalized) {
+          <label class="check-toggle">
+            <input type="checkbox" [(ngModel)]="planForm.isPremium" />
+            <span>Oznacz jako plan PRO / Premium</span>
+          </label>
+        }
+
+        @if (publicPlans.length) {
+          <div class="template-loader">
+            <span>Szybki start — załaduj posiłki z gotowego szablonu:</span>
+            <mat-select
+              class="app-select template-select"
+              [ngModel]="templatePlanId"
+              (ngModelChange)="applyPlanTemplate($event)"
+              placeholder="Wybierz szablon..."
+            >
+              @for (tpl of publicPlans; track tpl.id) {
+                <mat-option [value]="tpl.id">{{ tpl.name }}</mat-option>
+              }
+            </mat-select>
+          </div>
+        }
+
+        <div class="chips-section">
+          <span class="field-caption">Dla chorób</span>
+          <div class="chip-row">
+            @for (cond of availableConditionNames; track cond) {
+              <button
+                type="button"
+                class="sel-chip"
+                [class.is-active]="planForm.suitableForConditions.includes(cond)"
+                (click)="toggleTag(planForm.suitableForConditions, cond)"
+              >
+                {{ cond }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="plan-builder">
+          <div class="plan-days-bar">
+            @for (day of weekDays; track day.key) {
+              <button
+                type="button"
+                class="day-pill"
+                [class.is-active]="planActiveDay === day.key"
+                (click)="planActiveDay = day.key"
+              >
+                {{ day.shortLabel }}
+              </button>
+            }
+          </div>
+
+          <div class="plan-day-meta">
+            <strong>Suma dnia: {{ getPlanDayCalories(planActiveDay) }} kcal</strong>
+            <button type="button" class="text-link-btn" (click)="copyActiveDayToAllDays()">
+              Kopiuj ten dzień na cały tydzień
+            </button>
+          </div>
+
+          <div class="plan-slots">
+            @for (slotLabel of mealSlotLabels; track slotLabel; let idx = $index) {
+              <label class="slot-row">
+                <span>{{ slotLabel }}</span>
+                <mat-select class="app-select" [(ngModel)]="planForm.mealPlan[planActiveDay][idx]" [attr.aria-label]="slotLabel">
+                  <mat-option value="">— Brak posiłku —</mat-option>
+                  @for (r of recipes; track r.uid) {
+                    <mat-option [value]="r.uid">
+                      {{ r.name }} ({{ r.calories }} kcal)
+                    </mat-option>
+                  }
+                </mat-select>
+              </label>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" (click)="closePlanModal()">
+          Anuluj
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="savePlan()">
+          <mat-icon>save</mat-icon>
+          {{ isSaving ? "Zapisywanie..." : "Zapisz jadłospis" }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ==================== MODAL: USER EDITOR ==================== -->
+@if (isUserModalOpen) {
+  <div class="modal-backdrop" (click)="closeUserModal()">
+    <div
+      class="editor-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="userModalTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-head">
+        <div>
+          <h2 id="userModalTitle">
+            {{ userForm.uid ? "Edytuj użytkownika" : "Dodaj użytkownika" }}
+          </h2>
+          <p>Dodaj profil pacjenta lub administratora, nadaj pakiet i przypisz choroby dietozależne.</p>
+        </div>
+        <button type="button" class="icon-btn" (click)="closeUserModal()" aria-label="Zamknij">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid-2">
+          <label class="field">
+            <span>Imię i nazwisko</span>
+            <input type="text" [(ngModel)]="userForm.displayName" placeholder="np. Jan Nowak" />
+          </label>
+          <label class="field">
+            <span>Adres e-mail *</span>
+            <input type="email" [(ngModel)]="userForm.email" placeholder="jan.nowak@example.com" />
+          </label>
+          <div class="field">
+            <span>Rola</span>
+            <mat-select class="app-select" [(ngModel)]="userForm.role">
+              <mat-option value="user">Użytkownik</mat-option>
+              <mat-option value="admin">Administrator</mat-option>
+            </mat-select>
+          </div>
+          <div class="field">
+            <span>Pakiet konta</span>
+            <mat-select class="app-select" [(ngModel)]="userForm.tier">
+              <mat-option value="free">Darmowy (Free)</mat-option>
+              <mat-option value="pro">DietEtycznie PRO</mat-option>
+              <mat-option value="private">Plan indywidualny</mat-option>
+            </mat-select>
+          </div>
+        </div>
+
+        <div class="chips-section">
+          <span class="field-caption">Choroby dietozależne pacjenta</span>
+          <div class="chip-row">
+            @for (cond of availableConditionNames; track cond) {
+              <button
+                type="button"
+                class="sel-chip"
+                [class.is-active]="userForm.medicalConditions.includes(cond)"
+                (click)="toggleTag(userForm.medicalConditions, cond)"
+              >
+                {{ cond }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn btn-secondary" (click)="closeUserModal()">
+          Anuluj
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="saveUser()">
+          <mat-icon>save</mat-icon>
+          {{ isSaving ? "Zapisywanie..." : userForm.uid ? "Zapisz zmiany" : "Dodaj użytkownika" }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ==================== REUSABLE IMAGE CROPPER DIALOG ==================== -->
+<app-image-cropper-dialog
+  [isOpen]="isCropperOpen"
+  [initialImageUrl]="cropperInitialUrl"
+  [recipeTitle]="recipeForm.name"
+  (closed)="isCropperOpen = false"
+  (saved)="onImageCropped($event)"
+></app-image-cropper-dialog>
