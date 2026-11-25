@@ -66,9 +66,16 @@
                 (click)="jumpToChapter(ch.index)"
               >
                 <span class="chapter-dot__bar"></span>
-                <span class="chapter-dot__label">{{ ch.kicker }}</span>
+                <span class="chapter-dot__label chapter-dot__label--full">{{ ch.kicker }}</span>
+                <span class="chapter-dot__label chapter-dot__label--short">{{
+                  ch.shortKicker
+                }}</span>
               </button>
             }
+          </div>
+
+          <div class="magic-progress-rail" aria-hidden="true">
+            <div class="magic-progress-rail__fill"></div>
           </div>
 
           <div class="chapter-text-wrap">

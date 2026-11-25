@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Scroll storytelling state
   storyProgress = 0;
   activeChapter = 0;
-  scrollHintOpacity = this.isCompactViewport() ? 0 : 1;
+  scrollHintOpacity = 1;
   private rafId: number | null = null;
 
   // Interactive Bento states inside scroll chapters
@@ -100,18 +100,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       index: 0,
       kicker: "01 · Zalecenia medyczne",
+      shortKicker: "01 · Choroby",
       title: "Zaczynasz od swojego zdrowia",
       body: "Wybierasz jednostkę chorobową i od razu widzisz konkretne zasady NCEŻ, produkty zalecane oraz bezpieczne przepisy.",
     },
     {
       index: 1,
       kicker: "02 · Przepisy i makro",
+      shortKicker: "02 · Makro",
       title: "Każdy posiłek policzony za Ciebie",
       body: "Dokładne kalorie, białko, węglowodany, tłuszcz, sód i błonnik. Przelicznik porcji sam skaluje gramatury i wartości.",
     },
     {
       index: 2,
       kicker: "03 · Plan i zakupy",
+      shortKicker: "03 · Jadłospis",
       title: "Cały tydzień w jednym rytmie",
       body: "Kopiujesz gotowy 7-dniowy jadłospis z 5 posiłkami dziennie, podmieniasz dania i jednym kliknięciem tworzysz listę zakupów.",
     },
@@ -178,10 +181,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     return typeof window !== "undefined" && window.innerWidth <= 980;
   }
 
+  private isShortViewport(): boolean {
+    return typeof window !== "undefined" && window.innerWidth <= 980 && window.innerHeight < 580;
+  }
+
   private updateScrollProgress(): void {
     const el = this.magicTrackRef?.nativeElement;
 
-    if (this.isCompactViewport()) {
+    if (this.isShortViewport()) {
       if (this.scrollHintOpacity !== 0) {
         this.ngZone.run(() => {
           this.scrollHintOpacity = 0;
@@ -195,7 +202,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const hintOp = Math.max(0, Math.min(1, 1 - window.scrollY / 160));
+    const isCompact = this.isCompactViewport();
+    const stickyTop = isCompact ? 60 : 0;
+
+    const hintOp = Math.max(0, Math.min(1, 1 - window.scrollY / 140));
     if (Math.abs(hintOp - this.scrollHintOpacity) > 0.02) {
       this.ngZone.run(() => {
         this.scrollHintOpacity = hintOp;
@@ -205,20 +215,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
-    const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
-    const raw = -rect.top / scrollable;
+    const scrollable = Math.max(1, el.offsetHeight - (window.innerHeight - stickyTop));
+    const raw = -(rect.top - stickyTop) / scrollable;
     const clamped = Math.max(0, Math.min(1, raw));
 
     // Strictly 0 before entering the track (zero green bleed under hero!)
-    const entryFade = clamped < 0.02 ? 0 : Math.min(1, (clamped - 0.02) / 0.14);
-    const exitFade = clamped > 0.86 ? Math.max(0, (1 - clamped) / 0.14) : 1;
+    const fadeSpan = isCompact ? 0.08 : 0.14;
+    const entryFade = clamped < 0.02 ? 0 : Math.min(1, (clamped - 0.02) / fadeSpan);
+    const exitFade = clamped > 1 - fadeSpan ? Math.max(0, (1 - clamped) / fadeSpan) : 1;
     const wave = entryFade * exitFade;
 
     el.style.setProperty("--story-p", clamped.toFixed(4));
     el.style.setProperty("--wave-p", wave.toFixed(4));
 
-    // Subtle Apple-like scale zoom from 0.94 -> 1.02
-    const scale = 0.94 + wave * 0.07;
+    // Subtle Apple-like scale zoom (never exceeds 1.0 on compact viewports)
+    const scale = isCompact ? 0.96 + wave * 0.04 : 0.94 + wave * 0.07;
     el.style.setProperty("--stage-scale", scale.toFixed(4));
 
     const chapter = clamped < 0.34 ? 0 : clamped < 0.68 ? 1 : 2;
@@ -231,16 +242,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   jumpToChapter(chapterIdx: number): void {
-    if (this.isCompactViewport()) {
+    if (this.isShortViewport()) {
       this.activeChapter = chapterIdx;
       return;
     }
 
     const el = this.magicTrackRef?.nativeElement;
     if (!el) return;
-    const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
+    const stickyTop = this.isCompactViewport() ? 60 : 0;
+    const scrollable = Math.max(1, el.offsetHeight - (window.innerHeight - stickyTop));
     const targetProgress = chapterIdx === 0 ? 0.16 : chapterIdx === 1 ? 0.5 : 0.84;
-    const top = window.scrollY + el.getBoundingClientRect().top + scrollable * targetProgress;
+    const top =
+      window.scrollY + el.getBoundingClientRect().top - stickyTop + scrollable * targetProgress;
     window.scrollTo({ top, behavior: "smooth" });
   }
 
