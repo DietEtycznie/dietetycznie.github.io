@@ -15,12 +15,7 @@ import { AuthShellComponent } from "../../../components/ui";
 @Component({
   selector: "app-register",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    AuthShellComponent,
-  ],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, AuthShellComponent],
   templateUrl: "./register.component.html",
   styleUrls: ["./register.component.scss"],
 })

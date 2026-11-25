@@ -5,15 +5,11 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatSelectModule } from "@angular/material/select";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
-import {
-  DIET_TAGS,
-  MEAL_TYPES,
-  MEDICAL_CONDITIONS,
-  Recipe,
-} from "../../../models/recipe.model";
+import { DIET_TAGS, MEAL_TYPES, MEDICAL_CONDITIONS, Recipe } from "../../../models/recipe.model";
 import { AuthService } from "../../../services/auth.service";
 import { RecipeService } from "../../../services/recipe.service";
 import {
+  LoadingStateComponent,
   PresentationHeaderComponent,
   RecipeCardComponent,
 } from "../../components/ui";
@@ -30,6 +26,7 @@ type SortMode = "rating" | "kcalAsc" | "proteinDesc" | "timeAsc" | "nameAsc";
     MatSelectModule,
     RecipeCardComponent,
     PresentationHeaderComponent,
+    LoadingStateComponent,
   ],
   templateUrl: "./recipes.component.html",
   styleUrls: ["./recipes.component.scss"],
@@ -43,6 +40,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
   recipes: Recipe[] = [];
   savedRecipes: string[] = [];
   isLoggedIn = false;
+  loading = true;
 
   filterName = "";
   filterCondition: string[] = [];
@@ -66,6 +64,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
     this.sub.add(
       this.recipeService.getRecipes().subscribe((recipes) => {
         this.recipes = recipes;
+        this.loading = false;
       }),
     );
 
@@ -167,9 +166,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
 
       if (
         this.filterCondition.length > 0 &&
-        !this.filterCondition.some((c) =>
-          recipe.suitableForConditions?.includes(c),
-        )
+        !this.filterCondition.some((c) => recipe.suitableForConditions?.includes(c))
       ) {
         return false;
       }
@@ -181,31 +178,19 @@ export class RecipesComponent implements OnInit, OnDestroy {
         return false;
       }
 
-      if (
-        this.filterMaxKcal != null &&
-        recipe.calories > this.filterMaxKcal
-      ) {
+      if (this.filterMaxKcal != null && recipe.calories > this.filterMaxKcal) {
         return false;
       }
 
-      if (
-        this.filterMinProtein != null &&
-        recipe.protein < this.filterMinProtein
-      ) {
+      if (this.filterMinProtein != null && recipe.protein < this.filterMinProtein) {
         return false;
       }
 
-      if (
-        this.filterMaxTime != null &&
-        recipe.prepTimeMinutes > this.filterMaxTime
-      ) {
+      if (this.filterMaxTime != null && recipe.prepTimeMinutes > this.filterMaxTime) {
         return false;
       }
 
-      if (
-        this.filterMaxSodium != null &&
-        recipe.sodium > this.filterMaxSodium
-      ) {
+      if (this.filterMaxSodium != null && recipe.sodium > this.filterMaxSodium) {
         return false;
       }
 

@@ -1,14 +1,6 @@
 import { inject, Injectable } from "@angular/core";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
-import { catchError, from, map, Observable, of, tap } from "rxjs";
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc } from "firebase/firestore";
+import { catchError, map, Observable, of, tap } from "rxjs";
 import { User } from "../models/user.model";
 import { AuthService } from "./auth.service";
 import { FirebaseService } from "./firebase.service";
@@ -30,7 +22,7 @@ export class UserService {
     }
 
     const usersRef = collection(this.firebase.db, "users");
-    return from(getDocs(usersRef)).pipe(
+    return this.firebase.fromFirebase(getDocs(usersRef)).pipe(
       map((snap) =>
         snap.docs.map((d) => ({
           ...(d.data() as User),
@@ -50,8 +42,8 @@ export class UserService {
     }
 
     const userRef = doc(this.firebase.db, `users/${id}`);
-    return from(getDoc(userRef)).pipe(
-      map((snap) => (snap.exists() ? ({ ...(snap.data() as User), uid: snap.id }) : null)),
+    return this.firebase.fromFirebase(getDoc(userRef)).pipe(
+      map((snap) => (snap.exists() ? { ...(snap.data() as User), uid: snap.id } : null)),
       catchError(() => of(this.authService.currentUserSnapshot)),
     );
   }
@@ -84,9 +76,7 @@ export class UserService {
     }
 
     const userRef = doc(this.firebase.db, `users/${uid}`);
-    const writeOps: Promise<unknown>[] = [
-      setDoc(userRef, this.firebase.cleanPayload(created)),
-    ];
+    const writeOps: Promise<unknown>[] = [setDoc(userRef, this.firebase.cleanPayload(created))];
     if (created.role === "admin") {
       writeOps.push(
         setDoc(doc(this.firebase.db, `admins/${uid}`), {
@@ -95,7 +85,7 @@ export class UserService {
         }),
       );
     }
-    return from(Promise.all(writeOps)).pipe(
+    return this.firebase.fromFirebase(Promise.all(writeOps)).pipe(
       map(() => created),
       catchError(() => {
         this.localStore.upsertUser(created);
@@ -111,17 +101,15 @@ export class UserService {
     }
 
     if (this.firebase.isFallbackMode || !this.firebase.db) {
-      const list = this.localStore.getUsers().map((u) =>
-        u.uid === id ? { ...u, ...userData } : u,
-      );
+      const list = this.localStore
+        .getUsers()
+        .map((u) => (u.uid === id ? { ...u, ...userData } : u));
       this.localStore.saveUsers(list);
       return of(void 0);
     }
 
     const userRef = doc(this.firebase.db, `users/${id}`);
-    const ops: Promise<unknown>[] = [
-      updateDoc(userRef, this.firebase.cleanPayload(userData)),
-    ];
+    const ops: Promise<unknown>[] = [updateDoc(userRef, this.firebase.cleanPayload(userData))];
     if (userData.role === "admin") {
       ops.push(
         setDoc(doc(this.firebase.db, `admins/${id}`), {
@@ -133,12 +121,12 @@ export class UserService {
       ops.push(deleteDoc(doc(this.firebase.db, `admins/${id}`)).catch(() => void 0));
     }
 
-    return from(Promise.all(ops)).pipe(
+    return this.firebase.fromFirebase(Promise.all(ops)).pipe(
       map(() => void 0),
       catchError(() => {
-        const list = this.localStore.getUsers().map((u) =>
-          u.uid === id ? { ...u, ...userData } : u,
-        );
+        const list = this.localStore
+          .getUsers()
+          .map((u) => (u.uid === id ? { ...u, ...userData } : u));
         this.localStore.saveUsers(list);
         return of(void 0);
       }),
@@ -153,18 +141,15 @@ export class UserService {
 
     const userRef = doc(this.firebase.db, `users/${id}`);
     const adminRef = doc(this.firebase.db, `admins/${id}`);
-    return from(
-      Promise.all([
-        deleteDoc(userRef),
-        deleteDoc(adminRef).catch(() => void 0),
-      ]),
-    ).pipe(
-      map(() => void 0),
-      catchError(() => {
-        this.localStore.deleteUser(id);
-        return of(void 0);
-      }),
-    );
+    return this.firebase
+      .fromFirebase(Promise.all([deleteDoc(userRef), deleteDoc(adminRef).catch(() => void 0)]))
+      .pipe(
+        map(() => void 0),
+        catchError(() => {
+          this.localStore.deleteUser(id);
+          return of(void 0);
+        }),
+      );
   }
 
   addSavedRecipe(userId: string, recipeId: string): Observable<void> {
@@ -179,10 +164,7 @@ export class UserService {
     return this.updateUser(userId, { savedRecipes: saved });
   }
 
-  updateMedicalConditions(
-    userId: string,
-    conditions: string[],
-  ): Observable<void> {
+  updateMedicalConditions(userId: string, conditions: string[]): Observable<void> {
     return this.updateUser(userId, { medicalConditions: conditions }).pipe(
       tap(() => {
         if (this.authService.currentUserSnapshot?.uid === userId) {

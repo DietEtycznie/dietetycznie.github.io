@@ -9,7 +9,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { catchError, from, map, Observable, of } from "rxjs";
+import { catchError, map, Observable, of } from "rxjs";
 import { SEED_MEDICAL_CONDITIONS } from "../data/seed-conditions";
 import { MedicalCondition } from "../models/medical-condition.model";
 import { FirebaseService } from "./firebase.service";
@@ -28,11 +28,9 @@ export class MedicalConditionService {
     }
 
     const conditionsRef = collection(this.firebase.db, "medicalConditions");
-    return from(getDocs(conditionsRef)).pipe(
+    return this.firebase.fromFirebase(getDocs(conditionsRef)).pipe(
       map((snapshot) => {
-        const list = snapshot.docs.map(
-          (d) => ({ ...d.data(), id: d.id }) as MedicalCondition,
-        );
+        const list = snapshot.docs.map((d) => ({ ...d.data(), id: d.id }) as MedicalCondition);
         return list.length ? list : this.localStore.getConditions();
       }),
       catchError((err) => {
@@ -45,25 +43,18 @@ export class MedicalConditionService {
 
   getMedicalConditionById(id: string): Observable<MedicalCondition | null> {
     if (this.firebase.isFallbackMode || !this.firebase.db) {
-      const found =
-        this.localStore.getConditions().find((c) => c.id === id) ?? null;
+      const found = this.localStore.getConditions().find((c) => c.id === id) ?? null;
       return of(found);
     }
 
     const conditionRef = doc(this.firebase.db, `medicalConditions/${id}`);
-    return from(getDoc(conditionRef)).pipe(
-      map((snap) =>
-        snap.exists() ? ({ ...snap.data(), id: snap.id } as MedicalCondition) : null,
-      ),
-      catchError(() =>
-        of(this.localStore.getConditions().find((c) => c.id === id) ?? null),
-      ),
+    return this.firebase.fromFirebase(getDoc(conditionRef)).pipe(
+      map((snap) => (snap.exists() ? ({ ...snap.data(), id: snap.id } as MedicalCondition) : null)),
+      catchError(() => of(this.localStore.getConditions().find((c) => c.id === id) ?? null)),
     );
   }
 
-  addMedicalCondition(
-    condition: Omit<MedicalCondition, "id">,
-  ): Observable<string> {
+  addMedicalCondition(condition: Omit<MedicalCondition, "id">): Observable<string> {
     if (this.firebase.isFallbackMode || !this.firebase.db) {
       const id = "cond-" + Date.now();
       const all = this.localStore.getConditions();
@@ -73,15 +64,12 @@ export class MedicalConditionService {
     }
 
     const conditionsRef = collection(this.firebase.db, "medicalConditions");
-    return from(
-      addDoc(conditionsRef, this.firebase.cleanPayload(condition)),
-    ).pipe(map((docRef) => docRef.id));
+    return this.firebase
+      .fromFirebase(addDoc(conditionsRef, this.firebase.cleanPayload(condition)))
+      .pipe(map((docRef) => docRef.id));
   }
 
-  updateMedicalCondition(
-    id: string,
-    condition: Partial<MedicalCondition>,
-  ): Observable<void> {
+  updateMedicalCondition(id: string, condition: Partial<MedicalCondition>): Observable<void> {
     if (this.firebase.isFallbackMode || !this.firebase.db) {
       const all = this.localStore
         .getConditions()
@@ -92,7 +80,7 @@ export class MedicalConditionService {
 
     const { id: _ignoredId, ...rest } = condition;
     const conditionRef = doc(this.firebase.db, `medicalConditions/${id}`);
-    return from(updateDoc(conditionRef, this.firebase.cleanPayload(rest)));
+    return this.firebase.fromFirebase(updateDoc(conditionRef, this.firebase.cleanPayload(rest)));
   }
 
   deleteMedicalCondition(id: string): Observable<void> {
@@ -103,7 +91,7 @@ export class MedicalConditionService {
     }
 
     const conditionRef = doc(this.firebase.db, `medicalConditions/${id}`);
-    return from(deleteDoc(conditionRef));
+    return this.firebase.fromFirebase(deleteDoc(conditionRef));
   }
 
   async seedToFirestore(): Promise<number> {

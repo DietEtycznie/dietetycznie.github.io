@@ -50,11 +50,7 @@
 
     <div class="dialog-actions">
       <button type="button" class="btn btn-secondary" (click)="onCancel()">Anuluj</button>
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="!newDietPlan.name?.trim()"
-      >
+      <button type="submit" class="btn btn-primary" [disabled]="!newDietPlan.name?.trim()">
         Utwórz i przejdź do edycji
       </button>
     </div>

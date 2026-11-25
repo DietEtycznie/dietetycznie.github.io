@@ -62,145 +62,158 @@
       (selected)="filterCondition = $event"
     ></app-filter-strip>
 
-    <div class="plans-stack">
-      @for (plan of filteredReadyPlans; track plan.id; let pIdx = $index) {
-        @let planKey = getPlanKey(plan, pIdx);
-        @let activeDay = getSelectedDay(planKey);
-        @let avg = getWeeklyAverageMacros(plan);
-        @let dayMacros = getDayMacros(plan, activeDay);
+    @if (loadingReady) {
+      <app-loading-state
+        variant="list"
+        [count]="2"
+        label="Wczytywanie jadłospisów..."
+      ></app-loading-state>
+    } @else {
+      <div class="plans-stack">
+        @for (plan of filteredReadyPlans; track plan.id; let pIdx = $index) {
+          @let planKey = getPlanKey(plan, pIdx);
+          @let activeDay = getSelectedDay(planKey);
+          @let avg = getWeeklyAverageMacros(plan);
+          @let dayMacros = getDayMacros(plan, activeDay);
 
-        <section class="plan-card">
-          <div class="plan-card__head">
-            <div class="plan-card__meta">
-              <div class="plan-kicker">
-                @for (cond of plan.suitableForConditions; track cond; let last = $last) {
-                  <span>{{ cond }}</span>@if (!last) {<span> · </span>}
-                }
-              </div>
-              <h2>{{ plan.name }}</h2>
-              <p>{{ plan.description }}</p>
-              <div class="plan-inline-stats">
-                <strong>{{ avg.avgCalories }} kcal / dzień</strong>
-                <span>·</span>
-                <span>Białko {{ avg.avgProtein }}g</span>
-                <span>·</span>
-                <span>Węgle {{ avg.avgCarbs }}g</span>
-                <span>·</span>
-                <span>Tłuszcz {{ avg.avgFat }}g</span>
-              </div>
-            </div>
-
-            <div class="plan-card__actions">
-              <button
-                type="button"
-                class="btn btn-primary"
-                (click)="copyReadyPlanToMyPlans(plan)"
-              >
-                <mat-icon>bookmark_add</mat-icon>
-                Zapisz plan
-              </button>
-              <button
-                type="button"
-                class="icon-menu-btn"
-                [matMenuTriggerFor]="readyPlanMenu"
-                aria-label="Więcej opcji jadłospisu"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #readyPlanMenu="matMenu" xPosition="before">
-                <button mat-menu-item (click)="toggleFullWeek(planKey)">
-                  <mat-icon>{{ showFullWeekByPlan[planKey] ? "view_day" : "calendar_view_week" }}</mat-icon>
-                  <span>{{ showFullWeekByPlan[planKey] ? "Widok dnia" : "Cały tydzień" }}</span>
-                </button>
-                <button mat-menu-item (click)="openShoppingList(plan, activeDay)">
-                  <mat-icon>shopping_cart</mat-icon>
-                  <span>Lista zakupów</span>
-                </button>
-                <button mat-menu-item (click)="printPlan(plan)">
-                  <mat-icon>print</mat-icon>
-                  <span>Drukuj jadłospis</span>
-                </button>
-              </mat-menu>
-            </div>
-          </div>
-
-          @if (!showFullWeekByPlan[planKey]) {
-            <div class="day-bar">
-              <div class="day-tabs">
-                @for (day of weekDays; track day.key) {
-                  <button
-                    type="button"
-                    class="day-tab"
-                    [class.is-active]="activeDay === day.key"
-                    (click)="selectDay(planKey, day.key)"
-                  >
-                    {{ day.shortLabel }}
-                  </button>
-                }
-              </div>
-              <div class="day-summary">
-                <strong>{{ getDayLabel(activeDay) }}</strong>
-                <span>
-                  {{ dayMacros.calories }} kcal · B {{ dayMacros.protein }}g · W
-                  {{ dayMacros.carbs }}g · T {{ dayMacros.fat }}g
-                </span>
-              </div>
-            </div>
-
-            <div class="meals-grid-5">
-              @for (meal of meals; track meal; let mIdx = $index) {
-                <div class="meal-slot">
-                  <div class="meal-slot__label">{{ meal }}</div>
-                  @if (getRecipeById(plan.mealPlan[activeDay][mIdx]); as recipe) {
-                    <app-recipe-card
-                      [recipe]="recipe"
-                      [cardStyle]="'compact'"
-                      [withLike]="false"
-                    ></app-recipe-card>
-                  } @else {
-                    <div class="empty-slot">Brak posiłku</div>
+          <section class="plan-card">
+            <div class="plan-card__head">
+              <div class="plan-card__meta">
+                <div class="plan-kicker">
+                  @for (cond of plan.suitableForConditions; track cond; let last = $last) {
+                    <span>{{ cond }}</span>
+                    @if (!last) {
+                      <span> · </span>
+                    }
                   }
                 </div>
-              }
+                <h2>{{ plan.name }}</h2>
+                <p>{{ plan.description }}</p>
+                <div class="plan-inline-stats">
+                  <strong>{{ avg.avgCalories }} kcal / dzień</strong>
+                  <span>·</span>
+                  <span>Białko {{ avg.avgProtein }}g</span>
+                  <span>·</span>
+                  <span>Węgle {{ avg.avgCarbs }}g</span>
+                  <span>·</span>
+                  <span>Tłuszcz {{ avg.avgFat }}g</span>
+                </div>
+              </div>
+
+              <div class="plan-card__actions">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="copyReadyPlanToMyPlans(plan)"
+                >
+                  <mat-icon>bookmark_add</mat-icon>
+                  Zapisz plan
+                </button>
+                <button
+                  type="button"
+                  class="icon-menu-btn"
+                  [matMenuTriggerFor]="readyPlanMenu"
+                  aria-label="Więcej opcji jadłospisu"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #readyPlanMenu="matMenu" xPosition="before">
+                  <button mat-menu-item (click)="toggleFullWeek(planKey)">
+                    <mat-icon>{{
+                      showFullWeekByPlan[planKey] ? "view_day" : "calendar_view_week"
+                    }}</mat-icon>
+                    <span>{{ showFullWeekByPlan[planKey] ? "Widok dnia" : "Cały tydzień" }}</span>
+                  </button>
+                  <button mat-menu-item (click)="openShoppingList(plan, activeDay)">
+                    <mat-icon>shopping_cart</mat-icon>
+                    <span>Lista zakupów</span>
+                  </button>
+                  <button mat-menu-item (click)="printPlan(plan)">
+                    <mat-icon>print</mat-icon>
+                    <span>Drukuj jadłospis</span>
+                  </button>
+                </mat-menu>
+              </div>
             </div>
-          } @else {
-            <div class="full-week-list">
-              @for (day of weekDays; track day.key) {
-                <div class="week-day-block">
-                  <div class="week-day-block__head">
-                    <h4>{{ day.label }}</h4>
-                    <span>{{ getDayMacros(plan, day.key).calories }} kcal</span>
-                  </div>
-                  <div class="meals-grid-5">
-                    @for (meal of meals; track meal; let mIdx = $index) {
-                      <div class="meal-slot">
-                        <div class="meal-slot__label">{{ meal }}</div>
-                        @if (getRecipeById(plan.mealPlan[day.key][mIdx]); as recipe) {
-                          <app-recipe-card
-                            [recipe]="recipe"
-                            [cardStyle]="'compact'"
-                            [withLike]="false"
-                          ></app-recipe-card>
-                        } @else {
-                          <div class="empty-slot">Brak posiłku</div>
-                        }
-                      </div>
+
+            @if (!showFullWeekByPlan[planKey]) {
+              <div class="day-bar">
+                <div class="day-tabs">
+                  @for (day of weekDays; track day.key) {
+                    <button
+                      type="button"
+                      class="day-tab"
+                      [class.is-active]="activeDay === day.key"
+                      (click)="selectDay(planKey, day.key)"
+                    >
+                      {{ day.shortLabel }}
+                    </button>
+                  }
+                </div>
+                <div class="day-summary">
+                  <strong>{{ getDayLabel(activeDay) }}</strong>
+                  <span>
+                    {{ dayMacros.calories }} kcal · B {{ dayMacros.protein }}g · W
+                    {{ dayMacros.carbs }}g · T {{ dayMacros.fat }}g
+                  </span>
+                </div>
+              </div>
+
+              <div class="meals-grid-5">
+                @for (meal of meals; track meal; let mIdx = $index) {
+                  <div class="meal-slot">
+                    <div class="meal-slot__label">{{ meal }}</div>
+                    @if (getRecipeById(plan.mealPlan[activeDay][mIdx]); as recipe) {
+                      <app-recipe-card
+                        [recipe]="recipe"
+                        [cardStyle]="'compact'"
+                        [withLike]="false"
+                      ></app-recipe-card>
+                    } @else {
+                      <div class="empty-slot">Brak posiłku</div>
                     }
                   </div>
-                </div>
-              }
-            </div>
-          }
-        </section>
-      } @empty {
-        <div class="empty-plans-box">
-          <h3>Brak gotowych planów dla wybranej choroby</h3>
-          <button type="button" class="btn btn-secondary" (click)="filterCondition = ''">
-            Pokaż wszystkie
-          </button>
-        </div>
-      }
-    </div>
+                }
+              </div>
+            } @else {
+              <div class="full-week-list">
+                @for (day of weekDays; track day.key) {
+                  <div class="week-day-block">
+                    <div class="week-day-block__head">
+                      <h4>{{ day.label }}</h4>
+                      <span>{{ getDayMacros(plan, day.key).calories }} kcal</span>
+                    </div>
+                    <div class="meals-grid-5">
+                      @for (meal of meals; track meal; let mIdx = $index) {
+                        <div class="meal-slot">
+                          <div class="meal-slot__label">{{ meal }}</div>
+                          @if (getRecipeById(plan.mealPlan[day.key][mIdx]); as recipe) {
+                            <app-recipe-card
+                              [recipe]="recipe"
+                              [cardStyle]="'compact'"
+                              [withLike]="false"
+                            ></app-recipe-card>
+                          } @else {
+                            <div class="empty-slot">Brak posiłku</div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </section>
+        } @empty {
+          <div class="empty-plans-box">
+            <h3>Brak gotowych planów dla wybranej choroby</h3>
+            <button type="button" class="btn btn-secondary" (click)="filterCondition = ''">
+              Pokaż wszystkie
+            </button>
+          </div>
+        }
+      </div>
+    }
   }
 
   <!-- PERSONALIZED PLANS (READ-ONLY PAID PLANS ASSIGNED BY DIETITIAN) -->
@@ -224,9 +237,7 @@
                   <span class="assigned-by">· {{ plan.assignedBy }}</span>
                 }
                 @if (plan.suitableForConditions.length) {
-                  <span class="assigned-by">
-                    · {{ plan.suitableForConditions.join(", ") }}
-                  </span>
+                  <span class="assigned-by"> · {{ plan.suitableForConditions.join(", ") }} </span>
                 }
               </div>
               <h2>{{ plan.name }}</h2>
@@ -245,11 +256,7 @@
             </div>
 
             <div class="plan-card__actions">
-              <button
-                type="button"
-                class="btn btn-primary"
-                (click)="copyReadyPlanToMyPlans(plan)"
-              >
+              <button type="button" class="btn btn-primary" (click)="copyReadyPlanToMyPlans(plan)">
                 <mat-icon>content_copy</mat-icon>
                 Kopiuj do edycji
               </button>
@@ -263,7 +270,9 @@
               </button>
               <mat-menu #personalizedPlanMenu="matMenu" xPosition="before">
                 <button mat-menu-item (click)="toggleFullWeek(planKey)">
-                  <mat-icon>{{ showFullWeekByPlan[planKey] ? "view_day" : "calendar_view_week" }}</mat-icon>
+                  <mat-icon>{{
+                    showFullWeekByPlan[planKey] ? "view_day" : "calendar_view_week"
+                  }}</mat-icon>
                   <span>{{ showFullWeekByPlan[planKey] ? "Widok dnia" : "Cały tydzień" }}</span>
                 </button>
                 <button mat-menu-item (click)="openShoppingList(plan, activeDay)">
@@ -362,7 +371,7 @@
 
   <!-- MY PLANS -->
   @if (activeSection === "myPlans") {
-    @if (!(user$ | async)) {
+    @if ((user$ | async) === null) {
       <div class="empty-plans-box">
         <h3>Zaloguj się, aby tworzyć własne jadłospisy</h3>
         <p>Kopiuj gotowe plany, podmieniaj posiłki i generuj listy zakupów.</p>
@@ -376,249 +385,251 @@
       </div>
     } @else {
       <div class="my-plans-top">
-        <p>Twoje plany: <strong>{{ myPlans.length }}</strong></p>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="openAddDietPlanDialog()"
-        >
+        <p>
+          Twoje plany: <strong>{{ myPlans.length }}</strong>
+        </p>
+        <button type="button" class="btn btn-primary" (click)="openAddDietPlanDialog()">
           <mat-icon>add</mat-icon>
           Nowy jadłospis
         </button>
       </div>
 
-      <div class="plans-stack">
-        @for (plan of myPlans; track plan.id || $index; let pIdx = $index) {
-          @let planKey = getPlanKey(plan, pIdx);
-          @let activeDay = getSelectedDay(planKey);
-          @let isEditing = editModes[planKey];
-          @let avg = getWeeklyAverageMacros(plan);
-          @let dayMacros = getDayMacros(plan, activeDay);
+      @if (loadingMy) {
+        <app-loading-state
+          variant="list"
+          [count]="2"
+          label="Wczytywanie Twoich jadłospisów..."
+        ></app-loading-state>
+      } @else {
+        <div class="plans-stack">
+          @for (plan of myPlans; track plan.id || $index; let pIdx = $index) {
+            @let planKey = getPlanKey(plan, pIdx);
+            @let activeDay = getSelectedDay(planKey);
+            @let isEditing = editModes[planKey];
+            @let avg = getWeeklyAverageMacros(plan);
+            @let dayMacros = getDayMacros(plan, activeDay);
 
-          <section class="plan-card" [class.is-editing]="isEditing">
-            <div class="plan-card__head">
-              @if (!isEditing) {
-                <div class="plan-card__meta">
-                  <h2>{{ plan.name }}</h2>
-                  @if (plan.description) {
-                    <p>{{ plan.description }}</p>
+            <section class="plan-card" [class.is-editing]="isEditing">
+              <div class="plan-card__head">
+                @if (!isEditing) {
+                  <div class="plan-card__meta">
+                    <h2>{{ plan.name }}</h2>
+                    @if (plan.description) {
+                      <p>{{ plan.description }}</p>
+                    }
+                    <div class="plan-inline-stats">
+                      <strong>{{ avg.avgCalories }} kcal / dzień</strong>
+                      <span>·</span>
+                      <span>B {{ avg.avgProtein }}g</span>
+                      <span>·</span>
+                      <span>W {{ avg.avgCarbs }}g</span>
+                      <span>·</span>
+                      <span>T {{ avg.avgFat }}g</span>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="plan-edit-meta">
+                    <input
+                      type="text"
+                      class="form-control"
+                      [(ngModel)]="plan.name"
+                      placeholder="Nazwa jadłospisu"
+                    />
+                    <textarea
+                      class="form-control"
+                      [(ngModel)]="plan.description"
+                      rows="2"
+                      placeholder="Opis jadłospisu"
+                    ></textarea>
+                  </div>
+                }
+
+                <div class="plan-card__actions">
+                  @if (!isEditing) {
+                    <button type="button" class="btn btn-primary" (click)="toggleEditMode(planKey)">
+                      <mat-icon>edit</mat-icon>
+                      Edytuj posiłki
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-menu-btn"
+                      [matMenuTriggerFor]="myPlanMenu"
+                      aria-label="Więcej opcji jadłospisu"
+                    >
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #myPlanMenu="matMenu" xPosition="before">
+                      <button mat-menu-item (click)="toggleFullWeek(planKey)">
+                        <mat-icon>{{
+                          showFullWeekByPlan[planKey] ? "view_day" : "calendar_view_week"
+                        }}</mat-icon>
+                        <span>{{
+                          showFullWeekByPlan[planKey] ? "Widok dnia" : "Cały tydzień"
+                        }}</span>
+                      </button>
+                      <button mat-menu-item (click)="openShoppingList(plan, activeDay)">
+                        <mat-icon>shopping_cart</mat-icon>
+                        <span>Lista zakupów</span>
+                      </button>
+                      <button mat-menu-item (click)="printPlan(plan)">
+                        <mat-icon>print</mat-icon>
+                        <span>Drukuj jadłospis</span>
+                      </button>
+                      <div class="menu-divider"></div>
+                      <button mat-menu-item class="menu-item--danger" (click)="removePlan(pIdx)">
+                        <mat-icon>delete_outline</mat-icon>
+                        <span>Usuń plan</span>
+                      </button>
+                    </mat-menu>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      (click)="savePlanAndExitEditMode(plan, pIdx)"
+                    >
+                      Zapisz
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      (click)="cancelEditMode(planKey)"
+                    >
+                      Anuluj
+                    </button>
                   }
-                  <div class="plan-inline-stats">
-                    <strong>{{ avg.avgCalories }} kcal / dzień</strong>
-                    <span>·</span>
-                    <span>B {{ avg.avgProtein }}g</span>
-                    <span>·</span>
-                    <span>W {{ avg.avgCarbs }}g</span>
-                    <span>·</span>
-                    <span>T {{ avg.avgFat }}g</span>
+                </div>
+              </div>
+
+              @if (!showFullWeekByPlan[planKey] || isEditing) {
+                <div class="day-bar">
+                  <div class="day-tabs">
+                    @for (day of weekDays; track day.key) {
+                      <button
+                        type="button"
+                        class="day-tab"
+                        [class.is-active]="activeDay === day.key"
+                        (click)="selectDay(planKey, day.key)"
+                      >
+                        {{ day.shortLabel }}
+                      </button>
+                    }
+                  </div>
+                  <div class="day-summary">
+                    <strong>{{ getDayLabel(activeDay) }}</strong>
+                    <span>
+                      {{ dayMacros.calories }} kcal · B {{ dayMacros.protein }}g · W
+                      {{ dayMacros.carbs }}g · T {{ dayMacros.fat }}g
+                    </span>
+                    @if (isEditing) {
+                      <button
+                        type="button"
+                        class="copy-day-link"
+                        (click)="duplicateDayToNext(pIdx, activeDay)"
+                      >
+                        Skopiuj na kolejny dzień
+                      </button>
+                    }
                   </div>
                 </div>
-              } @else {
-                <div class="plan-edit-meta">
-                  <input
-                    type="text"
-                    class="form-control"
-                    [(ngModel)]="plan.name"
-                    placeholder="Nazwa jadłospisu"
-                  />
-                  <textarea
-                    class="form-control"
-                    [(ngModel)]="plan.description"
-                    rows="2"
-                    placeholder="Opis jadłospisu"
-                  ></textarea>
-                </div>
-              }
 
-              <div class="plan-card__actions">
-                @if (!isEditing) {
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    (click)="toggleEditMode(planKey)"
-                  >
-                    <mat-icon>edit</mat-icon>
-                    Edytuj posiłki
-                  </button>
-                  <button
-                    type="button"
-                    class="icon-menu-btn"
-                    [matMenuTriggerFor]="myPlanMenu"
-                    aria-label="Więcej opcji jadłospisu"
-                  >
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                  <mat-menu #myPlanMenu="matMenu" xPosition="before">
-                    <button mat-menu-item (click)="toggleFullWeek(planKey)">
-                      <mat-icon>{{ showFullWeekByPlan[planKey] ? "view_day" : "calendar_view_week" }}</mat-icon>
-                      <span>{{ showFullWeekByPlan[planKey] ? "Widok dnia" : "Cały tydzień" }}</span>
-                    </button>
-                    <button mat-menu-item (click)="openShoppingList(plan, activeDay)">
-                      <mat-icon>shopping_cart</mat-icon>
-                      <span>Lista zakupów</span>
-                    </button>
-                    <button mat-menu-item (click)="printPlan(plan)">
-                      <mat-icon>print</mat-icon>
-                      <span>Drukuj jadłospis</span>
-                    </button>
-                    <div class="menu-divider"></div>
-                    <button mat-menu-item class="menu-item--danger" (click)="removePlan(pIdx)">
-                      <mat-icon>delete_outline</mat-icon>
-                      <span>Usuń plan</span>
-                    </button>
-                  </mat-menu>
-                } @else {
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    (click)="savePlanAndExitEditMode(plan, pIdx)"
-                  >
-                    Zapisz
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    (click)="cancelEditMode(planKey)"
-                  >
-                    Anuluj
-                  </button>
-                }
-              </div>
-            </div>
+                <div class="meals-grid-5">
+                  @for (meal of meals; track meal; let mIdx = $index) {
+                    <div class="meal-slot">
+                      <div class="meal-slot__label">{{ meal }}</div>
 
-            @if (!showFullWeekByPlan[planKey] || isEditing) {
-              <div class="day-bar">
-                <div class="day-tabs">
-                  @for (day of weekDays; track day.key) {
-                    <button
-                      type="button"
-                      class="day-tab"
-                      [class.is-active]="activeDay === day.key"
-                      (click)="selectDay(planKey, day.key)"
-                    >
-                      {{ day.shortLabel }}
-                    </button>
-                  }
-                </div>
-                <div class="day-summary">
-                  <strong>{{ getDayLabel(activeDay) }}</strong>
-                  <span>
-                    {{ dayMacros.calories }} kcal · B {{ dayMacros.protein }}g · W
-                    {{ dayMacros.carbs }}g · T {{ dayMacros.fat }}g
-                  </span>
-                  @if (isEditing) {
-                    <button
-                      type="button"
-                      class="copy-day-link"
-                      (click)="duplicateDayToNext(pIdx, activeDay)"
-                    >
-                      Skopiuj na kolejny dzień
-                    </button>
-                  }
-                </div>
-              </div>
-
-              <div class="meals-grid-5">
-                @for (meal of meals; track meal; let mIdx = $index) {
-                  <div class="meal-slot">
-                    <div class="meal-slot__label">{{ meal }}</div>
-
-                    @if (getRecipeById(plan.mealPlan[activeDay][mIdx]); as recipe) {
-                      <div class="slot-filled">
-                        <app-recipe-card
-                          [recipe]="recipe"
-                          [cardStyle]="'compact'"
-                          [withLike]="false"
-                        ></app-recipe-card>
+                      @if (getRecipeById(plan.mealPlan[activeDay][mIdx]); as recipe) {
+                        <div class="slot-filled">
+                          <app-recipe-card
+                            [recipe]="recipe"
+                            [cardStyle]="'compact'"
+                            [withLike]="false"
+                          ></app-recipe-card>
+                          @if (isEditing) {
+                            <div class="slot-edit-bar">
+                              <button
+                                type="button"
+                                class="slot-mini-btn"
+                                (click)="openRecipePicker(pIdx, activeDay, mIdx)"
+                              >
+                                Zamień
+                              </button>
+                              <button
+                                type="button"
+                                class="slot-mini-btn slot-mini-btn--danger"
+                                (click)="removeMeal(pIdx, activeDay, mIdx)"
+                              >
+                                Usuń
+                              </button>
+                            </div>
+                          }
+                        </div>
+                      } @else {
                         @if (isEditing) {
-                          <div class="slot-edit-bar">
-                            <button
-                              type="button"
-                              class="slot-mini-btn"
-                              (click)="openRecipePicker(pIdx, activeDay, mIdx)"
-                            >
-                              Zamień
-                            </button>
-                            <button
-                              type="button"
-                              class="slot-mini-btn slot-mini-btn--danger"
-                              (click)="removeMeal(pIdx, activeDay, mIdx)"
-                            >
-                              Usuń
-                            </button>
+                          <button
+                            type="button"
+                            class="add-meal-btn"
+                            (click)="openRecipePicker(pIdx, activeDay, mIdx)"
+                          >
+                            <mat-icon>add</mat-icon>
+                            <span>Dodaj przepis</span>
+                          </button>
+                        } @else {
+                          <div class="empty-slot">Brak przepisu</div>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="full-week-list">
+                  @for (day of weekDays; track day.key) {
+                    <div class="week-day-block">
+                      <div class="week-day-block__head">
+                        <h4>{{ day.label }}</h4>
+                        <span>{{ getDayMacros(plan, day.key).calories }} kcal</span>
+                      </div>
+                      <div class="meals-grid-5">
+                        @for (meal of meals; track meal; let mIdx = $index) {
+                          <div class="meal-slot">
+                            <div class="meal-slot__label">{{ meal }}</div>
+                            @if (getRecipeById(plan.mealPlan[day.key][mIdx]); as recipe) {
+                              <app-recipe-card
+                                [recipe]="recipe"
+                                [cardStyle]="'compact'"
+                                [withLike]="false"
+                              ></app-recipe-card>
+                            } @else {
+                              <div class="empty-slot">Brak przepisu</div>
+                            }
                           </div>
                         }
                       </div>
-                    } @else {
-                      @if (isEditing) {
-                        <button
-                          type="button"
-                          class="add-meal-btn"
-                          (click)="openRecipePicker(pIdx, activeDay, mIdx)"
-                        >
-                          <mat-icon>add</mat-icon>
-                          <span>Dodaj przepis</span>
-                        </button>
-                      } @else {
-                        <div class="empty-slot">Brak przepisu</div>
-                      }
-                    }
-                  </div>
-                }
-              </div>
-            } @else {
-              <div class="full-week-list">
-                @for (day of weekDays; track day.key) {
-                  <div class="week-day-block">
-                    <div class="week-day-block__head">
-                      <h4>{{ day.label }}</h4>
-                      <span>{{ getDayMacros(plan, day.key).calories }} kcal</span>
                     </div>
-                    <div class="meals-grid-5">
-                      @for (meal of meals; track meal; let mIdx = $index) {
-                        <div class="meal-slot">
-                          <div class="meal-slot__label">{{ meal }}</div>
-                          @if (getRecipeById(plan.mealPlan[day.key][mIdx]); as recipe) {
-                            <app-recipe-card
-                              [recipe]="recipe"
-                              [cardStyle]="'compact'"
-                              [withLike]="false"
-                            ></app-recipe-card>
-                          } @else {
-                            <div class="empty-slot">Brak przepisu</div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  </div>
-                }
+                  }
+                </div>
+              }
+            </section>
+          } @empty {
+            <div class="empty-plans-box">
+              <h3>Nie masz jeszcze własnego jadłospisu</h3>
+              <p>Utwórz nowy plan lub skopiuj jeden z gotowych.</p>
+              <div class="empty-actions">
+                <button type="button" class="btn btn-primary" (click)="openAddDietPlanDialog()">
+                  <mat-icon>add</mat-icon>
+                  Utwórz plan
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="activeSection = 'readyPlans'"
+                >
+                  Zobacz gotowe
+                </button>
               </div>
-            }
-          </section>
-        } @empty {
-          <div class="empty-plans-box">
-            <h3>Nie masz jeszcze własnego jadłospisu</h3>
-            <p>Utwórz nowy plan lub skopiuj jeden z gotowych.</p>
-            <div class="empty-actions">
-              <button
-                type="button"
-                class="btn btn-primary"
-                (click)="openAddDietPlanDialog()"
-              >
-                <mat-icon>add</mat-icon>
-                Utwórz plan
-              </button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="activeSection = 'readyPlans'"
-              >
-                Zobacz gotowe
-              </button>
             </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
+      }
     }
   }
 
@@ -653,13 +664,21 @@
             [(ngModel)]="pickerSearch"
             placeholder="Szukaj po nazwie lub składniku..."
           />
-          <mat-select class="app-select" [(ngModel)]="pickerMealFilter" aria-label="Filtruj posiłki">
+          <mat-select
+            class="app-select"
+            [(ngModel)]="pickerMealFilter"
+            aria-label="Filtruj posiłki"
+          >
             <mat-option value="">Wszystkie posiłki</mat-option>
             @for (m of meals; track m) {
               <mat-option [value]="m">{{ m }}</mat-option>
             }
           </mat-select>
-          <mat-select class="app-select" [(ngModel)]="pickerConditionFilter" aria-label="Filtruj choroby">
+          <mat-select
+            class="app-select"
+            [(ngModel)]="pickerConditionFilter"
+            aria-label="Filtruj choroby"
+          >
             <mat-option value="">Dowolna choroba</mat-option>
             @for (c of allConditions; track c) {
               <mat-option [value]="c">{{ c }}</mat-option>
@@ -688,23 +707,15 @@
               <div class="picker-row__info">
                 <strong>{{ recipe.name }}</strong>
                 <span>
-                  {{ recipe.calories }} kcal · B {{ recipe.protein }}g · W
-                  {{ recipe.carbs }}g · T {{ recipe.fat }}g · {{ recipe.prepTimeMinutes }} min
+                  {{ recipe.calories }} kcal · B {{ recipe.protein }}g · W {{ recipe.carbs }}g · T
+                  {{ recipe.fat }}g · {{ recipe.prepTimeMinutes }} min
                 </span>
               </div>
               <div class="picker-row__actions">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  (click)="previewRecipe(recipe)"
-                >
+                <button type="button" class="btn btn-secondary" (click)="previewRecipe(recipe)">
                   Podgląd
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  (click)="selectRecipeForSlot(recipe)"
-                >
+                <button type="button" class="btn btn-primary" (click)="selectRecipeForSlot(recipe)">
                   Wybierz
                 </button>
               </div>
@@ -759,11 +770,7 @@
             </button>
           </div>
 
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="copyShoppingListToClipboard()"
-          >
+          <button type="button" class="btn btn-secondary" (click)="copyShoppingListToClipboard()">
             {{ copiedShopping ? "Skopiowano" : "Kopiuj listę" }}
           </button>
         </div>
@@ -809,7 +816,8 @@
               <p>{{ pPlan.description }}</p>
             }
             <div class="plan-print-avg">
-              Średnio: <strong>{{ pAvg.avgCalories }} kcal / dzień</strong> · Białko {{ pAvg.avgProtein }} g · Węgle {{ pAvg.avgCarbs }} g · Tłuszcz {{ pAvg.avgFat }} g
+              Średnio: <strong>{{ pAvg.avgCalories }} kcal / dzień</strong> · Białko
+              {{ pAvg.avgProtein }} g · Węgle {{ pAvg.avgCarbs }} g · Tłuszcz {{ pAvg.avgFat }} g
             </div>
           </div>
 
@@ -819,7 +827,10 @@
               <div class="plan-print-day">
                 <div class="plan-print-day__head">
                   <strong>{{ day.label }}</strong>
-                  <span>{{ dMacros.calories }} kcal · B {{ dMacros.protein }}g · W {{ dMacros.carbs }}g · T {{ dMacros.fat }}g</span>
+                  <span
+                    >{{ dMacros.calories }} kcal · B {{ dMacros.protein }}g · W {{ dMacros.carbs }}g
+                    · T {{ dMacros.fat }}g</span
+                  >
                 </div>
                 <div class="plan-print-meals">
                   @for (meal of meals; track meal; let mIdx = $index) {
@@ -827,7 +838,9 @@
                       <div class="plan-print-meal">
                         <span class="ppm-slot">{{ meal }}</span>
                         <span class="ppm-name">{{ rec.name }}</span>
-                        <span class="ppm-kcal">{{ rec.calories }} kcal · {{ rec.prepTimeMinutes }} min</span>
+                        <span class="ppm-kcal"
+                          >{{ rec.calories }} kcal · {{ rec.prepTimeMinutes }} min</span
+                        >
                       </div>
                     }
                   }

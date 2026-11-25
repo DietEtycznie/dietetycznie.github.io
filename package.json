@@ -6,6 +6,11 @@
     "start": "ng serve",
     "dev": "ng serve",
     "build": "ng build",
+    "lint": "eslint \"src/**/*.{ts,html}\"",
+    "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "seed": "node scripts/seed-firestore.mjs",
     "backup": "node scripts/seed-firestore.mjs --backup"
   },
@@ -28,7 +33,12 @@
     "@angular/build": "^21.2.31",
     "@angular/cli": "^21.2.31",
     "@angular/compiler-cli": "^21.2.26",
+    "@eslint/js": "^10.0.1",
+    "angular-eslint": "^22.8.0",
+    "eslint": "^10.15.0",
     "prettier": "^3.5.3",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.74.0",
+    "vitest": "^4.1.12"
   }
 }

@@ -7,6 +7,8 @@ export { FooterComponent } from "./footer/footer.component";
 export { HeaderComponent } from "./header/header.component";
 export { ImageCropperDialogComponent } from "./image-cropper-dialog/image-cropper-dialog.component";
 export type { CroppedImageResult } from "./image-cropper-dialog/image-cropper-dialog.component";
+export { LoadingStateComponent } from "./loading-state/loading-state.component";
+export type { LoadingVariant } from "./loading-state/loading-state.component";
 export { PresentationHeaderComponent } from "./presentation-header/presentation-header.component";
 export { PrintHeaderComponent } from "./print-header/print-header.component";
 export { RecipeCardComponent } from "./recipe-card/recipe-card.component";

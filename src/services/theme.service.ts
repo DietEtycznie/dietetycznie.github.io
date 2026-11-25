@@ -30,9 +30,7 @@ export class ThemeService {
       startViewTransition?: (cb: () => void) => { ready: Promise<void> };
     };
 
-    const prefersReduced = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    const prefersReduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
     if (!doc.startViewTransition || prefersReduced) {
       this.setTheme(next);
@@ -53,10 +51,7 @@ export class ThemeService {
     transition.ready.then(() => {
       document.documentElement.animate(
         {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ],
+          clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`],
         },
         {
           duration: 540,
@@ -81,7 +76,9 @@ export class ThemeService {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved === "dark" || saved === "light") return saved;
-    } catch {}
+    } catch {
+      // Ignore storage errors
+    }
     return "light";
   }
 

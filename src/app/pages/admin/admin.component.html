@@ -10,7 +10,10 @@
           </span>
         </div>
         <h1>Panel administratora</h1>
-        <p>Zarządzaj bazą przepisów, chorób dietozależnych, gotowych jadłospisów oraz kopiami zapasowymi.</p>
+        <p>
+          Zarządzaj bazą przepisów, chorób dietozależnych, gotowych jadłospisów oraz kopiami
+          zapasowymi.
+        </p>
       </div>
 
       <div class="admin-head__actions">
@@ -97,7 +100,11 @@
         ></app-search-input>
 
         <div class="toolbar-right">
-          <mat-select class="app-select select-input" [(ngModel)]="recipeMealFilter" aria-label="Filtruj posiłki">
+          <mat-select
+            class="app-select select-input"
+            [(ngModel)]="recipeMealFilter"
+            aria-label="Filtruj posiłki"
+          >
             <mat-option value="">Wszystkie posiłki</mat-option>
             @for (m of allMealTypes; track m) {
               <mat-option [value]="m">{{ m }}</mat-option>
@@ -157,12 +164,14 @@
                 <td class="col-actions">
                   @if (confirmDeleteType === "recipe" && confirmDeleteId === r.uid) {
                     <div class="inline-confirm">
-                      <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
+                      <button
+                        type="button"
+                        class="act-btn act-btn--danger"
+                        (click)="confirmDelete()"
+                      >
                         Usuń
                       </button>
-                      <button type="button" class="act-btn" (click)="cancelDelete()">
-                        Anuluj
-                      </button>
+                      <button type="button" class="act-btn" (click)="cancelDelete()">Anuluj</button>
                     </div>
                   } @else {
                     <div class="row-actions">
@@ -196,9 +205,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="6" class="empty-cell">
-                  Brak przepisów pasujących do filtra.
-                </td>
+                <td colspan="6" class="empty-cell">Brak przepisów pasujących do filtra.</td>
               </tr>
             }
           </tbody>
@@ -256,9 +263,7 @@
                   <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
                     Potwierdź
                   </button>
-                  <button type="button" class="act-btn" (click)="cancelDelete()">
-                    Anuluj
-                  </button>
+                  <button type="button" class="act-btn" (click)="cancelDelete()">Anuluj</button>
                 </div>
               } @else {
                 <div class="row-actions">
@@ -334,8 +339,8 @@
                   }
                 </div>
                 <span>
-                  ~{{ getPlanAverageCalories(p) }} kcal/dzień ·
-                  {{ getPlanFilledMealsCount(p) }} / 35 posiłków
+                  ~{{ getPlanAverageCalories(p) }} kcal/dzień · {{ getPlanFilledMealsCount(p) }} /
+                  35 posiłków
                   @if (p.isPersonalized && p.userId) {
                     · Dla: <strong>{{ getUserNameById(p.userId) }}</strong>
                   }
@@ -355,16 +360,14 @@
 
             <div class="entity-card__foot">
               <span class="muted-cell">
-                {{ p.isPersonalized ? (p.assignedBy || "mgr Maja Harkot") : "Publiczny · 7 dni" }}
+                {{ p.isPersonalized ? p.assignedBy || "mgr Maja Harkot" : "Publiczny · 7 dni" }}
               </span>
               @if (confirmDeleteType === "plan" && confirmDeleteId === p.id) {
                 <div class="inline-confirm">
                   <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
                     Potwierdź
                   </button>
-                  <button type="button" class="act-btn" (click)="cancelDelete()">
-                    Anuluj
-                  </button>
+                  <button type="button" class="act-btn" (click)="cancelDelete()">Anuluj</button>
                 </div>
               } @else {
                 <div class="row-actions">
@@ -384,9 +387,7 @@
             </div>
           </article>
         } @empty {
-          <div class="empty-inline-card">
-            Brak jadłospisów w wybranej kategorii.
-          </div>
+          <div class="empty-inline-card">Brak jadłospisów w wybranej kategorii.</div>
         }
       </div>
     }
@@ -437,7 +438,9 @@
                 <td>
                   <span
                     class="mini-pill"
-                    [class.mini-pill--accent]="u.subscription?.tier && u.subscription?.tier !== 'free'"
+                    [class.mini-pill--accent]="
+                      u.subscription?.tier && u.subscription?.tier !== 'free'
+                    "
                   >
                     {{ getTierLabel(u.subscription?.tier) }}
                   </span>
@@ -457,12 +460,14 @@
                 <td class="col-actions">
                   @if (confirmDeleteType === "user" && confirmDeleteId === u.uid) {
                     <div class="inline-confirm">
-                      <button type="button" class="act-btn act-btn--danger" (click)="confirmDelete()">
+                      <button
+                        type="button"
+                        class="act-btn act-btn--danger"
+                        (click)="confirmDelete()"
+                      >
                         Usuń
                       </button>
-                      <button type="button" class="act-btn" (click)="cancelDelete()">
-                        Anuluj
-                      </button>
+                      <button type="button" class="act-btn" (click)="cancelDelete()">Anuluj</button>
                     </div>
                   } @else {
                     <div class="row-actions">
@@ -474,11 +479,7 @@
                         Ułóż jadłospis
                       </button>
                       @if (u.uid !== currentAdminUid) {
-                        <button
-                          type="button"
-                          class="act-btn"
-                          (click)="toggleUserAdminRole(u)"
-                        >
+                        <button type="button" class="act-btn" (click)="toggleUserAdminRole(u)">
                           {{ u.role === "admin" ? "Odbierz admina" : "Nadaj admina" }}
                         </button>
                       }
@@ -555,7 +556,8 @@
         <section class="tool-card">
           <h3>Eksport i import JSON</h3>
           <p>
-            Pobierz pełną kopię zapasową albo zaimportuj plik JSON (pełny backup lub tablicę samych przepisów).
+            Pobierz pełną kopię zapasową albo zaimportuj plik JSON (pełny backup lub tablicę samych
+            przepisów).
           </p>
           <div class="tool-actions">
             <button type="button" class="btn btn-secondary" (click)="exportBackupJson()">
@@ -565,11 +567,7 @@
             <label class="btn btn-secondary file-btn">
               <mat-icon>upload_file</mat-icon>
               Importuj JSON
-              <input
-                type="file"
-                accept="application/json"
-                (change)="onImportBackupFile($event)"
-              />
+              <input type="file" accept="application/json" (change)="onImportBackupFile($event)" />
             </label>
           </div>
         </section>
@@ -578,7 +576,8 @@
           <section class="tool-card">
             <h3>Reset lokalnego stanu demo</h3>
             <p>
-              Przywraca dane w <code>localStorage</code> do stanu początkowego, usuwając lokalne zmiany testowe.
+              Przywraca dane w <code>localStorage</code> do stanu początkowego, usuwając lokalne
+              zmiany testowe.
             </p>
             <button type="button" class="btn btn-secondary" (click)="resetLocalSeed()">
               <mat-icon>restart_alt</mat-icon>
@@ -627,7 +626,8 @@
           <div class="photo-editor-controls">
             <div class="photo-editor-title">Zdjęcie potrawy</div>
             <p class="photo-editor-hint">
-              Wgraj własne zdjęcie i przytnij je w kółko lub kwadrat z płynnym zaokrągleniem rogów, albo wybierz gotowy talerz z biblioteki.
+              Wgraj własne zdjęcie i przytnij je w kółko lub kwadrat z płynnym zaokrągleniem rogów,
+              albo wybierz gotowy talerz z biblioteki.
             </p>
 
             <div class="photo-btn-row">
@@ -737,9 +737,7 @@
         <!-- Numbers & Macros -->
         <div class="section-divider">
           <span>Wartości odżywcze (na 1 porcję)</span>
-          <small class="macro-check">
-            Z makro: ~{{ estimatedMacroKcal }} kcal
-          </small>
+          <small class="macro-check"> Z makro: ~{{ estimatedMacroKcal }} kcal </small>
         </div>
 
         <div class="form-grid-4">
@@ -829,7 +827,9 @@
         <!-- Dynamic Ingredients -->
         <div class="list-editor">
           <div class="list-editor__head">
-            <span class="field-caption">Składniki <span class="count-pill">{{ recipeForm.ingredients.length }}</span></span>
+            <span class="field-caption"
+              >Składniki <span class="count-pill">{{ recipeForm.ingredients.length }}</span></span
+            >
             <div class="list-editor__btns">
               <button
                 type="button"
@@ -855,7 +855,11 @@
                 [(ngModel)]="bulkIngredientsText"
                 placeholder="Wklej składniki — każdy w nowej linii, np.&#10;150 g filetu z łososia&#10;50 g kaszy pęczak&#10;1 łyżka oliwy z oliwek"
               ></textarea>
-              <button type="button" class="btn btn-secondary btn--sm" (click)="applyBulkIngredients()">
+              <button
+                type="button"
+                class="btn btn-secondary btn--sm"
+                (click)="applyBulkIngredients()"
+              >
                 Zamień na wiersze
               </button>
             </div>
@@ -885,7 +889,10 @@
         <!-- Dynamic Instructions -->
         <div class="list-editor">
           <div class="list-editor__head">
-            <span class="field-caption">Przygotowanie krok po kroku <span class="count-pill">{{ recipeForm.instructions.length }}</span></span>
+            <span class="field-caption"
+              >Przygotowanie krok po kroku
+              <span class="count-pill">{{ recipeForm.instructions.length }}</span></span
+            >
             <div class="list-editor__btns">
               <button
                 type="button"
@@ -911,7 +918,11 @@
                 [(ngModel)]="bulkInstructionsText"
                 placeholder="Wklej kroki — każdy w nowej linii..."
               ></textarea>
-              <button type="button" class="btn btn-secondary btn--sm" (click)="applyBulkInstructions()">
+              <button
+                type="button"
+                class="btn btn-secondary btn--sm"
+                (click)="applyBulkInstructions()"
+              >
                 Zamień na kroki
               </button>
             </div>
@@ -958,15 +969,8 @@
       </div>
 
       <div class="modal-foot">
-        <button type="button" class="btn btn-secondary" (click)="closeRecipeModal()">
-          Anuluj
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          [disabled]="isSaving"
-          (click)="saveRecipe()"
-        >
+        <button type="button" class="btn btn-secondary" (click)="closeRecipeModal()">Anuluj</button>
+        <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="saveRecipe()">
           <mat-icon>save</mat-icon>
           {{ isSaving ? "Zapisywanie..." : recipeForm.uid ? "Zapisz zmiany" : "Dodaj przepis" }}
         </button>
@@ -990,7 +994,9 @@
           <h2 id="condModalTitle">
             {{ conditionForm.id ? "Edytuj chorobę dietozależną" : "Nowa jednostka chorobowa" }}
           </h2>
-          <p>Dodaj zalecenia żywieniowe, produkty wskazane/przeciwwskazane oraz link do zaleceń NCEŻ.</p>
+          <p>
+            Dodaj zalecenia żywieniowe, produkty wskazane/przeciwwskazane oraz link do zaleceń NCEŻ.
+          </p>
         </div>
         <button type="button" class="icon-btn" (click)="closeConditionModal()" aria-label="Zamknij">
           <mat-icon>close</mat-icon>
@@ -1001,15 +1007,27 @@
         <div class="form-grid-2">
           <label class="field">
             <span>Nazwa choroby *</span>
-            <input type="text" [(ngModel)]="conditionForm.name" placeholder="np. Insulinooporność" />
+            <input
+              type="text"
+              [(ngModel)]="conditionForm.name"
+              placeholder="np. Insulinooporność"
+            />
           </label>
           <label class="field">
             <span>Link do PDF (NCEŻ)</span>
-            <input type="url" [(ngModel)]="conditionForm.pdfURL" placeholder="https://ncez.pzh.gov.pl/..." />
+            <input
+              type="url"
+              [(ngModel)]="conditionForm.pdfURL"
+              placeholder="https://ncez.pzh.gov.pl/..."
+            />
           </label>
           <label class="field field--full">
             <span>Krótkie podsumowanie</span>
-            <input type="text" [(ngModel)]="conditionForm.shortSummary" placeholder="Jedno zdanie widoczne na karcie..." />
+            <input
+              type="text"
+              [(ngModel)]="conditionForm.shortSummary"
+              placeholder="Jedno zdanie widoczne na karcie..."
+            />
           </label>
           <label class="field field--full">
             <span>Opis szczegółowy</span>
@@ -1036,14 +1054,30 @@
         <div class="list-editor">
           <div class="list-editor__head">
             <span class="field-caption">Zalecenia żywieniowe</span>
-            <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.dietaryRecommendations)">
+            <button
+              type="button"
+              class="text-link-btn"
+              (click)="addListRow(conditionForm.dietaryRecommendations)"
+            >
               + Dodaj
             </button>
           </div>
-          @for (item of conditionForm.dietaryRecommendations; track trackByIndex($index); let i = $index) {
+          @for (
+            item of conditionForm.dietaryRecommendations;
+            track trackByIndex($index);
+            let i = $index
+          ) {
             <div class="list-row">
-              <input type="text" [(ngModel)]="conditionForm.dietaryRecommendations[i]" placeholder="np. Wybieraj produkty o niskim indeksie glikemicznym" />
-              <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.dietaryRecommendations, i)">
+              <input
+                type="text"
+                [(ngModel)]="conditionForm.dietaryRecommendations[i]"
+                placeholder="np. Wybieraj produkty o niskim indeksie glikemicznym"
+              />
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="removeListRow(conditionForm.dietaryRecommendations, i)"
+              >
                 <mat-icon>close</mat-icon>
               </button>
             </div>
@@ -1054,14 +1088,26 @@
           <div class="list-editor">
             <div class="list-editor__head">
               <span class="field-caption">Produkty zalecane</span>
-              <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.foodsToEat)">
+              <button
+                type="button"
+                class="text-link-btn"
+                (click)="addListRow(conditionForm.foodsToEat)"
+              >
                 + Dodaj
               </button>
             </div>
             @for (item of conditionForm.foodsToEat; track trackByIndex($index); let i = $index) {
               <div class="list-row">
-                <input type="text" [(ngModel)]="conditionForm.foodsToEat[i]" placeholder="np. Kasza gryczana, warzywa nieskrobiowe" />
-                <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.foodsToEat, i)">
+                <input
+                  type="text"
+                  [(ngModel)]="conditionForm.foodsToEat[i]"
+                  placeholder="np. Kasza gryczana, warzywa nieskrobiowe"
+                />
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="removeListRow(conditionForm.foodsToEat, i)"
+                >
                   <mat-icon>close</mat-icon>
                 </button>
               </div>
@@ -1071,14 +1117,26 @@
           <div class="list-editor">
             <div class="list-editor__head">
               <span class="field-caption">Produkty niewskazane</span>
-              <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.foodsToAvoid)">
+              <button
+                type="button"
+                class="text-link-btn"
+                (click)="addListRow(conditionForm.foodsToAvoid)"
+              >
                 + Dodaj
               </button>
             </div>
             @for (item of conditionForm.foodsToAvoid; track trackByIndex($index); let i = $index) {
               <div class="list-row">
-                <input type="text" [(ngModel)]="conditionForm.foodsToAvoid[i]" placeholder="np. Słodycze, białe pieczywo" />
-                <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.foodsToAvoid, i)">
+                <input
+                  type="text"
+                  [(ngModel)]="conditionForm.foodsToAvoid[i]"
+                  placeholder="np. Słodycze, białe pieczywo"
+                />
+                <button
+                  type="button"
+                  class="icon-btn"
+                  (click)="removeListRow(conditionForm.foodsToAvoid, i)"
+                >
                   <mat-icon>close</mat-icon>
                 </button>
               </div>
@@ -1089,14 +1147,30 @@
         <div class="list-editor">
           <div class="list-editor__head">
             <span class="field-caption">Styl życia i nawyki</span>
-            <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.lifestyleRecommendations)">
+            <button
+              type="button"
+              class="text-link-btn"
+              (click)="addListRow(conditionForm.lifestyleRecommendations)"
+            >
               + Dodaj
             </button>
           </div>
-          @for (item of conditionForm.lifestyleRecommendations; track trackByIndex($index); let i = $index) {
+          @for (
+            item of conditionForm.lifestyleRecommendations;
+            track trackByIndex($index);
+            let i = $index
+          ) {
             <div class="list-row">
-              <input type="text" [(ngModel)]="conditionForm.lifestyleRecommendations[i]" placeholder="np. Regularny ruch 30 min dziennie" />
-              <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.lifestyleRecommendations, i)">
+              <input
+                type="text"
+                [(ngModel)]="conditionForm.lifestyleRecommendations[i]"
+                placeholder="np. Regularny ruch 30 min dziennie"
+              />
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="removeListRow(conditionForm.lifestyleRecommendations, i)"
+              >
                 <mat-icon>close</mat-icon>
               </button>
             </div>
@@ -1106,14 +1180,26 @@
         <div class="list-editor">
           <div class="list-editor__head">
             <span class="field-caption">Ważne ostrzeżenia</span>
-            <button type="button" class="text-link-btn" (click)="addListRow(conditionForm.warnings)">
+            <button
+              type="button"
+              class="text-link-btn"
+              (click)="addListRow(conditionForm.warnings)"
+            >
               + Dodaj
             </button>
           </div>
           @for (item of conditionForm.warnings; track trackByIndex($index); let i = $index) {
             <div class="list-row">
-              <input type="text" [(ngModel)]="conditionForm.warnings[i]" placeholder="Opcjonalne ostrzeżenie medyczne..." />
-              <button type="button" class="icon-btn" (click)="removeListRow(conditionForm.warnings, i)">
+              <input
+                type="text"
+                [(ngModel)]="conditionForm.warnings[i]"
+                placeholder="Opcjonalne ostrzeżenie medyczne..."
+              />
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="removeListRow(conditionForm.warnings, i)"
+              >
                 <mat-icon>close</mat-icon>
               </button>
             </div>
@@ -1125,7 +1211,12 @@
         <button type="button" class="btn btn-secondary" (click)="closeConditionModal()">
           Anuluj
         </button>
-        <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="saveCondition()">
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isSaving"
+          (click)="saveCondition()"
+        >
           <mat-icon>save</mat-icon>
           {{ isSaving ? "Zapisywanie..." : "Zapisz chorobę" }}
         </button>
@@ -1155,7 +1246,10 @@
                   : "Nowy gotowy jadłospis"
             }}
           </h2>
-          <p>Ułóż 7-dniowy plan po 5 posiłków dziennie — publiczny albo spersonalizowany dla konkretnego użytkownika.</p>
+          <p>
+            Ułóż 7-dniowy plan po 5 posiłków dziennie — publiczny albo spersonalizowany dla
+            konkretnego użytkownika.
+          </p>
         </div>
         <button type="button" class="icon-btn" (click)="closePlanModal()" aria-label="Zamknij">
           <mat-icon>close</mat-icon>
@@ -1190,7 +1284,11 @@
             <div class="form-grid-2">
               <div class="field">
                 <span>Przypisz do użytkownika *</span>
-                <mat-select class="app-select" [(ngModel)]="planForm.userId" placeholder="Wybierz użytkownika">
+                <mat-select
+                  class="app-select"
+                  [(ngModel)]="planForm.userId"
+                  placeholder="Wybierz użytkownika"
+                >
                   @for (u of users; track u.uid) {
                     <mat-option [value]="u.uid">
                       {{ u.displayName || u.email }} ({{ u.email }})
@@ -1200,7 +1298,11 @@
               </div>
               <label class="field">
                 <span>Dietetyk prowadzący</span>
-                <input type="text" [(ngModel)]="planForm.assignedBy" placeholder="np. mgr Maja Harkot" />
+                <input
+                  type="text"
+                  [(ngModel)]="planForm.assignedBy"
+                  placeholder="np. mgr Maja Harkot"
+                />
               </label>
               <label class="field field--full">
                 <span>Zalecenia indywidualne dietetyka (widoczne w zakładce Indywidualne)</span>
@@ -1293,12 +1395,14 @@
             @for (slotLabel of mealSlotLabels; track slotLabel; let idx = $index) {
               <label class="slot-row">
                 <span>{{ slotLabel }}</span>
-                <mat-select class="app-select" [(ngModel)]="planForm.mealPlan[planActiveDay][idx]" [attr.aria-label]="slotLabel">
+                <mat-select
+                  class="app-select"
+                  [(ngModel)]="planForm.mealPlan[planActiveDay][idx]"
+                  [attr.aria-label]="slotLabel"
+                >
                   <mat-option value="">— Brak posiłku —</mat-option>
                   @for (r of recipes; track r.uid) {
-                    <mat-option [value]="r.uid">
-                      {{ r.name }} ({{ r.calories }} kcal)
-                    </mat-option>
+                    <mat-option [value]="r.uid"> {{ r.name }} ({{ r.calories }} kcal) </mat-option>
                   }
                 </mat-select>
               </label>
@@ -1308,9 +1412,7 @@
       </div>
 
       <div class="modal-foot">
-        <button type="button" class="btn btn-secondary" (click)="closePlanModal()">
-          Anuluj
-        </button>
+        <button type="button" class="btn btn-secondary" (click)="closePlanModal()">Anuluj</button>
         <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="savePlan()">
           <mat-icon>save</mat-icon>
           {{ isSaving ? "Zapisywanie..." : "Zapisz jadłospis" }}
@@ -1335,7 +1437,9 @@
           <h2 id="userModalTitle">
             {{ userForm.uid ? "Edytuj użytkownika" : "Dodaj użytkownika" }}
           </h2>
-          <p>Dodaj profil pacjenta lub administratora, nadaj pakiet i przypisz choroby dietozależne.</p>
+          <p>
+            Dodaj profil pacjenta lub administratora, nadaj pakiet i przypisz choroby dietozależne.
+          </p>
         </div>
         <button type="button" class="icon-btn" (click)="closeUserModal()" aria-label="Zamknij">
           <mat-icon>close</mat-icon>
@@ -1387,9 +1491,7 @@
       </div>
 
       <div class="modal-foot">
-        <button type="button" class="btn btn-secondary" (click)="closeUserModal()">
-          Anuluj
-        </button>
+        <button type="button" class="btn btn-secondary" (click)="closeUserModal()">Anuluj</button>
         <button type="button" class="btn btn-primary" [disabled]="isSaving" (click)="saveUser()">
           <mat-icon>save</mat-icon>
           {{ isSaving ? "Zapisywanie..." : userForm.uid ? "Zapisz zmiany" : "Dodaj użytkownika" }}

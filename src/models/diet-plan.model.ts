@@ -1,11 +1,5 @@
 export type DayKey =
-  | "monday"
-  | "tuesday"
-  | "wednesday"
-  | "thursday"
-  | "friday"
-  | "saturday"
-  | "sunday";
+  "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 
 export interface WeeklyMealPlan {
   monday: string[];
@@ -56,9 +50,7 @@ export function createEmptyMealPlan(): WeeklyMealPlan {
   };
 }
 
-export function normalizeMealPlan(
-  plan: Partial<WeeklyMealPlan> | undefined,
-): WeeklyMealPlan {
+export function normalizeMealPlan(plan: Partial<WeeklyMealPlan> | undefined): WeeklyMealPlan {
   const empty = createEmptyMealPlan();
   for (const day of WEEK_DAYS) {
     const existing = plan?.[day.key];

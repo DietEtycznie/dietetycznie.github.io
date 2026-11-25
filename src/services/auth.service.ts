@@ -41,27 +41,33 @@ export class AuthService {
     if (this.firebase.isConfigured && this.firebase.auth) {
       onAuthStateChanged(this.firebase.auth, async (fbUser) => {
         if (!fbUser) {
-          this.userSubject.next(null);
-          this.authReadySubject.next(true);
+          this.firebase.runInZone(() => {
+            this.userSubject.next(null);
+            this.authReadySubject.next(true);
+          });
           return;
         }
         try {
           const profile = await this.loadOrCreateUserProfile(fbUser);
-          this.userSubject.next(profile);
+          this.firebase.runInZone(() => {
+            this.userSubject.next(profile);
+            this.authReadySubject.next(true);
+          });
         } catch (err) {
           console.warn("Failed loading Firestore user profile, falling back.", err);
-          this.userSubject.next({
-            uid: fbUser.uid,
-            email: fbUser.email || "",
-            displayName: fbUser.displayName || "Użytkownik",
-            photoURL: fbUser.photoURL || undefined,
-            role: fbUser.uid === BOOTSTRAP_ADMIN_UID ? "admin" : "user",
-            savedRecipes: [],
-            medicalConditions: [],
-            dietPlans: [],
+          this.firebase.runInZone(() => {
+            this.userSubject.next({
+              uid: fbUser.uid,
+              email: fbUser.email || "",
+              displayName: fbUser.displayName || "Użytkownik",
+              photoURL: fbUser.photoURL || undefined,
+              role: fbUser.uid === BOOTSTRAP_ADMIN_UID ? "admin" : "user",
+              savedRecipes: [],
+              medicalConditions: [],
+              dietPlans: [],
+            });
+            this.authReadySubject.next(true);
           });
-        } finally {
-          this.authReadySubject.next(true);
         }
       });
     } else {
@@ -81,11 +87,7 @@ export class AuthService {
 
   async signIn(email: string, password: string): Promise<User> {
     if (this.firebase.isConfigured && this.firebase.auth) {
-      const cred = await signInWithEmailAndPassword(
-        this.firebase.auth,
-        email,
-        password,
-      );
+      const cred = await signInWithEmailAndPassword(this.firebase.auth, email, password);
       const profile = await this.loadOrCreateUserProfile(cred.user);
       this.userSubject.next(profile);
       return profile;
@@ -140,17 +142,9 @@ export class AuthService {
     return this.signInDemo(false);
   }
 
-  async signUp(
-    email: string,
-    password: string,
-    displayName: string,
-  ): Promise<User> {
+  async signUp(email: string, password: string, displayName: string): Promise<User> {
     if (this.firebase.isConfigured && this.firebase.auth && this.firebase.db) {
-      const cred = await createUserWithEmailAndPassword(
-        this.firebase.auth,
-        email,
-        password,
-      );
+      const cred = await createUserWithEmailAndPassword(this.firebase.auth, email, password);
       const user: User = {
         uid: cred.user.uid,
         email: cred.user.email || email,
@@ -226,9 +220,7 @@ export class AuthService {
 
     let isAdminDoc = fbUser.uid === BOOTSTRAP_ADMIN_UID;
     try {
-      const adminSnap = await getDoc(
-        doc(this.firebase.db, `admins/${fbUser.uid}`),
-      );
+      const adminSnap = await getDoc(doc(this.firebase.db, `admins/${fbUser.uid}`));
       if (adminSnap.exists()) {
         isAdminDoc = true;
       }

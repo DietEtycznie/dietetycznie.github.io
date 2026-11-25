@@ -151,13 +151,7 @@ export class AdminComponent implements OnInit {
   readonly allDietTags = DIET_TAGS;
   readonly allAssetImages = RECIPE_IMAGE_ASSETS;
   readonly weekDays = WEEK_DAYS;
-  readonly mealSlotLabels = [
-    "Śniadanie",
-    "II śniadanie",
-    "Obiad",
-    "Podwieczorek",
-    "Kolacja",
-  ];
+  readonly mealSlotLabels = ["Śniadanie", "II śniadanie", "Obiad", "Podwieczorek", "Kolacja"];
   readonly conditionIconChoices = [
     "bloodtype",
     "favorite",
@@ -209,9 +203,7 @@ export class AdminComponent implements OnInit {
   }
 
   get managedPlans(): DietPlan[] {
-    const visible = this.allPlans.filter(
-      (p) => p.userId === null || Boolean(p.isPersonalized),
-    );
+    const visible = this.allPlans.filter((p) => p.userId === null || Boolean(p.isPersonalized));
     if (this.planScopeFilter === "public") {
       return visible.filter((p) => p.userId === null);
     }
@@ -264,9 +256,7 @@ export class AdminComponent implements OnInit {
     const q = this.conditionSearch.trim().toLowerCase();
     if (!q) return this.conditions;
     return this.conditions.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q),
+      (c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q),
     );
   }
 
@@ -476,12 +466,8 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    const ingredients = this.recipeForm.ingredients
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const instructions = this.recipeForm.instructions
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const ingredients = this.recipeForm.ingredients.map((s) => s.trim()).filter(Boolean);
+    const instructions = this.recipeForm.instructions.map((s) => s.trim()).filter(Boolean);
 
     if (ingredients.length === 0) {
       this.showToast("Dodaj przynajmniej jeden składnik.", "error");
@@ -501,9 +487,7 @@ export class AdminComponent implements OnInit {
       sodium: Math.max(0, Number(this.recipeForm.sodium) || 0),
       stars: Math.min(5, Math.max(1, Number(this.recipeForm.stars) || 4.8)),
       imageUrl: this.recipeForm.imageUrl.trim() || FALLBACK_RECIPE_IMAGE,
-      mealType: this.recipeForm.mealType.length
-        ? [...this.recipeForm.mealType]
-        : ["Obiad"],
+      mealType: this.recipeForm.mealType.length ? [...this.recipeForm.mealType] : ["Obiad"],
       suitableForConditions: [...this.recipeForm.suitableForConditions],
       dietTags: [...this.recipeForm.dietTags],
       ingredients,
@@ -515,9 +499,7 @@ export class AdminComponent implements OnInit {
     this.isSaving = true;
     try {
       if (this.recipeForm.uid) {
-        await firstValueFrom(
-          this.recipeService.updateRecipe(this.recipeForm.uid, payload),
-        );
+        await firstValueFrom(this.recipeService.updateRecipe(this.recipeForm.uid, payload));
         this.showToast(`Zaktualizowano przepis „${payload.name}”.`);
       } else {
         await firstValueFrom(this.recipeService.addRecipe(payload));
@@ -599,25 +581,16 @@ export class AdminComponent implements OnInit {
       lifestyleRecommendations: this.conditionForm.lifestyleRecommendations
         .map((s) => s.trim())
         .filter(Boolean),
-      foodsToEat: this.conditionForm.foodsToEat
-        .map((s) => s.trim())
-        .filter(Boolean),
-      foodsToAvoid: this.conditionForm.foodsToAvoid
-        .map((s) => s.trim())
-        .filter(Boolean),
-      warnings: this.conditionForm.warnings
-        .map((s) => s.trim())
-        .filter(Boolean),
+      foodsToEat: this.conditionForm.foodsToEat.map((s) => s.trim()).filter(Boolean),
+      foodsToAvoid: this.conditionForm.foodsToAvoid.map((s) => s.trim()).filter(Boolean),
+      warnings: this.conditionForm.warnings.map((s) => s.trim()).filter(Boolean),
     };
 
     this.isSaving = true;
     try {
       if (this.conditionForm.id) {
         await firstValueFrom(
-          this.conditionService.updateMedicalCondition(
-            this.conditionForm.id,
-            payload,
-          ),
+          this.conditionService.updateMedicalCondition(this.conditionForm.id, payload),
         );
         this.showToast(`Zaktualizowano „${payload.name}”.`);
       } else {
@@ -752,7 +725,7 @@ export class AdminComponent implements OnInit {
         filledDays++;
       }
     }
-    return filledDays ? Math.round(total / filledDays) : plan.targetCalories ?? 0;
+    return filledDays ? Math.round(total / filledDays) : (plan.targetCalories ?? 0);
   }
 
   getPlanFilledMealsCount(plan: DietPlan): number {
@@ -795,17 +768,13 @@ export class AdminComponent implements OnInit {
     this.isSaving = true;
     try {
       if (this.planForm.id) {
-        await firstValueFrom(
-          this.dietPlanService.updateDietPlan(this.planForm.id, payload),
-        );
+        await firstValueFrom(this.dietPlanService.updateDietPlan(this.planForm.id, payload));
         this.showToast(`Zaktualizowano jadłospis „${payload.name}”.`);
       } else {
         await firstValueFrom(this.dietPlanService.addDietPlan(payload));
         if (payload.isPersonalized && payload.userId) {
           const targetName = this.getUserNameById(payload.userId);
-          this.showToast(
-            `Przypisano indywidualny plan „${payload.name}” dla ${targetName}.`,
-          );
+          this.showToast(`Przypisano indywidualny plan „${payload.name}” dla ${targetName}.`);
         } else {
           this.showToast(`Dodano gotowy jadłospis „${payload.name}”.`);
         }
@@ -863,8 +832,7 @@ export class AdminComponent implements OnInit {
     const subscription = {
       tier: this.userForm.tier,
       active: this.userForm.tier !== "free",
-      activatedAt:
-        this.userForm.tier !== "free" ? new Date().toISOString() : undefined,
+      activatedAt: this.userForm.tier !== "free" ? new Date().toISOString() : undefined,
     };
 
     this.isSaving = true;
@@ -883,8 +851,7 @@ export class AdminComponent implements OnInit {
       } else {
         await firstValueFrom(
           this.userService.createUser({
-            displayName:
-              this.userForm.displayName.trim() || this.userForm.email.split("@")[0],
+            displayName: this.userForm.displayName.trim() || this.userForm.email.split("@")[0],
             email: this.userForm.email.trim(),
             role: this.userForm.role,
             subscription,
@@ -1005,9 +972,7 @@ export class AdminComponent implements OnInit {
         this.dietPlanService.seedToFirestore(),
       ]);
       await this.loadAllData();
-      this.showToast(
-        `Zasiano bazę: ${rCount} przepisów, ${cCount} chorób, ${pCount} jadłospisów.`,
-      );
+      this.showToast(`Zasiano bazę: ${rCount} przepisów, ${cCount} chorób, ${pCount} jadłospisów.`);
     } catch (err) {
       console.error(err);
       this.showToast("Błąd podczas zasilania bazy seed.", "error");
@@ -1054,12 +1019,8 @@ export class AdminComponent implements OnInit {
             this.recipeService.addRecipe({
               name: String(item.name),
               description: String(item.description ?? ""),
-              ingredients: Array.isArray(item.ingredients)
-                ? item.ingredients
-                : [],
-              instructions: Array.isArray(item.instructions)
-                ? item.instructions
-                : [],
+              ingredients: Array.isArray(item.ingredients) ? item.ingredients : [],
+              instructions: Array.isArray(item.instructions) ? item.instructions : [],
               prepTimeMinutes: Number(item.prepTimeMinutes ?? 15),
               servings: Number(item.servings ?? 1),
               calories: Number(item.calories ?? 0),
@@ -1073,9 +1034,7 @@ export class AdminComponent implements OnInit {
                 ? item.suitableForConditions
                 : [],
               dietTags: Array.isArray(item.dietTags) ? item.dietTags : [],
-              mealType: Array.isArray(item.mealType)
-                ? item.mealType
-                : ["Obiad"],
+              mealType: Array.isArray(item.mealType) ? item.mealType : ["Obiad"],
               stars: Number(item.stars ?? 4.7),
             }),
           );

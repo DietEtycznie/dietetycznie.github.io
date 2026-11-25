@@ -9,13 +9,7 @@ import { BrandLogoComponent } from "../brand-logo/brand-logo.component";
 @Component({
   selector: "app-header",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    RouterLinkActive,
-    MatIconModule,
-    BrandLogoComponent,
-  ],
+  imports: [CommonModule, RouterLink, RouterLinkActive, MatIconModule, BrandLogoComponent],
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"],
 })

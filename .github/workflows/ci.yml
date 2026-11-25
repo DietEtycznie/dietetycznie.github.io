@@ -1,0 +1,38 @@
+name: PR Quality Checks (Lint, Format, Tests, Build)
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate fallback environment.ts for CI build
+        run: cp src/environments/environment.example.ts src/environments/environment.ts
+
+      - name: Check formatting (Prettier)
+        run: npm run format:check
+
+      - name: Lint TypeScript & Angular templates (ESLint)
+        run: npm run lint
+
+      - name: Run unit tests (Vitest)
+        run: npm test
+
+      - name: Verify production Angular build
+        run: npm run build -- --base-href=/

@@ -42,13 +42,7 @@ export const DIET_TAGS = [
   "DASH",
 ];
 
-export const MEAL_TYPES = [
-  "Śniadanie",
-  "Obiad",
-  "Podwieczorek",
-  "Kolacja",
-  "Przekąska",
-];
+export const MEAL_TYPES = ["Śniadanie", "Obiad", "Podwieczorek", "Kolacja", "Przekąska"];
 
 export const RECIPE_IMAGE_ASSETS = [
   "gnocchi-kurczak-szpinak.png",
@@ -142,9 +136,7 @@ export class RecipeModel {
       name: safe["name"] ?? "",
       description: safe["description"] ?? "",
       ingredients: Array.isArray(safe["ingredients"]) ? safe["ingredients"] : [],
-      instructions: Array.isArray(safe["instructions"])
-        ? safe["instructions"]
-        : [],
+      instructions: Array.isArray(safe["instructions"]) ? safe["instructions"] : [],
       prepTimeMinutes: Number(safe["prepTimeMinutes"] ?? 0),
       servings: Number(safe["servings"] ?? 1) || 1,
       calories: Number(safe["calories"] ?? 0),

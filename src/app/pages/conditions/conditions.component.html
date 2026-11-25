@@ -18,24 +18,32 @@
     (selected)="selectCondition($event || null)"
   ></app-filter-strip>
 
-  <div class="conditions-list">
-    @for (condition of visibleConditions; track condition.id) {
-      <app-medical-condition-card
-        [condition]="condition"
-        [expandedByDefault]="selectedConditionId === condition.id"
-      ></app-medical-condition-card>
-    } @empty {
-      <div class="surface-card empty-box">
-        <mat-icon>search_off</mat-icon>
-        <h3>Nie znaleziono pasującej jednostki chorobowej</h3>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="searchQuery = ''; selectCondition(null)"
-        >
-          Pokaż wszystkie
-        </button>
-      </div>
-    }
-  </div>
+  @if (loading) {
+    <app-loading-state
+      variant="list"
+      [count]="4"
+      label="Wczytywanie chorób i zaleceń..."
+    ></app-loading-state>
+  } @else {
+    <div class="conditions-list">
+      @for (condition of visibleConditions; track condition.id) {
+        <app-medical-condition-card
+          [condition]="condition"
+          [expandedByDefault]="selectedConditionId === condition.id"
+        ></app-medical-condition-card>
+      } @empty {
+        <div class="surface-card empty-box">
+          <mat-icon>search_off</mat-icon>
+          <h3>Nie znaleziono pasującej jednostki chorobowej</h3>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="searchQuery = ''; selectCondition(null)"
+          >
+            Pokaż wszystkie
+          </button>
+        </div>
+      }
+    </div>
+  }
 </div>

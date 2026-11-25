@@ -27,6 +27,7 @@ import { RecipeService } from "../../../services/recipe.service";
 import {
   FilterStripComponent,
   FilterStripItem,
+  LoadingStateComponent,
   PresentationHeaderComponent,
   PrintHeaderComponent,
   RecipeCardComponent,
@@ -56,6 +57,7 @@ export interface ShoppingItem {
     PresentationHeaderComponent,
     FilterStripComponent,
     PrintHeaderComponent,
+    LoadingStateComponent,
   ],
 })
 export class DietPlansComponent implements OnInit, OnDestroy {
@@ -72,6 +74,8 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   personalizedPlans: DietPlan[] = [];
   allRecipes: Recipe[] = [];
   savedRecipeIds: string[] = [];
+  loadingReady = true;
+  loadingMy = false;
 
   currentUserId: string | null = null;
   activeSection: "readyPlans" | "myPlans" | "personalized" = "readyPlans";
@@ -159,9 +163,7 @@ export class DietPlansComponent implements OnInit, OnDestroy {
 
   get filteredReadyPlans(): DietPlan[] {
     if (!this.filterCondition) return this.readyPlans;
-    return this.readyPlans.filter((p) =>
-      p.suitableForConditions?.includes(this.filterCondition),
-    );
+    return this.readyPlans.filter((p) => p.suitableForConditions?.includes(this.filterCondition));
   }
 
   get pickerFilteredRecipes(): Recipe[] {
@@ -173,10 +175,7 @@ export class DietPlansComponent implements OnInit, OnDestroy {
           r.ingredients?.some((i) => i.toLowerCase().includes(q));
         if (!hit) return false;
       }
-      if (
-        this.pickerMealFilter &&
-        !r.mealType?.includes(this.pickerMealFilter)
-      ) {
+      if (this.pickerMealFilter && !r.mealType?.includes(this.pickerMealFilter)) {
         return false;
       }
       if (
@@ -196,11 +195,13 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   }
 
   loadReadyPlans(): void {
+    this.loadingReady = true;
     this.dietPlanService.getPublicDietPlans().subscribe((plans) => {
       this.readyPlans = plans.map((p) => ({
         ...p,
         mealPlan: normalizeMealPlan(p.mealPlan),
       }));
+      this.loadingReady = false;
     });
   }
 
@@ -208,27 +209,25 @@ export class DietPlansComponent implements OnInit, OnDestroy {
     if (!this.currentUserId) {
       this.myPlans = [];
       this.personalizedPlans = [];
+      this.loadingMy = false;
       if (this.activeSection === "personalized") {
         this.activeSection = "readyPlans";
       }
       return;
     }
-    this.dietPlanService
-      .getUserDietPlans(this.currentUserId)
-      .subscribe((plans) => {
-        const normalized = plans.map((p) => ({
-          ...p,
-          mealPlan: normalizeMealPlan(p.mealPlan),
-        }));
-        this.personalizedPlans = normalized.filter((p) => Boolean(p.isPersonalized));
-        this.myPlans = normalized.filter((p) => !p.isPersonalized);
-        if (
-          this.activeSection === "personalized" &&
-          this.personalizedPlans.length === 0
-        ) {
-          this.activeSection = "readyPlans";
-        }
-      });
+    this.loadingMy = true;
+    this.dietPlanService.getUserDietPlans(this.currentUserId).subscribe((plans) => {
+      const normalized = plans.map((p) => ({
+        ...p,
+        mealPlan: normalizeMealPlan(p.mealPlan),
+      }));
+      this.personalizedPlans = normalized.filter((p) => Boolean(p.isPersonalized));
+      this.myPlans = normalized.filter((p) => !p.isPersonalized);
+      this.loadingMy = false;
+      if (this.activeSection === "personalized" && this.personalizedPlans.length === 0) {
+        this.activeSection = "readyPlans";
+      }
+    });
   }
 
   getPlanKey(plan: DietPlan, index: number): string {
@@ -376,13 +375,9 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   }
 
   toggleEditMode(planKey: string): void {
-    const idx = this.myPlans.findIndex(
-      (p, i) => this.getPlanKey(p, i) === planKey,
-    );
+    const idx = this.myPlans.findIndex((p, i) => this.getPlanKey(p, i) === planKey);
     if (idx !== -1) {
-      this.originalPlans[planKey] = JSON.parse(
-        JSON.stringify(this.myPlans[idx]),
-      );
+      this.originalPlans[planKey] = JSON.parse(JSON.stringify(this.myPlans[idx]));
     }
     this.editModes[planKey] = true;
   }
@@ -409,9 +404,7 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   }
 
   cancelEditMode(planKey: string): void {
-    const idx = this.myPlans.findIndex(
-      (p, i) => this.getPlanKey(p, i) === planKey,
-    );
+    const idx = this.myPlans.findIndex((p, i) => this.getPlanKey(p, i) === planKey);
     if (idx !== -1 && this.originalPlans[planKey]) {
       this.myPlans[idx] = this.originalPlans[planKey];
     }
@@ -486,9 +479,7 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   rebuildShoppingList(): void {
     if (!this.shoppingPlan) return;
     const days =
-      this.shoppingScope === "week"
-        ? this.weekDays.map((d) => d.key)
-        : [this.shoppingDay];
+      this.shoppingScope === "week" ? this.weekDays.map((d) => d.key) : [this.shoppingDay];
 
     const counts = new Map<string, { label: string; count: number }>();
 

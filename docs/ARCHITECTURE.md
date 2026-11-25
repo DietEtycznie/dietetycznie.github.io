@@ -84,6 +84,7 @@ import {
 | `PrintHeaderComponent` | `<app-print-header>` | Pasek widoczny wyłącznie w `@media print`: logo po lewej + domena `dietetycznie.github.io` po prawej. |
 | `RecipeCardComponent` | `<app-recipe-card>` | Karta dania w wariantach `normal`, `wide` (lista) i `compact` (slot w jadłospisie). |
 | `ImageCropperDialogComponent` | `<app-image-cropper-dialog>` | Interaktywny edytor zdjęć dla panelu admina: drag-and-drop, przesuwanie, zoom, obrót, płynny suwak zaokrąglenia (`0%–50%`), podgląd mini-karty i eksport WebP Base64 / PNG. |
+| `LoadingStateComponent` | `<app-loading-state>` | Minimalistyczne szkieletowe loadery shimmer (`variant="cards\|list\|detail"`) wyświetlane podczas asynchronicznego pobierania danych z Firestore. |
 | `HeaderComponent` / `FooterComponent` | `<app-header>` / `<app-footer>` | Globalny layout nawigacyjny z przełącznikiem motywu (View Transitions) i menu konta. |
 
 ---
@@ -145,7 +146,11 @@ Reguły bezpieczeństwa Firestore w [`firestore.rules`](../firestore.rules) wymu
 ## 7. Komendy deweloperskie
 
 ```bash
-npm start          # Lokalny serwer developerski (http://localhost:4200)
-npm run build      # Produkcyjny build (dist/demo)
-npm run seed       # Zasilenie Firestore danymi startowymi (Node script)
+npm start            # Lokalny serwer developerski (http://localhost:4200)
+npm run build        # Produkcyjny build (dist/demo)
+npm run lint         # ESLint (TypeScript + szablony Angular)
+npm run format:check # Sprawdzenie formatowania Prettier
+npm run format       # Automatyczne formatowanie Prettier
+npm test             # Testy jednostkowe Vitest
+npm run seed         # Zasilenie Firestore danymi startowymi (Node script)
 ```

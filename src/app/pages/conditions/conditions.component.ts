@@ -9,6 +9,7 @@ import { MedicalConditionService } from "../../../services/medical-condition.ser
 import {
   FilterStripComponent,
   FilterStripItem,
+  LoadingStateComponent,
   PresentationHeaderComponent,
   SearchInputComponent,
 } from "../../components/ui";
@@ -25,6 +26,7 @@ import { MedicalConditionCardComponent } from "./medical-condition-card/medical-
     PresentationHeaderComponent,
     FilterStripComponent,
     SearchInputComponent,
+    LoadingStateComponent,
   ],
   templateUrl: "./conditions.component.html",
   styleUrls: ["./conditions.component.scss"],
@@ -38,11 +40,13 @@ export class ConditionsComponent implements OnInit, OnDestroy {
   allConditions: MedicalCondition[] = [];
   selectedConditionId: string | null = null;
   searchQuery = "";
+  loading = true;
 
   ngOnInit(): void {
     this.sub.add(
       this.medicalConditionService.getMedicalConditions().subscribe((list) => {
         this.allConditions = list;
+        this.loading = false;
       }),
     );
 
@@ -77,9 +81,7 @@ export class ConditionsComponent implements OnInit, OnDestroy {
     const q = this.searchQuery.trim().toLowerCase();
     if (q) {
       list = list.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q),
+        (c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q),
       );
     }
     return list;

@@ -9,8 +9,8 @@
             Pełen spokój.
           </h1>
           <p class="notion-hero__lead">
-            Sprawdzone przepisy z pełnym makro, zalecenia dla chorób
-            dietozależnych i tygodniowe jadłospisy w jednym, czystym miejscu.
+            Sprawdzone przepisy z pełnym makro, zalecenia dla chorób dietozależnych i tygodniowe
+            jadłospisy w jednym, czystym miejscu.
           </p>
 
           <form class="notion-search" (ngSubmit)="submitSearch()">
@@ -22,9 +22,7 @@
               placeholder="Szukaj potrawy lub składnika, np. łosoś, owsianka..."
               aria-label="Szukaj przepisów"
             />
-            <button type="submit" class="notion-btn notion-btn--primary">
-              Szukaj
-            </button>
+            <button type="submit" class="notion-btn notion-btn--primary">Szukaj</button>
           </form>
 
           <div class="notion-hero__actions">
@@ -75,10 +73,7 @@
 
           <div class="chapter-text-wrap">
             @for (ch of storyChapters; track ch.index) {
-              <div
-                class="chapter-slide"
-                [class.is-active]="activeChapter === ch.index"
-              >
+              <div class="chapter-slide" [class.is-active]="activeChapter === ch.index">
                 <h2>{{ ch.title }}</h2>
                 <p>{{ ch.body }}</p>
               </div>
@@ -133,7 +128,9 @@
                   [queryParams]="{ condition: activePreviewCondition.name }"
                   class="bento-tile bento-tile--full bento-tile--cta"
                 >
-                  <span>Dopasowane przepisy: <strong>{{ activePreviewCondition.name }}</strong></span>
+                  <span
+                    >Dopasowane przepisy: <strong>{{ activePreviewCondition.name }}</strong></span
+                  >
                   <span class="cta-count">{{ activePreviewCondition.recipesCount }} dań →</span>
                 </a>
               </div>
@@ -222,11 +219,21 @@
                     <strong class="day-kcal">1 885 kcal</strong>
                   </div>
                   <div class="mini-meals">
-                    <div class="mini-meal"><span>Śniadanie</span><strong>Omlet z łososiem</strong></div>
-                    <div class="mini-meal"><span>Obiad</span><strong>Kurczak grecki z ryżem</strong></div>
-                    <div class="mini-meal"><span>Podwieczorek</span><strong>Jogurt z malinami</strong></div>
-                    <div class="mini-meal"><span>Kolacja</span><strong>Sałatka z awokado</strong></div>
-                    <div class="mini-meal"><span>Przekąska</span><strong>Orzechy i czekolada</strong></div>
+                    <div class="mini-meal">
+                      <span>Śniadanie</span><strong>Omlet z łososiem</strong>
+                    </div>
+                    <div class="mini-meal">
+                      <span>Obiad</span><strong>Kurczak grecki z ryżem</strong>
+                    </div>
+                    <div class="mini-meal">
+                      <span>Podwieczorek</span><strong>Jogurt z malinami</strong>
+                    </div>
+                    <div class="mini-meal">
+                      <span>Kolacja</span><strong>Sałatka z awokado</strong>
+                    </div>
+                    <div class="mini-meal">
+                      <span>Przekąska</span><strong>Orzechy i czekolada</strong>
+                    </div>
                   </div>
                 </div>
 
@@ -274,22 +281,23 @@
         </a>
       </div>
 
-      <div class="conditions-grid">
-        @for (condition of medicalConditions; track condition.id) {
-          <a [routerLink]="['/choroby', condition.id]" class="condition-card">
-            <h3>{{ condition.name }}</h3>
-            <p>
-              {{
-                condition.shortSummary ||
-                  (condition.description | slice: 0 : 95) + "..."
-              }}
-            </p>
-            <span class="condition-card__meta">
-              {{ getRecipeCountForCondition(condition.name) }} przepisów →
-            </span>
-          </a>
-        }
-      </div>
+      @if (loadingConditions) {
+        <app-loading-state variant="list" [count]="2" label=""></app-loading-state>
+      } @else {
+        <div class="conditions-grid">
+          @for (condition of medicalConditions; track condition.id) {
+            <a [routerLink]="['/choroby', condition.id]" class="condition-card">
+              <h3>{{ condition.name }}</h3>
+              <p>
+                {{ condition.shortSummary || (condition.description | slice: 0 : 95) + "..." }}
+              </p>
+              <span class="condition-card__meta">
+                {{ getRecipeCountForCondition(condition.name) }} przepisów →
+              </span>
+            </a>
+          }
+        </div>
+      }
     </div>
   </section>
 
@@ -305,11 +313,15 @@
         </a>
       </div>
 
-      <div class="featured-recipes-grid">
-        @for (recipe of featuredRecipes; track recipe.uid) {
-          <app-recipe-card [recipe]="recipe" [cardStyle]="'normal'"></app-recipe-card>
-        }
-      </div>
+      @if (loadingRecipes) {
+        <app-loading-state variant="cards" [count]="3" label=""></app-loading-state>
+      } @else {
+        <div class="featured-recipes-grid">
+          @for (recipe of featuredRecipes; track recipe.uid) {
+            <app-recipe-card [recipe]="recipe" [cardStyle]="'normal'"></app-recipe-card>
+          }
+        </div>
+      }
     </div>
   </section>
 
@@ -319,14 +331,15 @@
       <div class="dietitian-copy">
         <span class="dietitian-kicker">O mnie</span>
         <h2>mgr Maja Harkot</h2>
-        <p class="dietitian-role">Dietetyk kliniczny i sportowy · absolwentka UM w Lublinie (dyplom z wyróżnieniem)</p>
+        <p class="dietitian-role">
+          Dietetyk kliniczny i sportowy · absolwentka UM w Lublinie (dyplom z wyróżnieniem)
+        </p>
 
         <p class="dietitian-bio">
           Ukończyłam z wyróżnieniem studia magisterskie z dietetyki na
-          <strong>Uniwersytecie Medycznym w Lublinie</strong>. Mam doświadczenie
-          w prowadzeniu pacjentów z chorobami dietozależnymi oraz sportowców.
-          Łączę aktualną wiedzę kliniczną z praktycznymi jadłospisami
-          dopasowanymi do trybu życia i celów treningowych.
+          <strong>Uniwersytecie Medycznym w Lublinie</strong>. Mam doświadczenie w prowadzeniu
+          pacjentów z chorobami dietozależnymi oraz sportowców. Łączę aktualną wiedzę kliniczną z
+          praktycznymi jadłospisami dopasowanymi do trybu życia i celów treningowych.
         </p>
 
         <div class="dietitian-specs">
@@ -342,9 +355,7 @@
           <a routerLink="/jadlospisy" class="notion-btn notion-btn--primary">
             Zobacz przygotowane jadłospisy
           </a>
-          <a routerLink="/choroby" class="notion-link">
-            Poznaj zalecenia żywieniowe →
-          </a>
+          <a routerLink="/choroby" class="notion-link"> Poznaj zalecenia żywieniowe → </a>
         </div>
       </div>
 

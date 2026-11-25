@@ -96,7 +96,9 @@
   padding: 0.35rem 0.35rem 0.35rem 0.9rem;
   max-width: 490px;
   margin-bottom: 1.35rem;
-  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
 
   &:focus-within {
     border-color: $primary-color;
@@ -146,7 +148,9 @@
   word-spacing: 0.14em;
   border: none;
   cursor: pointer;
-  transition: background 0.16s ease, transform 0.16s ease;
+  transition:
+    background 0.16s ease,
+    transform 0.16s ease;
   text-decoration: none;
 
   &--primary {
@@ -239,11 +243,7 @@
   }
 
   .magic-track {
-    background: color-mix(
-      in srgb,
-      #102c22 calc(var(--wave-p) * 100%),
-      #0e1613
-    );
+    background: color-mix(in srgb, #102c22 calc(var(--wave-p) * 100%), #0e1613);
   }
 
   .chapter-dot__bar {
@@ -355,11 +355,7 @@
   --stage-scale: 0.94;
   position: relative;
   height: 250vh;
-  background: color-mix(
-    in srgb,
-    #0e241c calc(var(--wave-p) * 100%),
-    #fffefc
-  );
+  background: color-mix(in srgb, #0e241c calc(var(--wave-p) * 100%), #fffefc);
 }
 
 .magic-sticky {
@@ -421,23 +417,17 @@
     width: 24px;
     height: 2px;
     border-radius: 2px;
-    background: color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.75) calc(var(--wave-p) * 100%),
-      #111111
-    );
-    transition: width 0.28s ease, background-color 0.28s ease;
+    background: color-mix(in srgb, rgba(255, 255, 255, 0.75) calc(var(--wave-p) * 100%), #111111);
+    transition:
+      width 0.28s ease,
+      background-color 0.28s ease;
   }
 
   &__label {
     font-family: "Plus Jakarta Sans", sans-serif;
     font-size: 0.82rem;
     font-weight: 600;
-    color: color-mix(
-      in srgb,
-      #ffffff calc(var(--wave-p) * 100%),
-      #111111
-    );
+    color: color-mix(in srgb, #ffffff calc(var(--wave-p) * 100%), #111111);
   }
 
   &:hover {
@@ -481,22 +471,14 @@
     line-height: 1.12;
     font-weight: 800;
     letter-spacing: -0.03em;
-    color: color-mix(
-      in srgb,
-      #ffffff calc(var(--wave-p) * 100%),
-      #111111
-    );
+    color: color-mix(in srgb, #ffffff calc(var(--wave-p) * 100%), #111111);
     margin: 0 0 1.35rem;
   }
 
   p {
     font-size: 1.02rem;
     line-height: 1.65;
-    color: color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.8) calc(var(--wave-p) * 100%),
-      #55524b
-    );
+    color: color-mix(in srgb, rgba(255, 255, 255, 0.8) calc(var(--wave-p) * 100%), #55524b);
     margin: 0;
     max-width: 410px;
   }
@@ -522,26 +504,14 @@
 }
 
 .bento-tile {
-  background: color-mix(
-    in srgb,
-    rgba(255, 255, 255, 0.08) calc(var(--wave-p) * 100%),
-    #ffffff
-  );
+  background: color-mix(in srgb, rgba(255, 255, 255, 0.08) calc(var(--wave-p) * 100%), #ffffff);
   border: 1px solid
-    color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.14) calc(var(--wave-p) * 100%),
-      rgba(17, 24, 20, 0.09)
-    );
+    color-mix(in srgb, rgba(255, 255, 255, 0.14) calc(var(--wave-p) * 100%), rgba(17, 24, 20, 0.09));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 18px;
   padding: 1.55rem 1.65rem;
-  color: color-mix(
-    in srgb,
-    #ffffff calc(var(--wave-p) * 100%),
-    #111111
-  );
+  color: color-mix(in srgb, #ffffff calc(var(--wave-p) * 100%), #111111);
 
   &--full {
     grid-column: 1 / -1;
@@ -554,7 +524,9 @@
     padding: 1.25rem 1.65rem;
     font-size: 0.94rem;
     text-decoration: none;
-    transition: border-color 0.18s ease, background-color 0.18s ease;
+    transition:
+      border-color 0.18s ease,
+      background-color 0.18s ease;
 
     &:hover {
       border-color: $primary-color;
@@ -577,11 +549,7 @@
 
 .bento-pill {
   border: 1px solid
-    color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.16) calc(var(--wave-p) * 100%),
-      rgba(17, 24, 20, 0.12)
-    );
+    color-mix(in srgb, rgba(255, 255, 255, 0.16) calc(var(--wave-p) * 100%), rgba(17, 24, 20, 0.12));
   background: transparent;
   color: inherit;
   padding: 0.34rem 0.75rem;
@@ -711,11 +679,7 @@
   }
 
   .ring-bg {
-    stroke: color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.12) calc(var(--wave-p) * 100%),
-      #e8eeea
-    );
+    stroke: color-mix(in srgb, rgba(255, 255, 255, 0.12) calc(var(--wave-p) * 100%), #e8eeea);
   }
   .ring-p {
     stroke: $primary-color;
@@ -758,11 +722,7 @@
   font-size: 0.92rem;
   padding-bottom: 0.65rem;
   border-bottom: 1px solid
-    color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.1) calc(var(--wave-p) * 100%),
-      rgba(17, 24, 20, 0.07)
-    );
+    color-mix(in srgb, rgba(255, 255, 255, 0.1) calc(var(--wave-p) * 100%), rgba(17, 24, 20, 0.07));
 
   &:last-child {
     padding-bottom: 0;
@@ -914,7 +874,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  transition: border-color 0.18s ease, transform 0.18s ease;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
 
   &:hover {
     border-color: var(--accent-primary);
@@ -964,11 +926,7 @@
       rgba(32, 178, 127, 0.055) 48%,
       transparent 76%
     ),
-    radial-gradient(
-      420px 280px at 18% 20%,
-      rgba(32, 178, 127, 0.055) 0%,
-      transparent 70%
-    ),
+    radial-gradient(420px 280px at 18% 20%, rgba(32, 178, 127, 0.055) 0%, transparent 70%),
     var(--bg-surface);
   border-top: 1px solid var(--border-subtle);
   padding: 4.5rem 0 0;
