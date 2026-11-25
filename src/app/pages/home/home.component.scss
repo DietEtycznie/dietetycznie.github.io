@@ -897,12 +897,6 @@
 .dietitian-section {
   position: relative;
   background:
-    radial-gradient(
-      520px 340px at 75% 100%,
-      rgba(32, 178, 127, 0.15) 0%,
-      rgba(32, 178, 127, 0.055) 48%,
-      transparent 76%
-    ),
     radial-gradient(420px 280px at 18% 20%, rgba(32, 178, 127, 0.055) 0%, transparent 70%),
     var(--bg-surface);
   border-top: 1px solid var(--border-subtle);
@@ -996,6 +990,24 @@
   justify-content: center;
   align-items: flex-end;
   min-height: 420px;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(700px, 170%);
+    height: 118%;
+    background: radial-gradient(
+      ellipse 62% 68% at 50% 64%,
+      rgba(32, 178, 127, 0.26) 0%,
+      rgba(32, 178, 127, 0.11) 46%,
+      transparent 76%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 .dietitian-silhouette {
@@ -1344,13 +1356,19 @@
     border: none;
     border-radius: 0;
     border-bottom: 1px solid var(--border-subtle);
-    background: radial-gradient(
-      280px 185px at 50% 100%,
-      rgba(32, 178, 127, 0.16) 0%,
-      rgba(32, 178, 127, 0.05) 52%,
-      transparent 78%
-    );
+    background: transparent;
     overflow: hidden;
+
+    &::before {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        340px 300px at 50% 68%,
+        rgba(32, 178, 127, 0.26) 0%,
+        rgba(32, 178, 127, 0.11) 48%,
+        transparent 76%
+      );
+    }
   }
 
   .dietitian-silhouette {
