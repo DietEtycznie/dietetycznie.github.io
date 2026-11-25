@@ -407,10 +407,6 @@
     font-size: 0.82rem;
     font-weight: 600;
     color: color-mix(in srgb, #ffffff calc(var(--wave-p) * 100%), #111111);
-
-    &--short {
-      display: none;
-    }
   }
 
   &:hover {
@@ -424,10 +420,6 @@
       background: $primary-color;
     }
   }
-}
-
-.magic-progress-rail {
-  display: none;
 }
 
 .chapter-text-wrap {
@@ -1072,10 +1064,9 @@
     font-size: 0.78rem;
   }
 
-  .magic-grid,
   .dietitian-grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: 1.1rem;
+    gap: 1.5rem;
   }
 
   .magic-track {
@@ -1089,97 +1080,56 @@
     height: calc(100dvh - 60px);
     display: flex;
     align-items: center;
+    padding: clamp(1.25rem, 3.8vh, 2.5rem) 0 clamp(1.5rem, 4.2vh, 2.75rem);
     overflow: hidden;
   }
 
+  .magic-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(1.1rem, 3vh, 2rem);
+    height: 100%;
+    max-height: 740px;
+  }
+
   .magic-copy {
-    gap: 0.7rem;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: clamp(1rem, 2.8vh, 1.75rem);
     padding: 0;
     min-width: 0;
     max-width: 100%;
   }
 
   .magic-stage {
+    flex: 0 0 auto;
     min-width: 0;
     max-width: 100%;
   }
 
   .chapter-dots {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
     width: 100%;
-    max-width: 100%;
   }
 
   .chapter-dot {
-    justify-content: center;
-    text-align: center;
-    padding: 0.42rem 0.35rem;
-    border-radius: 999px;
-    border: 1px solid
-      color-mix(
-        in srgb,
-        rgba(255, 255, 255, 0.2) calc(var(--wave-p) * 100%),
-        rgba(17, 24, 20, 0.14)
-      );
-    background: color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.06) calc(var(--wave-p) * 100%),
-      rgba(17, 24, 20, 0.03)
-    );
-    opacity: 0.82;
-    gap: 0;
+    gap: 0.65rem;
 
     &__bar {
-      display: none;
+      width: 20px;
     }
 
-    &__label--full {
-      display: none;
+    &__label {
+      font-size: 0.8rem;
     }
 
-    &__label--short {
-      display: inline;
-      font-size: 0.74rem;
-      white-space: nowrap;
-    }
-
-    &.is-active {
-      opacity: 1;
-      background: var(--accent-primary);
-      border-color: var(--accent-primary);
-
-      .chapter-dot__label {
-        color: #ffffff;
-      }
-    }
-  }
-
-  :host-context([data-theme="dark"]) .chapter-dot:not(.is-active) {
-    border-color: rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .magic-progress-rail {
-    display: block;
-    width: 100%;
-    height: 2px;
-    border-radius: 99px;
-    background: color-mix(
-      in srgb,
-      rgba(255, 255, 255, 0.16) calc(var(--wave-p) * 100%),
-      rgba(17, 24, 20, 0.08)
-    );
-    overflow: hidden;
-
-    &__fill {
-      width: 100%;
-      height: 100%;
-      background: var(--accent-primary);
-      transform: scaleX(var(--story-p));
-      transform-origin: left center;
-      will-change: transform;
+    &.is-active .chapter-dot__bar {
+      width: 44px;
     }
   }
 
@@ -1200,14 +1150,14 @@
     }
 
     h2 {
-      font-size: clamp(1.3rem, 5.2vw, 1.75rem);
-      line-height: 1.15;
-      margin-bottom: 0.35rem;
+      font-size: clamp(1.5rem, 5.8vw, 2rem);
+      line-height: 1.14;
+      margin-bottom: 0.55rem;
     }
 
     p {
-      font-size: 0.86rem;
-      line-height: 1.48;
+      font-size: 0.92rem;
+      line-height: 1.54;
       max-width: 100%;
     }
   }
@@ -1219,104 +1169,109 @@
 
   .bento-layout {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.6rem;
+    gap: 0.7rem;
   }
 
   .bento-tile {
-    padding: 0.85rem 0.9rem;
-    border-radius: 14px;
+    padding: 1rem 1.05rem;
+    border-radius: 15px;
     min-width: 0;
   }
 
   .bento-pills {
-    gap: 0.32rem;
-    margin-bottom: 0.45rem;
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
   }
 
   .bento-pill {
-    padding: 0.24rem 0.55rem;
-    font-size: 0.72rem;
+    padding: 0.28rem 0.62rem;
+    font-size: 0.75rem;
     border-radius: 7px;
   }
 
   .bento-focus-line {
-    font-size: 0.76rem;
-    line-height: 1.35;
+    font-size: 0.79rem;
+    line-height: 1.38;
   }
 
   .tile-label {
-    font-size: 0.66rem;
-    margin-bottom: 0.4rem;
+    font-size: 0.68rem;
+    margin-bottom: 0.45rem;
   }
 
   .tile-list {
-    gap: 0.38rem;
-    font-size: 0.78rem;
-    line-height: 1.32;
+    gap: 0.45rem;
+    font-size: 0.81rem;
+    line-height: 1.35;
   }
 
   .bento-tile--cta {
-    padding: 0.78rem 0.95rem;
-    font-size: 0.82rem;
+    padding: 0.85rem 1.05rem;
+    font-size: 0.84rem;
     gap: 0.5rem;
   }
 
   .dish-header-tile {
-    gap: 0.8rem;
+    gap: 0.9rem;
   }
 
   .dish-thumb {
-    width: 66px;
-    height: 66px;
-    border-radius: 10px;
+    width: 74px;
+    height: 74px;
+    border-radius: 11px;
   }
 
   .dish-header-meta h3 {
-    margin: 0.1rem 0 0.45rem;
-    font-size: 0.96rem;
-    line-height: 1.2;
+    margin: 0.15rem 0 0.5rem;
+    font-size: 1.02rem;
+    line-height: 1.22;
   }
 
   .portion-switcher {
-    font-size: 0.76rem;
-    gap: 0.3rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
 
     button {
-      padding: 0.2rem 0.55rem;
-      font-size: 0.76rem;
+      padding: 0.24rem 0.6rem;
+      font-size: 0.78rem;
     }
   }
 
   .macro-ring-tile {
-    min-height: 148px;
+    min-height: 168px;
   }
 
   .macro-ring {
-    width: 108px;
-    height: 108px;
+    width: 120px;
+    height: 120px;
   }
 
   .ring-center strong {
-    font-size: 1.3rem;
+    font-size: 1.45rem;
   }
 
   .macro-numbers-tile {
-    gap: 0.45rem;
+    gap: 0.58rem;
   }
 
   .macro-line {
-    font-size: 0.77rem;
-    padding-bottom: 0.38rem;
-    gap: 0.35rem;
+    font-size: 0.79rem;
+    padding-bottom: 0.46rem;
+    gap: 0.4rem;
+
+    strong {
+      white-space: nowrap;
+      text-align: right;
+    }
   }
 
   .tile-head-row {
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.65rem;
     gap: 0.25rem;
     flex-wrap: wrap;
 
     .day-kcal {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
     }
 
     .shop-hint {
@@ -1325,30 +1280,30 @@
   }
 
   .mini-meals {
-    gap: 0.42rem;
+    gap: 0.5rem;
   }
 
   .mini-meal {
-    font-size: 0.76rem;
-    line-height: 1.22;
+    font-size: 0.8rem;
+    line-height: 1.24;
 
     span {
-      font-size: 0.62rem;
+      font-size: 0.64rem;
     }
   }
 
   .mini-shopping {
-    gap: 0.48rem;
+    gap: 0.55rem;
   }
 
   .mini-shop-row {
-    font-size: 0.75rem;
-    line-height: 1.24;
-    gap: 0.45rem;
+    font-size: 0.79rem;
+    line-height: 1.28;
+    gap: 0.5rem;
 
     input {
-      width: 14px;
-      height: 14px;
+      width: 15px;
+      height: 15px;
       flex-shrink: 0;
     }
   }

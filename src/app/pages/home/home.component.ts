@@ -100,21 +100,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       index: 0,
       kicker: "01 · Zalecenia medyczne",
-      shortKicker: "01 · Choroby",
       title: "Zaczynasz od swojego zdrowia",
       body: "Wybierasz jednostkę chorobową i od razu widzisz konkretne zasady NCEŻ, produkty zalecane oraz bezpieczne przepisy.",
     },
     {
       index: 1,
       kicker: "02 · Przepisy i makro",
-      shortKicker: "02 · Makro",
       title: "Każdy posiłek policzony za Ciebie",
       body: "Dokładne kalorie, białko, węglowodany, tłuszcz, sód i błonnik. Przelicznik porcji sam skaluje gramatury i wartości.",
     },
     {
       index: 2,
       kicker: "03 · Plan i zakupy",
-      shortKicker: "03 · Jadłospis",
       title: "Cały tydzień w jednym rytmie",
       body: "Kopiujesz gotowy 7-dniowy jadłospis z 5 posiłkami dziennie, podmieniasz dania i jednym kliknięciem tworzysz listę zakupów.",
     },
