@@ -62,6 +62,13 @@
       (selected)="filterCondition = $event"
     ></app-filter-strip>
 
+    @if (loadingReady) {
+      <app-loading-state
+        variant="list"
+        [count]="2"
+        label="Wczytywanie jadłospisów..."
+      ></app-loading-state>
+    } @else {
     <div class="plans-stack">
       @for (plan of filteredReadyPlans; track plan.id; let pIdx = $index) {
         @let planKey = getPlanKey(plan, pIdx);
@@ -201,6 +208,7 @@
         </div>
       }
     </div>
+    }
   }
 
   <!-- PERSONALIZED PLANS (READ-ONLY PAID PLANS ASSIGNED BY DIETITIAN) -->
@@ -387,8 +395,15 @@
         </button>
       </div>
 
-      <div class="plans-stack">
-        @for (plan of myPlans; track plan.id || $index; let pIdx = $index) {
+      @if (loadingMy) {
+        <app-loading-state
+          variant="list"
+          [count]="2"
+          label="Wczytywanie Twoich jadłospisów..."
+        ></app-loading-state>
+      } @else {
+        <div class="plans-stack">
+          @for (plan of myPlans; track plan.id || $index; let pIdx = $index) {
           @let planKey = getPlanKey(plan, pIdx);
           @let activeDay = getSelectedDay(planKey);
           @let isEditing = editModes[planKey];
@@ -619,6 +634,7 @@
           </div>
         }
       </div>
+      }
     }
   }
 

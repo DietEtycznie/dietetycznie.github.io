@@ -17,7 +17,11 @@ import { AuthService } from "../../../services/auth.service";
 import { DietPlanService } from "../../../services/diet-plan.service";
 import { RecipeService } from "../../../services/recipe.service";
 import { UserService } from "../../../services/user.service";
-import { PrintHeaderComponent, RecipeCardComponent } from "../../components/ui";
+import {
+  LoadingStateComponent,
+  PrintHeaderComponent,
+  RecipeCardComponent,
+} from "../../components/ui";
 
 @Component({
   selector: "app-recipe-details",
@@ -32,6 +36,7 @@ import { PrintHeaderComponent, RecipeCardComponent } from "../../components/ui";
     MatSelectModule,
     RecipeCardComponent,
     PrintHeaderComponent,
+    LoadingStateComponent,
   ],
 })
 export class RecipeDetailsComponent implements OnInit, OnDestroy {
@@ -46,6 +51,7 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
 
   recipe: Recipe | null = null;
   similarRecipes: Recipe[] = [];
+  loading = true;
   notFound = false;
   like = false;
   currentUserId: string | null = null;
@@ -70,13 +76,15 @@ export class RecipeDetailsComponent implements OnInit, OnDestroy {
     this.sub.add(
       combineLatest([
         this.route.paramMap.pipe(
-          switchMap((params) =>
-            this.recipeService.getRecipeById(params.get("uid") || ""),
-          ),
+          switchMap((params) => {
+            this.loading = true;
+            return this.recipeService.getRecipeById(params.get("uid") || "");
+          }),
         ),
         this.authService.user$,
       ]).subscribe(([recipe, user]) => {
         this.recipe = recipe;
+        this.loading = false;
         this.notFound = !recipe;
         this.currentUserId = user?.uid ?? null;
 

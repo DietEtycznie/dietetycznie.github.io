@@ -27,6 +27,7 @@ import { RecipeService } from "../../../services/recipe.service";
 import {
   FilterStripComponent,
   FilterStripItem,
+  LoadingStateComponent,
   PresentationHeaderComponent,
   PrintHeaderComponent,
   RecipeCardComponent,
@@ -56,6 +57,7 @@ export interface ShoppingItem {
     PresentationHeaderComponent,
     FilterStripComponent,
     PrintHeaderComponent,
+    LoadingStateComponent,
   ],
 })
 export class DietPlansComponent implements OnInit, OnDestroy {
@@ -72,6 +74,8 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   personalizedPlans: DietPlan[] = [];
   allRecipes: Recipe[] = [];
   savedRecipeIds: string[] = [];
+  loadingReady = true;
+  loadingMy = false;
 
   currentUserId: string | null = null;
   activeSection: "readyPlans" | "myPlans" | "personalized" = "readyPlans";
@@ -196,11 +200,13 @@ export class DietPlansComponent implements OnInit, OnDestroy {
   }
 
   loadReadyPlans(): void {
+    this.loadingReady = true;
     this.dietPlanService.getPublicDietPlans().subscribe((plans) => {
       this.readyPlans = plans.map((p) => ({
         ...p,
         mealPlan: normalizeMealPlan(p.mealPlan),
       }));
+      this.loadingReady = false;
     });
   }
 
@@ -208,11 +214,13 @@ export class DietPlansComponent implements OnInit, OnDestroy {
     if (!this.currentUserId) {
       this.myPlans = [];
       this.personalizedPlans = [];
+      this.loadingMy = false;
       if (this.activeSection === "personalized") {
         this.activeSection = "readyPlans";
       }
       return;
     }
+    this.loadingMy = true;
     this.dietPlanService
       .getUserDietPlans(this.currentUserId)
       .subscribe((plans) => {
@@ -222,6 +230,7 @@ export class DietPlansComponent implements OnInit, OnDestroy {
         }));
         this.personalizedPlans = normalized.filter((p) => Boolean(p.isPersonalized));
         this.myPlans = normalized.filter((p) => !p.isPersonalized);
+        this.loadingMy = false;
         if (
           this.activeSection === "personalized" &&
           this.personalizedPlans.length === 0

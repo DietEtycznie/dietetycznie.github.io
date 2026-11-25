@@ -14,6 +14,7 @@ import {
 import { AuthService } from "../../../services/auth.service";
 import { RecipeService } from "../../../services/recipe.service";
 import {
+  LoadingStateComponent,
   PresentationHeaderComponent,
   RecipeCardComponent,
 } from "../../components/ui";
@@ -30,6 +31,7 @@ type SortMode = "rating" | "kcalAsc" | "proteinDesc" | "timeAsc" | "nameAsc";
     MatSelectModule,
     RecipeCardComponent,
     PresentationHeaderComponent,
+    LoadingStateComponent,
   ],
   templateUrl: "./recipes.component.html",
   styleUrls: ["./recipes.component.scss"],
@@ -43,6 +45,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
   recipes: Recipe[] = [];
   savedRecipes: string[] = [];
   isLoggedIn = false;
+  loading = true;
 
   filterName = "";
   filterCondition: string[] = [];
@@ -66,6 +69,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
     this.sub.add(
       this.recipeService.getRecipes().subscribe((recipes) => {
         this.recipes = recipes;
+        this.loading = false;
       }),
     );
 

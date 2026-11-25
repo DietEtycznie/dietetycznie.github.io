@@ -274,22 +274,26 @@
         </a>
       </div>
 
-      <div class="conditions-grid">
-        @for (condition of medicalConditions; track condition.id) {
-          <a [routerLink]="['/choroby', condition.id]" class="condition-card">
-            <h3>{{ condition.name }}</h3>
-            <p>
-              {{
-                condition.shortSummary ||
-                  (condition.description | slice: 0 : 95) + "..."
-              }}
-            </p>
-            <span class="condition-card__meta">
-              {{ getRecipeCountForCondition(condition.name) }} przepisów →
-            </span>
-          </a>
-        }
-      </div>
+      @if (loadingConditions) {
+        <app-loading-state variant="list" [count]="2" label=""></app-loading-state>
+      } @else {
+        <div class="conditions-grid">
+          @for (condition of medicalConditions; track condition.id) {
+            <a [routerLink]="['/choroby', condition.id]" class="condition-card">
+              <h3>{{ condition.name }}</h3>
+              <p>
+                {{
+                  condition.shortSummary ||
+                    (condition.description | slice: 0 : 95) + "..."
+                }}
+              </p>
+              <span class="condition-card__meta">
+                {{ getRecipeCountForCondition(condition.name) }} przepisów →
+              </span>
+            </a>
+          }
+        </div>
+      }
     </div>
   </section>
 
@@ -305,11 +309,15 @@
         </a>
       </div>
 
-      <div class="featured-recipes-grid">
-        @for (recipe of featuredRecipes; track recipe.uid) {
-          <app-recipe-card [recipe]="recipe" [cardStyle]="'normal'"></app-recipe-card>
-        }
-      </div>
+      @if (loadingRecipes) {
+        <app-loading-state variant="cards" [count]="3" label=""></app-loading-state>
+      } @else {
+        <div class="featured-recipes-grid">
+          @for (recipe of featuredRecipes; track recipe.uid) {
+            <app-recipe-card [recipe]="recipe" [cardStyle]="'normal'"></app-recipe-card>
+          }
+        </div>
+      }
     </div>
   </section>
 

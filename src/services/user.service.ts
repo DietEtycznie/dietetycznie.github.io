@@ -8,7 +8,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { catchError, from, map, Observable, of, tap } from "rxjs";
+import { catchError, map, Observable, of, tap } from "rxjs";
 import { User } from "../models/user.model";
 import { AuthService } from "./auth.service";
 import { FirebaseService } from "./firebase.service";
@@ -30,7 +30,7 @@ export class UserService {
     }
 
     const usersRef = collection(this.firebase.db, "users");
-    return from(getDocs(usersRef)).pipe(
+    return this.firebase.fromFirebase(getDocs(usersRef)).pipe(
       map((snap) =>
         snap.docs.map((d) => ({
           ...(d.data() as User),
@@ -50,7 +50,7 @@ export class UserService {
     }
 
     const userRef = doc(this.firebase.db, `users/${id}`);
-    return from(getDoc(userRef)).pipe(
+    return this.firebase.fromFirebase(getDoc(userRef)).pipe(
       map((snap) => (snap.exists() ? ({ ...(snap.data() as User), uid: snap.id }) : null)),
       catchError(() => of(this.authService.currentUserSnapshot)),
     );
@@ -95,7 +95,7 @@ export class UserService {
         }),
       );
     }
-    return from(Promise.all(writeOps)).pipe(
+    return this.firebase.fromFirebase(Promise.all(writeOps)).pipe(
       map(() => created),
       catchError(() => {
         this.localStore.upsertUser(created);
@@ -133,7 +133,7 @@ export class UserService {
       ops.push(deleteDoc(doc(this.firebase.db, `admins/${id}`)).catch(() => void 0));
     }
 
-    return from(Promise.all(ops)).pipe(
+    return this.firebase.fromFirebase(Promise.all(ops)).pipe(
       map(() => void 0),
       catchError(() => {
         const list = this.localStore.getUsers().map((u) =>
@@ -153,12 +153,14 @@ export class UserService {
 
     const userRef = doc(this.firebase.db, `users/${id}`);
     const adminRef = doc(this.firebase.db, `admins/${id}`);
-    return from(
-      Promise.all([
-        deleteDoc(userRef),
-        deleteDoc(adminRef).catch(() => void 0),
-      ]),
-    ).pipe(
+    return this.firebase
+      .fromFirebase(
+        Promise.all([
+          deleteDoc(userRef),
+          deleteDoc(adminRef).catch(() => void 0),
+        ]),
+      )
+      .pipe(
       map(() => void 0),
       catchError(() => {
         this.localStore.deleteUser(id);

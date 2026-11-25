@@ -19,7 +19,7 @@ import { AuthService } from "../../../services/auth.service";
 import { DietPlanService } from "../../../services/diet-plan.service";
 import { MedicalConditionService } from "../../../services/medical-condition.service";
 import { RecipeService } from "../../../services/recipe.service";
-import { RecipeCardComponent } from "../../components/ui";
+import { LoadingStateComponent, RecipeCardComponent } from "../../components/ui";
 
 @Component({
   selector: "app-home",
@@ -30,6 +30,7 @@ import { RecipeCardComponent } from "../../components/ui";
     RouterLink,
     MatIconModule,
     RecipeCardComponent,
+    LoadingStateComponent,
   ],
   templateUrl: "./home.component.html",
   styleUrls: ["./home.component.scss"],
@@ -43,6 +44,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   totalRecipesCount = 0;
   totalConditionsCount = 0;
   totalReadyPlansCount = 0;
+  loadingRecipes = true;
+  loadingConditions = true;
   searchQuery = "";
 
   // Scroll storytelling state
@@ -130,6 +133,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.featuredRecipes = [...recipes]
         .sort((a, b) => (b.stars ?? 0) - (a.stars ?? 0))
         .slice(0, 6);
+      this.loadingRecipes = false;
     });
 
     this.medicalConditionService
@@ -137,6 +141,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe((conditions) => {
         this.totalConditionsCount = conditions.length;
         this.medicalConditions = conditions.slice(0, 4);
+        this.loadingConditions = false;
       });
 
     this.dietPlanService.getPublicDietPlans().subscribe((plans) => {

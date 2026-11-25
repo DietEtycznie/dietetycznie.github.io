@@ -13,7 +13,12 @@
       }
     </nav>
 
-    @if (notFound) {
+    @if (loading) {
+      <app-loading-state
+        variant="detail"
+        label="Wczytywanie przepisu..."
+      ></app-loading-state>
+    } @else if (notFound) {
       <div class="not-found-box">
         <mat-icon>restaurant_menu</mat-icon>
         <h2>Nie znaleziono przepisu</h2>

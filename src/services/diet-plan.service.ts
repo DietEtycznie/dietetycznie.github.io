@@ -11,7 +11,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { catchError, from, map, Observable, of } from "rxjs";
+import { catchError, map, Observable, of } from "rxjs";
 import { SEED_DIET_PLANS } from "../data/seed-diet-plans";
 import { DietPlan, normalizeMealPlan } from "../models/diet-plan.model";
 import { FirebaseService } from "./firebase.service";
@@ -44,7 +44,7 @@ export class DietPlanService {
 
     const plansRef = collection(this.firebase.db, "dietPlans");
     const q = query(plansRef, where("userId", "==", null));
-    return from(getDocs(q)).pipe(
+    return this.firebase.fromFirebase(getDocs(q)).pipe(
       map((snapshot) => {
         const list = snapshot.docs.map((d) =>
           this.normalizePlan({ ...(d.data() as DietPlan), id: d.id }),
@@ -79,7 +79,7 @@ export class DietPlanService {
 
     const plansRef = collection(this.firebase.db, "dietPlans");
     const q = query(plansRef, where("userId", "==", userId));
-    return from(getDocs(q)).pipe(
+    return this.firebase.fromFirebase(getDocs(q)).pipe(
       map((snapshot) =>
         snapshot.docs.map((d) =>
           this.normalizePlan({ ...(d.data() as DietPlan), id: d.id }),
@@ -104,7 +104,7 @@ export class DietPlanService {
     }
 
     const plansRef = collection(this.firebase.db, "dietPlans");
-    return from(getDocs(plansRef)).pipe(
+    return this.firebase.fromFirebase(getDocs(plansRef)).pipe(
       map((snapshot) =>
         snapshot.docs.map((d) =>
           this.normalizePlan({ ...(d.data() as DietPlan), id: d.id }),
@@ -123,7 +123,7 @@ export class DietPlanService {
     }
 
     const planRef = doc(this.firebase.db, `dietPlans/${id}`);
-    return from(getDoc(planRef)).pipe(
+    return this.firebase.fromFirebase(getDoc(planRef)).pipe(
       map((snap) =>
         snap.exists()
           ? this.normalizePlan({ ...(snap.data() as DietPlan), id: snap.id })
@@ -151,9 +151,9 @@ export class DietPlanService {
     }
 
     const plansRef = collection(this.firebase.db, "dietPlans");
-    return from(
-      addDoc(plansRef, this.firebase.cleanPayload(normalized)),
-    ).pipe(map((docRef) => docRef.id));
+    return this.firebase
+      .fromFirebase(addDoc(plansRef, this.firebase.cleanPayload(normalized)))
+      .pipe(map((docRef) => docRef.id));
   }
 
   updateDietPlan(id: string, plan: Partial<DietPlan>): Observable<void> {
@@ -172,7 +172,9 @@ export class DietPlanService {
     }
 
     const planRef = doc(this.firebase.db, `dietPlans/${id}`);
-    return from(updateDoc(planRef, this.firebase.cleanPayload(payload)));
+    return this.firebase.fromFirebase(
+      updateDoc(planRef, this.firebase.cleanPayload(payload)),
+    );
   }
 
   deleteDietPlan(id: string): Observable<void> {
@@ -183,7 +185,7 @@ export class DietPlanService {
     }
 
     const planRef = doc(this.firebase.db, `dietPlans/${id}`);
-    return from(deleteDoc(planRef));
+    return this.firebase.fromFirebase(deleteDoc(planRef));
   }
 
   async seedToFirestore(): Promise<number> {

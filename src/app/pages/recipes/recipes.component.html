@@ -4,7 +4,11 @@
 >
   <span class="badge badge--primary">
     <mat-icon style="font-size: 16px; width: 16px; height: 16px;">restaurant</mat-icon>
-    Znaleziono: {{ filteredRecipes.length }} / {{ recipes.length }}
+    @if (loading) {
+      Wczytywanie...
+    } @else {
+      Znaleziono: {{ filteredRecipes.length }} / {{ recipes.length }}
+    }
   </span>
 </app-presentation-header>
 
@@ -217,7 +221,13 @@
       </div>
     </div>
 
-    @if (filteredRecipes.length === 0) {
+    @if (loading) {
+      <app-loading-state
+        variant="cards"
+        [count]="6"
+        label="Wczytywanie przepisów..."
+      ></app-loading-state>
+    } @else if (filteredRecipes.length === 0) {
       <div class="empty-state surface-card">
         <mat-icon>search_off</mat-icon>
         <h3>Brak pasujących przepisów</h3>

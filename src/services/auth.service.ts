@@ -41,27 +41,33 @@ export class AuthService {
     if (this.firebase.isConfigured && this.firebase.auth) {
       onAuthStateChanged(this.firebase.auth, async (fbUser) => {
         if (!fbUser) {
-          this.userSubject.next(null);
-          this.authReadySubject.next(true);
+          this.firebase.runInZone(() => {
+            this.userSubject.next(null);
+            this.authReadySubject.next(true);
+          });
           return;
         }
         try {
           const profile = await this.loadOrCreateUserProfile(fbUser);
-          this.userSubject.next(profile);
+          this.firebase.runInZone(() => {
+            this.userSubject.next(profile);
+            this.authReadySubject.next(true);
+          });
         } catch (err) {
           console.warn("Failed loading Firestore user profile, falling back.", err);
-          this.userSubject.next({
-            uid: fbUser.uid,
-            email: fbUser.email || "",
-            displayName: fbUser.displayName || "Użytkownik",
-            photoURL: fbUser.photoURL || undefined,
-            role: fbUser.uid === BOOTSTRAP_ADMIN_UID ? "admin" : "user",
-            savedRecipes: [],
-            medicalConditions: [],
-            dietPlans: [],
+          this.firebase.runInZone(() => {
+            this.userSubject.next({
+              uid: fbUser.uid,
+              email: fbUser.email || "",
+              displayName: fbUser.displayName || "Użytkownik",
+              photoURL: fbUser.photoURL || undefined,
+              role: fbUser.uid === BOOTSTRAP_ADMIN_UID ? "admin" : "user",
+              savedRecipes: [],
+              medicalConditions: [],
+              dietPlans: [],
+            });
+            this.authReadySubject.next(true);
           });
-        } finally {
-          this.authReadySubject.next(true);
         }
       });
     } else {
