@@ -28,8 +28,8 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: $primary-soft;
-  color: $primary-dark;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -109,8 +109,8 @@
   justify-content: space-between;
   gap: 0.75rem;
   flex-wrap: wrap;
-  padding-top: 0.75rem;
-  border-top: 1px solid $surface-border;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .condition-card__ctas {
@@ -123,13 +123,38 @@
 
 @media (max-width: 640px) {
   .condition-card {
-    padding: 1.2rem;
+    padding: 1.15rem;
+    gap: 1rem;
   }
+
+  .condition-card__head {
+    gap: 0.75rem;
+
+    h2 {
+      font-size: 1.18rem;
+    }
+  }
+
+  .condition-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+  }
+
+  .condition-card__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .condition-card__ctas {
     width: 100%;
     margin-left: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+
     button {
-      flex: 1;
+      width: 100%;
     }
   }
 }

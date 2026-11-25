@@ -124,5 +124,7 @@
 
   .presentation-header__actions {
     align-self: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
   }
 }

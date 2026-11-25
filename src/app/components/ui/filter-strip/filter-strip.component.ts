@@ -44,6 +44,25 @@ export interface FilterStripItem {
         border-bottom: 1px solid var(--border-subtle);
       }
 
+      @media (max-width: 680px) {
+        .filter-strip {
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          gap: 1.1rem;
+          scrollbar-width: none;
+          -webkit-overflow-scrolling: touch;
+
+          &::-webkit-scrollbar {
+            display: none;
+          }
+        }
+
+        .filter-link {
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+      }
+
       .filter-link {
         display: inline-flex;
         align-items: center;

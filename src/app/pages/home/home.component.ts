@@ -148,7 +148,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.updateScrollProgress();
+    this.ngZone.runOutsideAngular(() => {
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        this.updateScrollProgress();
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -169,15 +174,40 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  private isCompactViewport(): boolean {
+    return typeof window !== "undefined" && window.innerWidth <= 980;
+  }
+
+  private isShortViewport(): boolean {
+    return typeof window !== "undefined" && window.innerWidth <= 980 && window.innerHeight < 580;
+  }
+
   private updateScrollProgress(): void {
-    const hintOp = Math.max(0, Math.min(1, 1 - window.scrollY / 160));
+    const el = this.magicTrackRef?.nativeElement;
+
+    if (this.isShortViewport()) {
+      if (this.scrollHintOpacity !== 0) {
+        this.ngZone.run(() => {
+          this.scrollHintOpacity = 0;
+        });
+      }
+      if (el) {
+        el.style.setProperty("--story-p", "0.5");
+        el.style.setProperty("--wave-p", "1");
+        el.style.setProperty("--stage-scale", "1");
+      }
+      return;
+    }
+
+    const isCompact = this.isCompactViewport();
+
+    const hintOp = Math.max(0, Math.min(1, 1 - window.scrollY / 140));
     if (Math.abs(hintOp - this.scrollHintOpacity) > 0.02) {
       this.ngZone.run(() => {
         this.scrollHintOpacity = hintOp;
       });
     }
 
-    const el = this.magicTrackRef?.nativeElement;
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
@@ -186,15 +216,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const clamped = Math.max(0, Math.min(1, raw));
 
     // Strictly 0 before entering the track (zero green bleed under hero!)
-    const entryFade = clamped < 0.02 ? 0 : Math.min(1, (clamped - 0.02) / 0.14);
-    const exitFade = clamped > 0.86 ? Math.max(0, (1 - clamped) / 0.14) : 1;
+    const fadeSpan = isCompact ? 0.08 : 0.14;
+    const entryFade = clamped < 0.02 ? 0 : Math.min(1, (clamped - 0.02) / fadeSpan);
+    const exitFade = clamped > 1 - fadeSpan ? Math.max(0, (1 - clamped) / fadeSpan) : 1;
     const wave = entryFade * exitFade;
 
     el.style.setProperty("--story-p", clamped.toFixed(4));
     el.style.setProperty("--wave-p", wave.toFixed(4));
 
-    // Subtle Apple-like scale zoom from 0.94 -> 1.02
-    const scale = 0.94 + wave * 0.07;
+    // Subtle Apple-like scale zoom (never exceeds 1.0 on compact viewports)
+    const scale = isCompact ? 0.96 + wave * 0.04 : 0.94 + wave * 0.07;
     el.style.setProperty("--stage-scale", scale.toFixed(4));
 
     const chapter = clamped < 0.34 ? 0 : clamped < 0.68 ? 1 : 2;
@@ -207,6 +238,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   jumpToChapter(chapterIdx: number): void {
+    if (this.isShortViewport()) {
+      this.activeChapter = chapterIdx;
+      return;
+    }
+
     const el = this.magicTrackRef?.nativeElement;
     if (!el) return;
     const scrollable = Math.max(1, el.offsetHeight - window.innerHeight);
