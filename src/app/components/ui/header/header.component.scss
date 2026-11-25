@@ -307,21 +307,33 @@
   width: 34px;
   height: 34px;
   padding: 0;
+  line-height: 1;
   border-radius: 8px;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--ink-primary);
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.16s ease;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease;
 
   mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
     transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  &.is-open mat-icon {
-    transform: rotate(90deg);
+  &.is-open {
+    border-color: var(--border-subtle);
+    background: var(--bg-subtle);
+
+    mat-icon {
+      transform: rotate(90deg);
+    }
   }
 
   &:hover {
