@@ -8,6 +8,7 @@ import { Subscription } from "rxjs";
 import { DIET_TAGS, MEAL_TYPES, MEDICAL_CONDITIONS, Recipe } from "../../../models/recipe.model";
 import { AuthService } from "../../../services/auth.service";
 import { RecipeService } from "../../../services/recipe.service";
+import { matchesPolishQuery } from "../../../utils/recipe-helpers";
 import {
   LoadingStateComponent,
   PresentationHeaderComponent,
@@ -117,27 +118,6 @@ export class RecipesComponent implements OnInit, OnDestroy {
     return count;
   }
 
-  private normalizePL(text: string): string {
-    return text
-      .toLowerCase()
-      .replace(/ł/g, "l")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-  }
-
-  private matchesPolishQuery(haystack: string, rawQuery: string): boolean {
-    const normHay = this.normalizePL(haystack);
-    const tokens = this.normalizePL(rawQuery).split(/\s+/).filter(Boolean);
-    return tokens.every((token) => {
-      if (normHay.includes(token)) return true;
-      if (token.length >= 5) {
-        const stem = token.slice(0, Math.max(4, token.length - 2));
-        return normHay.includes(stem);
-      }
-      return false;
-    });
-  }
-
   get filteredRecipes(): Recipe[] {
     const search = this.filterName.trim();
 
@@ -150,7 +130,7 @@ export class RecipesComponent implements OnInit, OnDestroy {
           ...(recipe.dietTags ?? []),
           ...(recipe.suitableForConditions ?? []),
         ].join(" ");
-        if (!this.matchesPolishQuery(combined, search)) return false;
+        if (!matchesPolishQuery(combined, search)) return false;
       }
 
       if (this.filterLiked && !this.savedRecipes.includes(recipe.uid)) {

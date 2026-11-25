@@ -6,6 +6,16 @@ import { FirebaseStorage, getStorage } from "firebase/storage";
 import { BehaviorSubject, Observable } from "rxjs";
 import { environment } from "../environments/environment";
 
+export function cleanFirestorePayload<T extends Record<string, any>>(data: T): Record<string, any> {
+  const cleaned: Record<string, any> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      cleaned[key] = value;
+    }
+  }
+  return cleaned;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -78,12 +88,6 @@ export class FirebaseService {
 
   /** Removes top-level undefined properties because Firestore v13 rejects undefined field values. */
   cleanPayload<T extends Record<string, any>>(data: T): Record<string, any> {
-    const cleaned: Record<string, any> = {};
-    for (const [key, value] of Object.entries(data)) {
-      if (value !== undefined) {
-        cleaned[key] = value;
-      }
-    }
-    return cleaned;
+    return cleanFirestorePayload(data);
   }
 }
