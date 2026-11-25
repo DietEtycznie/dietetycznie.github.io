@@ -28,6 +28,12 @@ import { Component, Input } from "@angular/core";
 
       <!-- Right Form Panel -->
       <section class="auth-main">
+        <img
+          src="assets/presentation-header-cutout.png"
+          alt=""
+          aria-hidden="true"
+          class="auth-mobile-bg"
+        />
         <div class="auth-form-wrap">
           <div class="auth-form-head">
             <h1>{{ formTitle }}</h1>
@@ -178,6 +184,10 @@ import { Component, Input } from "@angular/core";
         background: var(--bg-surface);
       }
 
+      .auth-mobile-bg {
+        display: none;
+      }
+
       .auth-form-wrap {
         width: 100%;
         max-width: 390px;
@@ -205,7 +215,7 @@ import { Component, Input } from "@angular/core";
       @media (max-width: 920px) {
         .auth-split {
           grid-template-columns: 1fr;
-          min-height: calc(100vh - 67px);
+          min-height: calc(100dvh - 60px);
         }
 
         .auth-aside {
@@ -213,8 +223,55 @@ import { Component, Input } from "@angular/core";
         }
 
         .auth-main {
-          padding: 2.5rem 1.25rem 3.5rem;
-          align-items: flex-start;
+          position: relative;
+          overflow: hidden;
+          padding: 2.5rem 1.15rem 3rem;
+          align-items: center;
+          background:
+            radial-gradient(
+              440px 300px at 96% 0%,
+              rgba(32, 178, 127, 0.2) 0%,
+              rgba(32, 178, 127, 0.07) 48%,
+              transparent 76%
+            ),
+            radial-gradient(
+              380px 260px at 4% 100%,
+              rgba(32, 178, 127, 0.14) 0%,
+              rgba(32, 178, 127, 0.04) 50%,
+              transparent 76%
+            ),
+            var(--bg-paper);
+        }
+
+        .auth-mobile-bg {
+          display: block;
+          position: absolute;
+          top: -20px;
+          right: -68px;
+          width: 340px;
+          height: auto;
+          object-fit: contain;
+          filter: blur(12px);
+          opacity: 0.3;
+          pointer-events: none;
+          user-select: none;
+          z-index: 0;
+        }
+
+        :host-context([data-theme="dark"]) .auth-mobile-bg {
+          opacity: 0.2;
+        }
+
+        .auth-form-wrap {
+          position: relative;
+          z-index: 1;
+          background: color-mix(in srgb, var(--bg-surface) 84%, transparent);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid var(--border-subtle);
+          border-radius: 18px;
+          padding: 1.75rem 1.35rem;
+          box-shadow: var(--shadow-card);
         }
       }
     `,
