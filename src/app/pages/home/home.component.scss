@@ -898,9 +898,9 @@
   position: relative;
   background:
     radial-gradient(
-      520px 340px at 75% 100%,
-      rgba(32, 178, 127, 0.15) 0%,
-      rgba(32, 178, 127, 0.055) 48%,
+      460px 440px at calc(50% + min(28vw, 345px)) 84%,
+      rgba(32, 178, 127, 0.25) 0%,
+      rgba(32, 178, 127, 0.11) 46%,
       transparent 76%
     ),
     radial-gradient(420px 280px at 18% 20%, rgba(32, 178, 127, 0.055) 0%, transparent 70%),
@@ -1345,10 +1345,10 @@
     border-radius: 0;
     border-bottom: 1px solid var(--border-subtle);
     background: radial-gradient(
-      280px 185px at 50% 100%,
-      rgba(32, 178, 127, 0.16) 0%,
-      rgba(32, 178, 127, 0.05) 52%,
-      transparent 78%
+      340px 300px at 50% 68%,
+      rgba(32, 178, 127, 0.25) 0%,
+      rgba(32, 178, 127, 0.1) 48%,
+      transparent 76%
     );
     overflow: hidden;
   }
