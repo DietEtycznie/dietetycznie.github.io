@@ -23,9 +23,10 @@
   min-width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: $primary-color;
-  color: #fff;
+  background: var(--accent-primary);
+  color: var(--accent-on-primary);
   font-size: 0.72rem;
+  font-weight: 700;
   padding: 0 5px;
 }
 
@@ -57,7 +58,7 @@
         font-size: 19px;
         width: 19px;
         height: 19px;
-        color: $primary-color;
+        color: var(--accent-dark);
       }
     }
 
@@ -161,8 +162,8 @@
   background: var(--bg-surface);
 
   &:focus-within {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(32, 178, 127, 0.14);
+    border-color: var(--accent-dark);
+    box-shadow: 0 0 0 3px rgba(230, 176, 210, 0.35);
   }
 
   mat-icon {
@@ -198,7 +199,7 @@
   color: var(--ink-primary);
 
   input {
-    accent-color: $primary-color;
+    accent-color: var(--accent-dark);
   }
 
   span {
@@ -209,7 +210,7 @@
       font-size: 17px;
       width: 17px;
       height: 17px;
-      color: var(--accent-primary);
+      color: var(--accent-pop);
     }
   }
 }
@@ -288,7 +289,7 @@
   &.is-active {
     background: var(--accent-primary);
     border-color: var(--accent-primary);
-    color: #fff;
+    color: var(--accent-on-primary);
   }
 }
 
@@ -341,7 +342,7 @@
   &.is-active {
     background: var(--accent-primary);
     border-color: var(--accent-primary);
-    color: #fff;
+    color: var(--accent-on-primary);
   }
 }
 

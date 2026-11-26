@@ -90,7 +90,7 @@ import { PwaInstallService } from "../../../../services/pwa-install.service";
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid var(--border-strong);
-        box-shadow: 0 12px 34px rgba(15, 38, 28, 0.14);
+        box-shadow: 0 12px 34px rgba(22, 16, 36, 0.14);
         animation: pwaSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
@@ -168,7 +168,7 @@ import { PwaInstallService } from "../../../../services/pwa-install.service";
         border: none;
         border-radius: 999px;
         background: var(--accent-primary);
-        color: #ffffff;
+        color: var(--accent-on-primary);
         padding: 0.45rem 0.9rem;
         font-family: "Plus Jakarta Sans", "Inter", sans-serif;
         font-size: 0.8rem;

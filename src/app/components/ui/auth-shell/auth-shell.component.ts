@@ -68,15 +68,15 @@ import { Component, Input } from "@angular/core";
         background:
           radial-gradient(
             900px 660px at 0% 0%,
-            rgba(32, 178, 127, 0.24) 0%,
-            rgba(32, 178, 127, 0.11) 46%,
+            rgba(230, 176, 210, 0.42) 0%,
+            rgba(230, 176, 210, 0.18) 46%,
             transparent 78%
           ),
           radial-gradient(
             ellipse 96% 88% at 50% 54%,
-            rgba(90, 100, 98, 0.24) 0%,
-            rgba(90, 100, 98, 0.12) 48%,
-            rgba(90, 100, 98, 0.04) 76%,
+            rgba(90, 94, 110, 0.2) 0%,
+            rgba(90, 94, 110, 0.1) 48%,
+            rgba(90, 94, 110, 0.03) 76%,
             transparent 96%
           ),
           var(--bg-paper);
@@ -88,14 +88,14 @@ import { Component, Input } from "@angular/core";
         background:
           radial-gradient(
             900px 660px at 0% 0%,
-            rgba(36, 196, 140, 0.24) 0%,
-            rgba(36, 196, 140, 0.1) 46%,
+            rgba(230, 176, 210, 0.24) 0%,
+            rgba(230, 176, 210, 0.09) 46%,
             transparent 78%
           ),
           radial-gradient(
             ellipse 96% 88% at 50% 54%,
-            rgba(215, 222, 220, 0.14) 0%,
-            rgba(215, 222, 220, 0.06) 50%,
+            rgba(180, 188, 224, 0.13) 0%,
+            rgba(180, 188, 224, 0.05) 50%,
             transparent 84%
           ),
           var(--bg-paper);
@@ -230,14 +230,14 @@ import { Component, Input } from "@angular/core";
           background:
             radial-gradient(
               440px 300px at 96% 0%,
-              rgba(32, 178, 127, 0.2) 0%,
-              rgba(32, 178, 127, 0.07) 48%,
+              rgba(230, 176, 210, 0.34) 0%,
+              rgba(230, 176, 210, 0.12) 48%,
               transparent 76%
             ),
             radial-gradient(
               380px 260px at 4% 100%,
-              rgba(32, 178, 127, 0.14) 0%,
-              rgba(32, 178, 127, 0.04) 50%,
+              rgba(252, 98, 3, 0.1) 0%,
+              rgba(230, 176, 210, 0.08) 50%,
               transparent 76%
             ),
             var(--bg-paper);

@@ -64,9 +64,9 @@
   cursor: pointer;
 
   &.is-active {
-    background: $primary-color;
-    border-color: $primary-color;
-    color: #fff;
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: var(--accent-on-primary);
   }
 }
 

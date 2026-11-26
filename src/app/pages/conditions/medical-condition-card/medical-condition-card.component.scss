@@ -59,13 +59,13 @@
 
 .panel-icon {
   margin-right: 0.55rem;
-  color: var(--accent-primary);
+  color: var(--accent-dark);
   font-size: 20px;
   width: 20px;
   height: 20px;
 
   &--warn {
-    color: $warn-color;
+    color: var(--accent-pop);
   }
 }
 
@@ -96,11 +96,11 @@
 }
 
 .icon-ok {
-  color: $primary-color;
+  color: var(--accent-dark);
 }
 
 .icon-warn {
-  color: $warn-color;
+  color: var(--accent-pop);
 }
 
 .condition-card__footer {

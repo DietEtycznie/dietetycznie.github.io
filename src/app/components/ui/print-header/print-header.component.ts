@@ -29,7 +29,7 @@ import { BrandLogoComponent } from "../brand-logo/brand-logo.component";
         justify-content: space-between;
         align-items: center;
         padding-bottom: 3.5mm;
-        border-bottom: 1px solid #e5ece8;
+        border-bottom: 1px solid #eedee8;
       }
 
       .print-domain {
@@ -37,7 +37,7 @@ import { BrandLogoComponent } from "../brand-logo/brand-logo.component";
         font-size: 0.78rem;
         font-weight: 700;
         letter-spacing: 0.01em;
-        color: #20b27f;
+        color: #0b2db8;
       }
     `,
   ],
