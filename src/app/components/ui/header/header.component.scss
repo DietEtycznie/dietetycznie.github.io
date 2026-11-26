@@ -5,10 +5,10 @@
   z-index: 100;
   background:
     radial-gradient(
-      380px 140px at 92% 100%,
-      rgba(32, 178, 127, 0.13) 0%,
-      rgba(32, 178, 127, 0.045) 48%,
-      transparent 74%
+      400px 150px at 92% 100%,
+      rgba(230, 176, 210, 0.34) 0%,
+      rgba(230, 176, 210, 0.12) 48%,
+      transparent 76%
     ),
     var(--bg-paper);
   border-bottom: 1px solid var(--border-subtle);
@@ -54,7 +54,7 @@
     right: 0;
     bottom: -1px;
     height: 2px;
-    background: var(--accent-primary);
+    background: var(--accent-dark);
     border-radius: 2px 2px 0 0;
     transform: scaleX(0);
     transform-origin: center;
@@ -197,7 +197,7 @@
 
   &:hover {
     background: var(--accent-primary);
-    color: #fff;
+    color: var(--accent-on-primary);
   }
 }
 
@@ -233,7 +233,7 @@
 
   &:hover {
     background: var(--accent-primary);
-    color: #fff;
+    color: var(--accent-on-primary);
     box-shadow: 0 0 0 3px var(--accent-soft);
   }
 }

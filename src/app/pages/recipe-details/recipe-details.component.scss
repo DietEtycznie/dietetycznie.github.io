@@ -19,7 +19,7 @@
     color: var(--ink-secondary);
     transition: color 0.14s ease;
     &:hover {
-      color: var(--accent-primary);
+      color: var(--accent-dark);
     }
   }
 
@@ -82,7 +82,7 @@
     width: auto;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 18px 34px rgba(15, 23, 20, 0.16));
+    filter: drop-shadow(0 18px 34px rgba(15, 15, 28, 0.16));
     display: block;
   }
 }
@@ -109,12 +109,12 @@
 
   &:hover {
     transform: scale(1.06);
-    color: var(--accent-primary);
+    color: var(--accent-pop);
     border-color: var(--accent-soft-border);
   }
 
   &.is-liked {
-    color: var(--accent-primary);
+    color: var(--accent-pop);
     border-color: var(--accent-soft-border);
     background: var(--accent-soft);
   }
@@ -164,7 +164,7 @@
       font-size: 15px;
       width: 15px;
       height: 15px;
-      color: $amber-color;
+      color: var(--accent-pop);
     }
   }
 }
@@ -240,11 +240,11 @@
     border-radius: 999px;
   }
   &__seg--c {
-    background: $sky-color;
+    background: var(--accent-dark);
     border-radius: 999px;
   }
   &__seg--f {
-    background: $amber-color;
+    background: var(--accent-pop);
     border-radius: 999px;
   }
 }
@@ -280,10 +280,10 @@
       background: var(--accent-primary);
     }
     &--c {
-      background: $sky-color;
+      background: var(--accent-dark);
     }
     &--f {
-      background: $amber-color;
+      background: var(--accent-pop);
     }
   }
 }
@@ -532,7 +532,7 @@
     .step-num {
       background: var(--accent-primary);
       border-color: var(--accent-primary);
-      color: var(--check-fg, #ffffff);
+      color: var(--accent-on-primary);
     }
   }
 

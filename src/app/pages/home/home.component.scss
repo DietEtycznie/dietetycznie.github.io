@@ -37,19 +37,19 @@
     z-index: 1;
     background:
       radial-gradient(
-        380px 140px at 92% 0%,
-        rgba(32, 178, 127, 0.13) 0%,
-        rgba(32, 178, 127, 0.045) 48%,
-        transparent 74%
+        400px 150px at 92% 0%,
+        rgba(230, 176, 210, 0.34) 0%,
+        rgba(230, 176, 210, 0.12) 48%,
+        transparent 76%
       ),
       linear-gradient(
         180deg,
-        #fffefc 0%,
-        rgba(255, 254, 252, 0.72) 7%,
-        rgba(255, 254, 252, 0) 20%,
-        rgba(255, 254, 252, 0) 70%,
-        rgba(255, 254, 252, 0.75) 89%,
-        #fffefc 100%
+        #fffdfe 0%,
+        rgba(255, 253, 254, 0.72) 7%,
+        rgba(255, 253, 254, 0) 20%,
+        rgba(255, 253, 254, 0) 70%,
+        rgba(255, 253, 254, 0.75) 89%,
+        #fffdfe 100%
       );
   }
 }
@@ -101,8 +101,8 @@
     box-shadow 0.16s ease;
 
   &:focus-within {
-    border-color: $primary-color;
-    box-shadow: 0 0 0 3px rgba(32, 178, 127, 0.14);
+    border-color: var(--accent-dark);
+    box-shadow: 0 0 0 3px rgba(230, 176, 210, 0.35);
   }
 
   mat-icon {
@@ -154,12 +154,12 @@
   text-decoration: none;
 
   &--primary {
-    background: $primary-color;
-    color: #fff;
+    background: var(--accent-primary);
+    color: var(--accent-on-primary);
 
     &:hover {
-      background: $primary-dark;
-      color: #fff;
+      background: var(--accent-hover);
+      color: var(--accent-on-primary);
     }
   }
 
@@ -187,61 +187,61 @@
 
 :host-context([data-theme="dark"]) {
   .notion-hero {
-    background-color: #0e1613;
+    background-color: #10101c;
     background-image: url("../../../assets/home_banner_dark.jpg");
 
     &::after {
       background:
         radial-gradient(
-          380px 140px at 92% 0%,
-          rgba(32, 178, 127, 0.16) 0%,
-          rgba(32, 178, 127, 0.05) 48%,
-          transparent 74%
+          400px 150px at 92% 0%,
+          rgba(230, 176, 210, 0.24) 0%,
+          rgba(230, 176, 210, 0.08) 48%,
+          transparent 76%
         ),
         linear-gradient(
           180deg,
-          #0e1613 0%,
-          rgba(14, 22, 19, 0.88) 9%,
-          rgba(14, 22, 19, 0) 24%,
-          rgba(14, 22, 19, 0) 64%,
-          rgba(14, 22, 19, 0.85) 86%,
-          #0e1613 100%
+          #10101c 0%,
+          rgba(16, 16, 28, 0.88) 9%,
+          rgba(16, 16, 28, 0) 24%,
+          rgba(16, 16, 28, 0) 64%,
+          rgba(16, 16, 28, 0.85) 86%,
+          #10101c 100%
         );
     }
   }
 
   .notion-hero__copy h1 {
-    color: #f3f7f5;
+    color: #f6f3f9;
   }
 
   .notion-hero__lead {
-    color: #a8bcb3;
+    color: #b4adc2;
   }
 
   .notion-search {
-    background: #131e1a;
+    background: #161626;
     border-color: rgba(255, 255, 255, 0.14);
 
     input {
-      color: #f1f6f3;
+      color: #f6f3f9;
       &::placeholder {
-        color: #72887e;
+        color: #7e7690;
       }
     }
   }
 
   .notion-btn--dark {
-    background: #f1f6f3;
-    color: #0b1210;
+    background: #f6f3f9;
+    color: #0c1438;
 
     &:hover {
       background: #ffffff;
-      color: #0b1210;
+      color: #0c1438;
     }
   }
 
   .magic-track {
-    background: color-mix(in srgb, #102c22 calc(var(--wave-p) * 100%), #0e1613);
+    background: color-mix(in srgb, #0c1438 calc(var(--wave-p) * 100%), #10101c);
   }
 
   .chapter-dot__bar {
@@ -332,7 +332,7 @@
   --stage-scale: 0.94;
   position: relative;
   height: 250vh;
-  background: color-mix(in srgb, #0e241c calc(var(--wave-p) * 100%), #fffefc);
+  background: color-mix(in srgb, #0c1438 calc(var(--wave-p) * 100%), #fffdfe);
 }
 
 .magic-sticky {
@@ -348,11 +348,17 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(
-    circle at calc(20% + var(--story-p) * 60%) 50%,
-    rgba(32, 178, 127, calc(var(--wave-p) * 0.34)),
-    transparent 56%
-  );
+  background:
+    radial-gradient(
+      circle at calc(20% + var(--story-p) * 60%) 48%,
+      rgba(230, 176, 210, calc(var(--wave-p) * 0.34)),
+      transparent 54%
+    ),
+    radial-gradient(
+      circle at calc(82% - var(--story-p) * 52%) 78%,
+      rgba(252, 98, 3, calc(var(--wave-p) * 0.16)),
+      transparent 48%
+    );
   will-change: background;
 }
 
@@ -415,7 +421,7 @@
     opacity: 1;
     .chapter-dot__bar {
       width: 46px;
-      background: $primary-color;
+      background: var(--accent-pop);
     }
   }
 }
@@ -511,7 +517,7 @@
 
     .cta-count {
       font-weight: 700;
-      color: $primary-color;
+      color: color-mix(in srgb, #e6b0d2 calc(var(--wave-p) * 100%), #0b2db8);
       white-space: nowrap;
     }
   }
@@ -539,7 +545,7 @@
   &.is-active {
     background: $primary-color;
     border-color: $primary-color;
-    color: #fff;
+    color: #0b2db8;
   }
 }
 
@@ -557,10 +563,10 @@
   display: inline-block;
 
   &--good {
-    color: $primary-color;
+    color: color-mix(in srgb, #e6b0d2 calc(var(--wave-p) * 100%), #0b2db8);
   }
   &--avoid {
-    color: #f87171;
+    color: #ff853d;
   }
 }
 
@@ -631,7 +637,7 @@
     &.is-active {
       background: $primary-color;
       border-color: $primary-color;
-      color: #fff;
+      color: #0b2db8;
     }
   }
 }
@@ -656,13 +662,13 @@
   }
 
   .ring-bg {
-    stroke: color-mix(in srgb, rgba(255, 255, 255, 0.12) calc(var(--wave-p) * 100%), #e8eeea);
+    stroke: color-mix(in srgb, rgba(255, 255, 255, 0.12) calc(var(--wave-p) * 100%), #eedee8);
   }
   .ring-p {
     stroke: $primary-color;
   }
   .ring-f {
-    stroke: #f59e0b;
+    stroke: $tangerine-color;
   }
 }
 
@@ -899,11 +905,11 @@
   background:
     radial-gradient(
       460px 440px at calc(50% + min(28vw, 345px)) 84%,
-      rgba(32, 178, 127, 0.25) 0%,
-      rgba(32, 178, 127, 0.11) 46%,
+      rgba(230, 176, 210, 0.38) 0%,
+      rgba(230, 176, 210, 0.16) 46%,
       transparent 76%
     ),
-    radial-gradient(420px 280px at 18% 20%, rgba(32, 178, 127, 0.055) 0%, transparent 70%),
+    radial-gradient(420px 280px at 18% 20%, rgba(252, 98, 3, 0.055) 0%, transparent 70%),
     var(--bg-surface);
   border-top: 1px solid var(--border-subtle);
   padding: 4.5rem 0 0;
@@ -955,7 +961,7 @@
 .dietitian-bio {
   margin: 0.25rem 0 0.75rem;
   padding-left: 1.15rem;
-  border-left: 3px solid var(--accent-primary);
+  border-left: 3px solid var(--accent-pop);
   font-size: 1.04rem;
   line-height: 1.68;
   color: var(--ink-secondary);
@@ -1025,9 +1031,9 @@
       inset: 0;
       background: linear-gradient(
         180deg,
-        rgba(255, 254, 252, 0.88) 0%,
-        rgba(255, 254, 252, 0.82) 60%,
-        rgba(255, 254, 252, 0.94) 100%
+        rgba(255, 253, 254, 0.88) 0%,
+        rgba(255, 253, 254, 0.82) 60%,
+        rgba(255, 253, 254, 0.94) 100%
       );
       z-index: 1;
     }
@@ -1036,9 +1042,9 @@
   :host-context([data-theme="dark"]) .notion-hero::before {
     background: linear-gradient(
       180deg,
-      rgba(14, 22, 19, 0.86) 0%,
-      rgba(14, 22, 19, 0.78) 60%,
-      rgba(14, 22, 19, 0.94) 100%
+      rgba(16, 16, 28, 0.86) 0%,
+      rgba(16, 16, 28, 0.78) 60%,
+      rgba(16, 16, 28, 0.94) 100%
     );
   }
 
@@ -1346,8 +1352,8 @@
     border-bottom: 1px solid var(--border-subtle);
     background: radial-gradient(
       340px 300px at 50% 68%,
-      rgba(32, 178, 127, 0.25) 0%,
-      rgba(32, 178, 127, 0.1) 48%,
+      rgba(230, 176, 210, 0.38) 0%,
+      rgba(230, 176, 210, 0.14) 48%,
       transparent 76%
     );
     overflow: hidden;
@@ -1376,7 +1382,7 @@
   .magic-track {
     height: auto;
     padding: 2.5rem 0;
-    background: #0e241c !important;
+    background: #0c1438 !important;
   }
 
   .magic-sticky {

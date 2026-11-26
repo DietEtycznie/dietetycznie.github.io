@@ -9,8 +9,8 @@
   background:
     radial-gradient(
       380px 160px at 92% 0%,
-      rgba(32, 178, 127, 0.12) 0%,
-      rgba(32, 178, 127, 0.04) 48%,
+      rgba(230, 176, 210, 0.34) 0%,
+      rgba(230, 176, 210, 0.12) 48%,
       transparent 74%
     ),
     var(--bg-paper);
@@ -64,11 +64,11 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #f59e0b;
+    background: var(--accent-pop);
   }
 
   &.is-live .status-dot {
-    background: var(--accent-primary);
+    background: var(--accent-dark);
   }
 }
 
@@ -108,7 +108,7 @@
     right: 0;
     bottom: 0;
     height: 2px;
-    background: var(--accent-primary);
+    background: var(--accent-dark);
     transform: scaleX(0);
     transition: transform 0.2s ease;
   }
@@ -144,7 +144,7 @@
   padding: 0.72rem 1rem;
   border-radius: 10px;
   background: var(--accent-soft);
-  border: 1px solid rgba(32, 178, 127, 0.3);
+  border: 1px solid var(--accent-soft-border);
   color: var(--accent-dark);
   font-size: 0.86rem;
   font-weight: 600;
@@ -400,7 +400,7 @@
     &:hover {
       background: var(--accent-primary);
       border-color: var(--accent-primary);
-      color: #ffffff;
+      color: var(--accent-on-primary);
     }
   }
 
@@ -517,7 +517,7 @@
 
 .pro-tag--vip {
   background: var(--accent-primary);
-  color: #ffffff;
+  color: var(--accent-on-primary);
 }
 
 .empty-inline-card {
@@ -729,7 +729,7 @@
   position: fixed;
   inset: 0;
   z-index: 600;
-  background: rgba(7, 14, 11, 0.56);
+  background: rgba(12, 16, 36, 0.58);
   backdrop-filter: blur(5px);
   display: flex;
   align-items: center;
@@ -1073,7 +1073,7 @@
   &.is-active {
     background: var(--accent-primary);
     border-color: var(--accent-primary);
-    color: #fff;
+    color: var(--accent-on-primary);
   }
 
   &--icon {
@@ -1183,7 +1183,7 @@
   cursor: pointer;
 
   input {
-    accent-color: var(--accent-primary);
+    accent-color: var(--accent-dark);
     width: 16px;
     height: 16px;
   }
@@ -1218,7 +1218,7 @@
   &.is-active {
     background: var(--accent-primary);
     border-color: var(--accent-primary);
-    color: #fff;
+    color: var(--accent-on-primary);
   }
 }
 

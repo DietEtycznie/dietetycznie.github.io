@@ -88,11 +88,11 @@ export class ThemeService {
     if (mode === "dark") {
       root.setAttribute("data-theme", "dark");
       root.style.colorScheme = "dark";
-      themeColorMeta?.setAttribute("content", "#0e1613");
+      themeColorMeta?.setAttribute("content", "#10101c");
     } else {
       root.removeAttribute("data-theme");
       root.style.colorScheme = "light";
-      themeColorMeta?.setAttribute("content", "#fffefc");
+      themeColorMeta?.setAttribute("content", "#fffdfe");
     }
   }
 }

@@ -168,7 +168,7 @@ import { PwaInstallService } from "../../../../services/pwa-install.service";
         border: none;
         border-radius: 999px;
         background: var(--accent-primary);
-        color: #ffffff;
+        color: var(--accent-on-primary);
         padding: 0.45rem 0.9rem;
         font-family: "Plus Jakarta Sans", "Inter", sans-serif;
         font-size: 0.8rem;

@@ -35,7 +35,7 @@
       right: 0;
       bottom: -1px;
       height: 2px;
-      background: var(--accent-primary);
+      background: var(--accent-dark);
     }
   }
 }
@@ -195,7 +195,7 @@
       right: 0;
       bottom: 0;
       height: 2px;
-      background: var(--accent-primary);
+      background: var(--accent-dark);
     }
   }
 }
@@ -220,7 +220,7 @@
   padding: 0;
   font-size: 0.8rem;
   font-weight: 600;
-  color: $primary-dark;
+  color: var(--accent-dark);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -367,7 +367,7 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5, 12, 9, 0.65);
+  background: rgba(12, 16, 36, 0.65);
   z-index: 400;
   display: flex;
   align-items: center;
@@ -439,7 +439,7 @@
   white-space: nowrap;
   cursor: pointer;
   input {
-    accent-color: var(--accent-primary);
+    accent-color: var(--accent-dark);
   }
 }
 
@@ -524,7 +524,7 @@
     &.is-active {
       color: var(--accent-dark);
       font-weight: 700;
-      border-bottom: 2px solid var(--accent-primary);
+      border-bottom: 2px solid var(--accent-dark);
     }
   }
 }
@@ -550,7 +550,7 @@
   cursor: pointer;
 
   input {
-    accent-color: var(--accent-primary);
+    accent-color: var(--accent-dark);
   }
 
   span {
@@ -618,7 +618,7 @@
     font-size: 19px;
     width: 19px;
     height: 19px;
-    color: var(--accent-primary);
+    color: var(--accent-dark);
     flex-shrink: 0;
     margin-top: 2px;
   }
@@ -812,12 +812,12 @@
   .plan-print-head {
     padding-bottom: 5mm;
     margin-bottom: 5mm;
-    border-bottom: 1px solid #e5ece8;
+    border-bottom: 1px solid #eedee8;
 
     .plan-print-kicker {
       font-size: 0.78rem;
       font-weight: 600;
-      color: #15875f;
+      color: #0b2db8;
       margin-bottom: 0.25rem;
     }
 
@@ -831,13 +831,13 @@
     p {
       margin: 0 0 0.45rem;
       font-size: 0.86rem;
-      color: #4b5d55;
+      color: #4e4a59;
       line-height: 1.45;
     }
 
     .plan-print-avg {
       font-size: 0.82rem;
-      color: #374841;
+      color: #3c3847;
     }
   }
 
@@ -849,7 +849,7 @@
 
   .plan-print-day {
     break-inside: avoid;
-    border: 1px solid #e5ece8;
+    border: 1px solid #eedee8;
     border-radius: 8px;
     padding: 3.2mm 4mm;
   }
@@ -860,7 +860,7 @@
     align-items: baseline;
     padding-bottom: 2mm;
     margin-bottom: 2mm;
-    border-bottom: 1px solid #eef3f0;
+    border-bottom: 1px solid #f4e8f0;
 
     strong {
       font-size: 0.9rem;
@@ -869,7 +869,7 @@
 
     span {
       font-size: 0.74rem;
-      color: #5a6d65;
+      color: #5e596a;
     }
   }
 
@@ -890,7 +890,7 @@
       font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      color: #15875f;
+      color: #0b2db8;
     }
 
     .ppm-name {
@@ -899,7 +899,7 @@
     }
 
     .ppm-kcal {
-      color: #5a6d65;
+      color: #5e596a;
       font-size: 0.74rem;
       white-space: nowrap;
     }

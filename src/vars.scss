@@ -1,27 +1,32 @@
-// Brand palette — DietEtycznie 2.0 ("Clean Organic Health")
-$primary-color: #20b27f;
-$primary-dark: #15875f;
-$primary-hover: #199c6e;
-$primary-soft: #e8f7f1;
-$primary-soft-border: #c2e8d9;
-$primary-disabled: #b1e1cf;
+// Brand palette — DietEtycznie Editorial (#E6B0D2 Pink + #0B2DB8 Cobalt + #FC6203 Tangerine)
+$primary-color: #e6b0d2;
+$primary-dark: #0b2db8;
+$primary-hover: #da9ac3;
+$primary-on: #0b2db8;
+$primary-soft: #f9ebf4;
+$primary-soft-border: #e6b0d2;
+$primary-disabled: #f2d5e7;
+
+// Secondary & Micro-Accent
+$cobalt-color: #0b2db8;
+$tangerine-color: #fc6203;
 
 // Neutrals & Surfaces
-$bg-page: #f6f9f7;
+$bg-page: #faf7f9;
 $background-color: #ffffff;
-$background-secondary: #f2f7f4;
-$surface-border: #e2ece7;
-$surface-border-strong: #cddbd4;
+$background-secondary: #f8eef4;
+$surface-border: #eedee8;
+$surface-border-strong: #dec4d5;
 
 // Typography
-$text-color: #13221c;
-$text-secondary-color: #51665d;
-$text-muted: #7b9086;
+$text-color: #161420;
+$text-secondary-color: #544d5c;
+$text-muted: #82788b;
 
 // Semantic colors
 $warn-color: #e53935;
-$amber-color: #f59e0b;
-$sky-color: #0ea5e9;
+$amber-color: #fc6203;
+$sky-color: #0b2db8;
 
 // Radii & Shadows
 $radius-sm: 10px;
@@ -30,9 +35,9 @@ $radius-lg: 24px;
 $radius-pill: 999px;
 
 $shadow-sm:
-  0 1px 2px rgba(15, 38, 28, 0.04),
-  0 2px 8px rgba(15, 38, 28, 0.04);
+  0 1px 2px rgba(22, 16, 36, 0.04),
+  0 2px 8px rgba(22, 16, 36, 0.04);
 $shadow-md:
-  0 4px 14px rgba(15, 38, 28, 0.06),
-  0 10px 28px rgba(15, 38, 28, 0.05);
-$shadow-lg: 0 12px 36px rgba(15, 38, 28, 0.1);
+  0 4px 14px rgba(22, 16, 36, 0.06),
+  0 10px 28px rgba(22, 16, 36, 0.05);
+$shadow-lg: 0 12px 36px rgba(22, 16, 36, 0.1);

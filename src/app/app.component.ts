@@ -78,7 +78,7 @@ import { FooterComponent, HeaderComponent, PwaInstallBannerComponent } from "./c
         border: none;
         border-radius: 999px;
         background: var(--accent-primary);
-        color: #ffffff;
+        color: var(--accent-on-primary);
         padding: 0.38rem 0.9rem;
         font-size: 0.82rem;
         font-weight: 600;

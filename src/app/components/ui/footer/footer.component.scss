@@ -4,14 +4,14 @@
   background:
     radial-gradient(
       460px 240px at calc(50% + min(28vw, 345px)) -18%,
-      rgba(32, 178, 127, 0.22) 0%,
-      rgba(32, 178, 127, 0.09) 46%,
+      rgba(230, 176, 210, 0.34) 0%,
+      rgba(230, 176, 210, 0.14) 46%,
       transparent 76%
     ),
     radial-gradient(
       480px 300px at 14% 100%,
-      rgba(32, 178, 127, 0.14) 0%,
-      rgba(32, 178, 127, 0.05) 50%,
+      rgba(230, 176, 210, 0.24) 0%,
+      rgba(252, 98, 3, 0.05) 50%,
       transparent 75%
     ),
     var(--bg-surface);
@@ -65,7 +65,7 @@
     font-size: 0.9rem;
     color: var(--ink-secondary);
     &:hover {
-      color: var(--accent-primary);
+      color: var(--accent-dark);
     }
   }
 }
