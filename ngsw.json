@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1795735772634,
+  "timestamp": 1795735980835,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -131,15 +131,15 @@
   ],
   "hashTable": {
     "/assets/dietitian-cutout.png": "e3b3a14f889ca1a97999ac6c27eb8075f0aa38e0",
-    "/assets/favicon.ico": "c715e0e9003ed607a6ea26d189790775c875eadd",
+    "/assets/favicon.ico": "46330103ae26c6b548807553354e14705ca224db",
     "/assets/favicon.svg": "c354dbb4adcd2c56b50e58c386c724f231c8a86c",
     "/assets/home_banner.png": "2fecaf22eb43f17dbaa57d13a86f16599507d957",
     "/assets/home_banner_dark.jpg": "d1b0dea321723241d31d096176affdffa349981d",
-    "/assets/icons/apple-touch-icon-180x180.png": "3a3c598c3572577c195110b46cb75164dacbeb5f",
-    "/assets/icons/icon-192x192.png": "5de929249815f25c1ba2981a932e936fddce36ec",
-    "/assets/icons/icon-512x512.png": "2175d7d0a13db9c8a6a21b326756a9b320c8bb35",
-    "/assets/icons/icon-maskable-192x192.png": "d9274eaac2ea16181989332da2d541a9a5692582",
-    "/assets/icons/icon-maskable-512x512.png": "13389e80571a333f896f8c236cdf739c7886b5d1",
+    "/assets/icons/apple-touch-icon-180x180.png": "2999ff483d9321d488f6abc56a60b577e008ed75",
+    "/assets/icons/icon-192x192.png": "51b69f70c60996560d58c23af20a5aceb22206d4",
+    "/assets/icons/icon-512x512.png": "6bc7e30f15e92f3736daa1ed763a2b78c5878ad3",
+    "/assets/icons/icon-maskable-192x192.png": "634ccfce46780825ffd2ea63ae6888bcf6224209",
+    "/assets/icons/icon-maskable-512x512.png": "bb166a0102cb9ce3ee76dd4577237f40b7256da3",
     "/assets/logo.svg": "c70566b3c7f64aa04a698c1ef6fd41dcc10c9966",
     "/assets/presentation-header-cutout.png": "74fd3ff3bdcbf34d53d3c206eeee6a71b4a8039d",
     "/assets/recipes/fallback-plate.png": "1159a811113c43b1d9c840aa37a03945eff4e539",
