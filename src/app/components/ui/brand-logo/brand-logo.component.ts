@@ -20,7 +20,7 @@ export type BrandLogoSurface = "paper" | "surface" | "white";
           <rect width="64" height="64" rx="14" fill="var(--accent-primary, #e6b0d2)" />
           <path
             d="M46 18C33.5 18 22 25.5 19.5 39.5C18.8 43.4 21.8 46 25.6 46C38.2 46 46 36.2 46 18Z"
-            fill="var(--accent-on-primary, #161420)"
+            [attr.fill]="cutoutFill"
           />
           <path
             d="M21 45C25.5 38.5 31.8 32.8 40 28"
