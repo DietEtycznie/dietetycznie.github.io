@@ -232,11 +232,11 @@
 
   .notion-btn--dark {
     background: #f6f3f9;
-    color: #0c1438;
+    color: #161420;
 
     &:hover {
       background: #ffffff;
-      color: #0c1438;
+      color: #161420;
     }
   }
 
@@ -545,7 +545,7 @@
   &.is-active {
     background: $primary-color;
     border-color: $primary-color;
-    color: #0b2db8;
+    color: $primary-on;
   }
 }
 
@@ -637,7 +637,7 @@
     &.is-active {
       background: $primary-color;
       border-color: $primary-color;
-      color: #0b2db8;
+      color: $primary-on;
     }
   }
 }
